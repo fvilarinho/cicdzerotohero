@@ -4,11 +4,11 @@
 This project has the intention to demonstrate the basics of a CI/CD pipeline by provisioning a GIT and a Jenkins instance in Linode using Terraform.
 
 ### Requirements
-[`Terraform 1.3.x`](https://terraform.io)
-[`Linode Account`](https://www.linode.com)
-[`Any Linux Distribution`] or
-[`Windows 10 or later`] or
-[`MacOS Catalina or later`]
+- [`Terraform 1.3.x`](https://terraform.io)
+- [`Linode Account`](https://www.linode.com)
+- [`Any Linux Distribution`] or
+- [`Windows 10 or later`] or
+- [`MacOS Catalina or later`]
 
 ### Setup
 You need to create an API Token in Linode. Follow this path: Click in your `Profile Icon -> API Tokens -> Create a Personal Access Token`. You need to select `Read-Write` permission for the following:
