@@ -20,4 +20,9 @@ Then click in the `Create Token` button. A dialog with the token will popup. Ple
 
 Then define an environment variable called `LINODE_TOKEN` in your local machine with the token value.
 
-After that, just execute the command `./deploy.sh` in your project directory. Follow the instructions for the setup and that's all!
+After that, just execute the command `./deploy.sh` in your project directory. Follow the instructions for the setup. After the setup is done, please add the following Jenkins plugins:
+
+- [`Gogs`](https://plugins.jenkins.io/gogs-webhook/)
+- [`Blueocean`](https://plugins.jenkins.io/blueocean/)
+
+and that's all!
