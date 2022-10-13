@@ -20,6 +20,4 @@ Then click in the `Create Token` button. A dialog with the token will popup. Ple
 
 Then define an environment variable called `LINODE_TOKEN` in your local machine with the token value.
 
-After that, just execute the command `./deploy.sh` in your project directory.
-
-That's all!
+After that, just execute the command `./deploy.sh` in your project directory. Follow the instructions for the setup and that's all!
