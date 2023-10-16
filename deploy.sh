@@ -10,6 +10,15 @@ fi
 
 cd iac || exit 1
 
-$TERRAFORM_CMD init --upgrade
-$TERRAFORM_CMD plan
-$TERRAFORM_CMD apply --auto-approve
+$TERRAFORM_CMD init \
+               -upgrade \
+               -migrate-state
+
+$TERRAFORM_CMD plan \
+               -compact-warnings \
+               -target=module.stackscript
+
+$TERRAFORM_CMD apply \
+               -compact-warnings \
+               -target=module.stackscript \
+               -auto-approve

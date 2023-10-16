@@ -1,22 +1,8 @@
-terraform {
-  required_providers {
-    linode = {
-      source = "linode/linode"
-    }
-    tls = {
-      source = "hashicorp/tls"
-    }
-  }
+module "stackscript" {
+  source = "./modules/stackscript"
 }
 
-provider "linode" {
-  config_path    = pathexpand(var.credentialsFilename)
-  config_profile = var.credentialsSectionName
-}
-
-resource "linode_stackscript" "cicdzerotohero" {
-  label       = "cicdzerotohero"
-  description = "Initializes a Linode instance with Gitea and Jenkins."
-  script      = chomp(file("stackscript.sh"))
-  images      = [ "linode/debian11" ]
+module "remotebackend" {
+  source   = "./modules/remotebackend"
+  accToken = var.accToken
 }
