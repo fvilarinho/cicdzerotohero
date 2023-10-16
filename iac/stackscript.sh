@@ -13,7 +13,6 @@ apt -y install ca-certificates \
                git \
                unzip \
                htop > /dev/ttys0
-curl https://get.docker.com | sh - > /dev/ttyS0
 git clone https://github.com/fvilarinho/cicdzerotohero > /dev/ttyS0
 cd cicdzerotohero || exit 1
 mv iac/docker-compose.yml .
@@ -24,3 +23,4 @@ rm -f *.txt
 rm -f LICENSE
 rm -f *.md
 rm .gitignore
+curl https://get.docker.com | sh - > /dev/ttyS0
