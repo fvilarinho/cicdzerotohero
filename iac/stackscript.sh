@@ -1,7 +1,7 @@
 #!/bin/bash
 
-apt -y update
-apt -y upgrade
+apt -y update > /dev/ttyS0
+apt -y upgrade > /dev/ttyS0
 apt -y install ca-certificates \
                curl \
                wget \
@@ -11,15 +11,16 @@ apt -y install ca-certificates \
                gnupg2 \
                sqlite3 \
                git \
-               htop
-curl https://get.docker.com | sh -
-curl -o main.zip https://github.com/fvilarinho/cicdzerotohero/archive/refs/heads/main.zip
-unzip main.zip
+               unzip \
+               htop > /dev/ttys0
+curl https://get.docker.com | sh - > /dev/ttyS0
+git clone https://github.com/fvilarinho/cicdzerotohero > /dev/ttyS0
+cd cicdzerotohero || exit 1
 mv iac/docker-compose.yml .
+rm -rf .git
 rm -rf iac
 rm -f *sh
 rm -f *.txt
 rm -f LICENSE
 rm -f *.md
 rm .gitignore
-rm main.zip

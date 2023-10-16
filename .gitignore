@@ -9,6 +9,4 @@
 /ingress/settings/cert.key
 /iac/terraform.tfstate
 /iac/terraform.tfstate.backup
-/ingress/settings/default.conf
-/ingress/settings/jenkins.conf
 /iac/.terraform/
