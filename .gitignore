@@ -5,8 +5,6 @@
 /.terraform.lock.hcl
 /iac/.terraform.lock.hcl
 /iac/.credentials
-/ingress/settings/cert.crt
-/ingress/settings/cert.key
 /iac/terraform.tfstate
 /iac/terraform.tfstate.backup
 /iac/.terraform/

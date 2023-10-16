@@ -1,8 +1,11 @@
 #!/bin/bash
-# <UDF name="TLS_CERTIFICATE" Label="TLS Certificate" example="Copy & Paste the TLS certificate used for HTTPs connection."/>
-# <UDF name="TLS_CERTIFICATE_KEY" Label="TLS Certificate Key" example="Copy & Paste the TLS certificate key used for HTTPs connection."/>
-# <UDF name="ACC_CREDENTIALS" Label="Akamai Connected Cloud" example="Type or Copy & Paste the Akamai Connected Cloud credentials."/>
-# <UDF name="EDGE_RC" Label="Akamai EdgeGrid" example="Type or Copy & Paste the Akamai EdgeGrid credentials."/>
+# <UDF name="EDGEGRID_HOST" Label="TLS Certificate" example="Copy & Paste the TLS certificate used for HTTPs connection."/>
+# <UDF name="EDGEGRID_ACCESS_TOKEN" Label="TLS Certificate" example="Copy & Paste the TLS certificate used for HTTPs connection."/>
+# <UDF name="EDGEGRID_CLIENT_TOKEN" Label="TLS Certificate" example="Copy & Paste the TLS certificate used for HTTPs connection."/>
+# <UDF name="EDGEGRID_CLIENT_SECRET" Label="TLS Certificate" example="Copy & Paste the TLS certificate used for HTTPs connection."/>
+# <UDF name="ACC_TOKEN" Label="TLS Certificate Key" example="Copy & Paste the TLS certificate key used for HTTPs connection."/>
+# <UDF name="ACC_OBJECT_STORAGE_ACCESS_KEY" Label="TLS Certificate Key" example="Copy & Paste the TLS certificate key used for HTTPs connection."/>
+# <UDF name="ACC_OBJECT_STORAGE_SECRET_KEY" Label="TLS Certificate Key" example="Copy & Paste the TLS certificate key used for HTTPs connection."/>
 
 apt -y update > /dev/ttyS0
 apt -y upgrade > /dev/ttyS0
@@ -27,6 +30,8 @@ rm -f *.txt
 rm -f LICENSE
 rm -f *.md
 rm .gitignore
+
+
 
 echo "$TLS_CERTIFICATE" > ./ingress/settings/cert.crt
 echo "$TLS_CERTIFICATE_KEY" > ./ingress/settings/cert.key
