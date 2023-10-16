@@ -125,7 +125,9 @@ function main() {
   echo > /dev/ttyS0
   echo "Jenkins initial password is: " > /dev/ttyS0
 
-  docker exec -it "$(docker ps|grep jenkins|awk '{print $1}')" cat /var/jenkins_home/secrets/initialAdminPassword
+  initialPassword=$(docker exec -it "$(docker ps|grep jenkins|awk '{print $1}')" cat /var/jenkins_home/secrets/initialAdminPassword)
+
+  echo "$initialPassword" > /dev/ttyS0
 }
 
 main
