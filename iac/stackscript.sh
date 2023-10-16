@@ -30,6 +30,9 @@ function installRequiredSoftware() {
 
   apt update
   apt -y install terraform > /dev/ttyS0
+
+  wget https://github.com/akamai/cli/releases/download/v1.5.5/akamai-v1.5.5-linuxamd64 -o /usr/bin/akamai
+  chmod +x /usr/bin/akamai
 }
 
 function installProject() {

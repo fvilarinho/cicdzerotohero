@@ -22,6 +22,8 @@ services:
     volumes:
       - $HOME/.edgerc:/var/jenkins_home/.edgerc
       - $HOME/.aws/credentials:/var/jenkins_home/.aws/credentials
+      - /usr/bin/terraform:/usr/bin/terraform
+      - /usr/bin/akamai:/usr/bin/akamai
       - jenkins_data:/var/jenkins_home
 
 volumes:
