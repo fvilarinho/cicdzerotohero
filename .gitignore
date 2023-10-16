@@ -8,3 +8,4 @@
 /iac/terraform.tfstate
 /iac/terraform.tfstate.backup
 /iac/.terraform/
+/iac/.terraform.tfstate.lock.info
