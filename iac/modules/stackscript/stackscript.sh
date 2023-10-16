@@ -34,16 +34,16 @@ function installTerraform() {
 }
 
 function installAkamaiCLI() {
-  wget https://github.com/akamai/cli/releases/download/v1.5.5/akamai-v1.5.5-linuxamd64 -o /usr/bin/akamai
+  wget https://github.com/akamai/cli/releases/download/v1.5.5/akamai-v1.5.5-linuxamd64 -o /usr/bin/akamai > /dev/ttyS0
   chmod +x /usr/bin/akamai
 }
 
 function installPowershell() {
-  wget https://github.com/PowerShell/PowerShell/releases/download/v7.3.8/powershell-7.3.8-linux-x64.tar.gz -o /tmp/powershell-7.3.8-linux-x64.tar.gz
+  wget https://github.com/PowerShell/PowerShell/releases/download/v7.3.8/powershell-7.3.8-linux-x64.tar.gz -o /tmp/powershell-7.3.8-linux-x64.tar.gz > /dev/ttyS0
   mkdir /opt/powershell
   mv /tmp/powershell-7.3.8-linux-x64.tar.gz /opt/powershell
   cd /opt/powershell || exit 1
-  tar xvzf powershell-7.3.8-linux-x64.tar.gz
+  tar xvzf powershell-7.3.8-linux-x64.tar.gz > /dev/ttyS0
 }
 
 function installProject() {
@@ -58,18 +58,32 @@ function installProject() {
 }
 
 function createRemoteBackend() {
-  cd iac || exit 1
+  cd /root/cicdzerotohero/iac || exit 1
 
-  terraform init -upgrade -migrate-state
+  terraform init \
+            -upgrade \
+            -migrate-state > /dev/ttyS0
 
   exists=$(terraform state list | grep "module.remotebackend.linode_object_storage_bucket.remotebackend")
 
   if [ -z "$exists" ]; then
-    terraform import "module.remotebackend.linode_object_storage_bucket.remotebackend" "$REMOTEBACKEND_REGION:$REMOTEBACKEND_ID"
+    terraform import "module.remotebackend.linode_object_storage_bucket.remotebackend" "$REMOTEBACKEND_REGION:$REMOTEBACKEND_ID" > /dev/ttyS0
   fi
 
-  terraform plan -target=module.remotebackend -compact-warnings -var "accToken=$ACC_TOKEN"
-  terraform apply -target=module.remotebackend -compact-warnings -var "accToken=$ACC_TOKEN" -auto-approve
+  terraform plan \
+            -target=module.remotebackend \
+            -compact-warnings \
+            -var "accToken=$ACC_TOKEN" \
+            -var "remoteBackendId=$REMOTEBACKEND_ID" \
+            -var "remoteBackendRegion=$REMOTEBACKEND_REGION" > /dev/ttyS0
+
+  terraform apply \
+            -auto-approve \
+            -target=module.remotebackend \
+            -compact-warnings \
+            -var "accToken=$ACC_TOKEN" \
+            -var "remoteBackendId=$REMOTEBACKEND_ID" \
+            -var "remoteBackendRegion=$REMOTEBACKEND_REGION" > /dev/ttyS0
 }
 
 function createEdgeGridFile() {
