@@ -2,6 +2,7 @@ version: "3"
 
 services:
   nginx:
+    platform: linux/amd64
     image: nginx:latest
     ports:
       - "30443:8443"
@@ -13,18 +14,18 @@ services:
       - ../ingress/settings/jenkins.conf:/etc/nginx/conf.d/jenkins.conf
 
   gitea:
+    platform: linux/amd64
     image: gitea/gitea:1.9
     volumes:
       - gitea_data:/data
 
   jenkins:
-    image: jenkins/jenkins:lts
+    platform: linux/amd64
+    build: .
+    image: ${DOCKER_REGISTRY_URL}/${DOCKER_REGISTRY_ID}/jenkins:${BUILD_VERSION}
     volumes:
       - $HOME/.edgerc:/var/jenkins_home/.edgerc
       - $HOME/.aws/credentials:/var/jenkins_home/.aws/credentials
-      - $HOME/powershell:/var/jenkins_home/powershell
-      - /usr/bin/terraform:/var/jenkins_home/terraform
-      - /usr/bin/akamai:/var/jenkins_home/akamai
       - jenkins_data:/var/jenkins_home
 
 volumes:

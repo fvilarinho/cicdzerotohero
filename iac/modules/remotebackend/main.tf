@@ -35,6 +35,7 @@ resource "local_sensitive_file" "accCredentials" {
   filename = pathexpand(var.remoteBackendCredentialsFilename)
   content  = <<EOT
 [default]
+token = ${var.accToken}
 aws_access_key_id = ${linode_object_storage_key.remotebackend.access_key}
 aws_secret_access_key=${linode_object_storage_key.remotebackend.secret_key}
 EOT

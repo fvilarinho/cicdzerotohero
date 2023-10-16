@@ -9,6 +9,8 @@ function prepareToExecute() {
 function reload() {
   cd iac || exit 1
 
+  source .env
+
   $DOCKER_CMD compose down
   $DOCKER_CMD compose up -d
 

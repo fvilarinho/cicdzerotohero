@@ -6,20 +6,18 @@ function prepareToExecute() {
   showBanner
 }
 
-function start() {
+function build() {
   cd iac || exit 1
 
-  source .env
+  $DOCKER_CMD compose build
 
-  $DOCKER_CMD compose up -d
-
-  echo "Started!"
+  echo "Built!"
 }
 
 function main() {
   prepareToExecute
   checkDependencies
-  start
+  build
 }
 
 main

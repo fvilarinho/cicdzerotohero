@@ -9,6 +9,8 @@ function prepareToExecute() {
 function stop() {
   cd iac || exit 1
 
+  source .env
+
   $DOCKER_CMD compose down
 
   echo "Stopped!"

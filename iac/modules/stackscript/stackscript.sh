@@ -23,61 +23,16 @@ function updateSystem() {
 }
 
 function installRequiredSoftware() {
-  echo "Installing basic software..." > /dev/ttyS0
+  echo "Installing required software..." > /dev/ttyS0
 
   apt -y install ca-certificates \
+                 gnupg2 \
                  curl \
                  wget \
-                 dnsutils \
-                 net-tools \
                  vim \
-                 gnupg2 \
-                 sqlite3 \
-                 git \
-                 unzip \
-                 htop
-
-  installTerraform
-  installAkamaiCLI
-  installPowershell
-  installDocker
-  installCiCd
-}
-
-function installTerraform() {
-  echo "Installing Terraform..." > /dev/ttyS0
-
-  wget -O- https://apt.releases.hashicorp.com/gpg | gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
-  echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | tee /etc/apt/sources.list.d/hashicorp.list
-  apt update
-  apt -y install terraform
-}
-
-function installAkamaiCLI() {
-  echo "Installing Akamai CLI..." > /dev/ttyS0
-
-  wget https://github.com/akamai/cli/releases/download/v1.5.5/akamai-v1.5.5-linuxamd64 -O /usr/bin/akamai
-  chmod +x /usr/bin/akamai
-}
-
-function installPowershell() {
-  echo "Installing Akamai PowerShell..." > /dev/ttyS0
-
-  wget https://github.com/PowerShell/PowerShell/releases/download/v7.3.8/powershell-7.3.8-linux-x64.tar.gz -O /tmp/powershell-7.3.8-linux-x64.tar.gz
-  mkdir /root/powershell
-  mv /tmp/powershell-7.3.8-linux-x64.tar.gz /root/powershell
-  cd /root/powershell || exit 1
-  tar xvzf powershell-7.3.8-linux-x64.tar.gz
-}
-
-function installDocker() {
-  echo "Installing Docker..." > /dev/ttyS0
+                 git
 
   curl https://get.docker.com | sh -
-}
-
-function installCiCd() {
-  echo "Installing CI/CD..." > /dev/ttyS0
 
   mkdir /root/.aws
 
@@ -88,8 +43,8 @@ function installCiCd() {
   rm -rf .git
   rm -f .gitignore
 
-  createEdgeGridFile
   createRemoteBackend
+  createEdgeGridFile
 }
 
 function createEdgeGridFile() {
@@ -133,7 +88,7 @@ function createRemoteBackend() {
             -var "remoteBackendRegion=$REMOTEBACKEND_REGION"
 }
 
-function startCiCd() {
+function start() {
   echo "Starting CI/CD..." ? /dev/ttyS0
 
   cd /root/cicdzerotohero || exit 1
@@ -146,7 +101,7 @@ function main() {
 
   updateSystem
   installRequiredSoftware
-  startCiCd
+  start
 
   echo "Setup is complete!" > /dev/ttyS0
 }
