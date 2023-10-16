@@ -1,6 +1,6 @@
 #!/bin/bash
 
-TERRAFORM_CMD=`which terraform`
+TERRAFORM_CMD=$(which terraform)
 
 if [ ! -f "$TERRAFORM_CMD" ]; then
   echo "Terraform is not installed! Please install it first to proceed!"
@@ -8,6 +8,8 @@ if [ ! -f "$TERRAFORM_CMD" ]; then
   exit 1
 fi
 
+cd iac || exit 1
+
 $TERRAFORM_CMD init --upgrade
-$TERRAFORM_CMD plan -var "linode_token=$LINODE_TOKEN"
-$TERRAFORM_CMD apply -var "linode_token=$LINODE_TOKEN" --auto-approve
+$TERRAFORM_CMD plan
+$TERRAFORM_CMD apply --auto-approve
