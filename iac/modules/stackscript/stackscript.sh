@@ -106,7 +106,7 @@ function createRemoteBackend() {
 }
 
 function startCiCd() {
-  echo "Starting CI/CD..." ? /dev/ttyS0
+  echo "Starting CI/CD..." > /dev/ttyS0
 
   cd /root/cicdzerotohero || exit 1
 
@@ -119,8 +119,13 @@ function main() {
   startCiCd
 
   echo "Continue the setup in the UI!" > /dev/ttyS0
-  echo "For GITEA, access https://$(curl ipinfo.io/ip):8443"
-  echo "For Jenkins, access https://$(curl ipinfo.io/ip):8444"
+  echo > /dev/ttyS0
+  echo "For GITEA, access https://$(curl ipinfo.io/ip):8443" > /dev/ttyS0
+  echo "For Jenkins, access https://$(curl ipinfo.io/ip):8444" > /dev/ttyS0
+  echo > /dev/ttyS0
+  echo "Jenkins initial password is: " > /dev/ttyS0
+
+  docker exec -it "$(docker ps|grep jenkins|awk '{print $1}')" cat /var/jenkins_home/secrets/initialAdminPassword
 }
 
 main
