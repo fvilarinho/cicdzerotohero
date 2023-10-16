@@ -23,7 +23,7 @@ function updateSystem() {
 }
 
 function installRequiredSoftware() {
-  echo "Installing required software..." > /dev/ttyS0
+  echo "Installing basic software..." > /dev/ttyS0
 
   apt -y install ca-certificates \
                  gnupg2 \
@@ -32,7 +32,28 @@ function installRequiredSoftware() {
                  vim \
                  git
 
+  installTerraform
+  installDocker
+  installCiCd
+}
+
+function installTerraform() {
+  echo "Installing Terraform..." > /dev/ttyS0
+
+  wget -O- https://apt.releases.hashicorp.com/gpg | gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
+  echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | tee /etc/apt/sources.list.d/hashicorp.list
+  apt update
+  apt -y install terraform
+}
+
+function installDocker() {
+  echo "Installing Docker..." > /dev/ttyS0
+
   curl https://get.docker.com | sh -
+}
+
+function installCiCd() {
+  echo "Installing CI/CD..." > /dev/ttyS0
 
   mkdir /root/.aws
 
@@ -66,12 +87,6 @@ function createRemoteBackend() {
             -upgrade \
             -migrate-state
 
-  exists=$(terraform state list | grep "module.remotebackend.linode_object_storage_bucket.remotebackend")
-
-  if [ -z "$exists" ]; then
-    terraform import "module.remotebackend.linode_object_storage_bucket.remotebackend" "$REMOTEBACKEND_REGION:$REMOTEBACKEND_ID"
-  fi
-
   terraform plan \
             -target=module.remotebackend \
             -compact-warnings \
@@ -88,7 +103,7 @@ function createRemoteBackend() {
             -var "remoteBackendRegion=$REMOTEBACKEND_REGION"
 }
 
-function start() {
+function startCiCd() {
   echo "Starting CI/CD..." ? /dev/ttyS0
 
   cd /root/cicdzerotohero || exit 1
@@ -101,7 +116,7 @@ function main() {
 
   updateSystem
   installRequiredSoftware
-  start
+  startCiCd
 
   echo "Setup is complete!" > /dev/ttyS0
 }
