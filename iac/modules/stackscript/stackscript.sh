@@ -23,7 +23,7 @@ function updateSystem() {
 }
 
 function installRequiredSoftware() {
-  echo "Installing basic software..." > /dev/ttyS0
+  echo "Installing required software..." > /dev/ttyS0
 
   apt -y install ca-certificates \
                  gnupg2 \
@@ -50,6 +50,8 @@ function installDocker() {
   echo "Installing Docker..." > /dev/ttyS0
 
   curl https://get.docker.com | sh -
+
+  systemctl enable docker
 }
 
 function installCiCd() {
