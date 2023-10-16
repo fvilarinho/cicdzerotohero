@@ -22,7 +22,7 @@ cd /root/cicdzerotohero || exit 1
 mv iac/docker-compose.yml .
 rm -rf .git
 rm -rf iac
-rm -f *sh
+rm -f *.sh
 rm -f *.txt
 rm -f LICENSE
 rm -f *.md
