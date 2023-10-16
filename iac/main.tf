@@ -3,6 +3,8 @@ module "stackscript" {
 }
 
 module "remotebackend" {
-  source   = "./modules/remotebackend"
-  accToken = var.accToken
+  source              = "./modules/remotebackend"
+  accToken            = var.accToken
+  remoteBackendId     = var.remoteBackendId
+  remoteBackendRegion = var.remoteBackendRegion
 }
