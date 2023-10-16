@@ -11,26 +11,26 @@ provider "linode" {
 }
 
 data "linode_object_storage_cluster" "default" {
-  id = var.remotebackend.region
+  id = var.remoteBackendRegion
 }
 
 resource "linode_object_storage_bucket" "remotebackend" {
   cluster = data.linode_object_storage_cluster.default.id
-  label   = var.remotebackend.id
+  label   = var.remoteBackendId
 }
 
 resource "linode_object_storage_key" "remotebackend" {
-  label = var.remotebackend.id
+  label = var.remoteBackendId
 
   bucket_access {
-    bucket_name = var.remotebackend.id
+    bucket_name = var.remoteBackendId
     cluster     = data.linode_object_storage_cluster.default.id
     permissions = "read_write"
   }
 }
 
 resource "local_sensitive_file" "accCredentials" {
-  filename = pathexpand("~/.aws/credentials")
+  filename = pathexpand(var.remoteBackendCredentialsFilename)
   content  = <<EOT
 [default]
 aws_access_key_id = ${linode_object_storage_key.remotebackend.access_key}

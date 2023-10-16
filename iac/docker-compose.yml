@@ -7,11 +7,11 @@ services:
       - "8443:8443"
       - "8444:8444"
     volumes:
-      - ../ingress/settings/default.conf:/etc/nginx/conf.d/default.conf
-      - ../ingress/settings/jenkins.conf:/etc/nginx/conf.d/jenkins.conf
       - ../ingress/settings/cert.key:/etc/ssl/private/cert.key
       - ../ingress/settings/cert.crt:/etc/ssl/certs/cert.crt
-  
+      - ../ingress/settings/default.conf:/etc/nginx/conf.d/default.conf
+      - ../ingress/settings/jenkins.conf:/etc/nginx/conf.d/jenkins.conf
+
   gitea:
     image: gitea/gitea:1.9
     volumes:
