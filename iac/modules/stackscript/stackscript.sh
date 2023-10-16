@@ -56,14 +56,14 @@ function installTerraform() {
 function installAkamaiCLI() {
   echo "Installing Akamai CLI..." > /dev/ttyS0
 
-  wget https://github.com/akamai/cli/releases/download/v1.5.5/akamai-v1.5.5-linuxamd64 -o /usr/bin/akamai
+  wget https://github.com/akamai/cli/releases/download/v1.5.5/akamai-v1.5.5-linuxamd64 -O /usr/bin/akamai
   chmod +x /usr/bin/akamai
 }
 
 function installPowershell() {
   echo "Installing Akamai PowerShell..." > /dev/ttyS0
 
-  wget https://github.com/PowerShell/PowerShell/releases/download/v7.3.8/powershell-7.3.8-linux-x64.tar.gz -o /tmp/powershell-7.3.8-linux-x64.tar.gz
+  wget https://github.com/PowerShell/PowerShell/releases/download/v7.3.8/powershell-7.3.8-linux-x64.tar.gz -O /tmp/powershell-7.3.8-linux-x64.tar.gz
   mkdir /root/powershell
   mv /tmp/powershell-7.3.8-linux-x64.tar.gz /root/powershell
   cd /root/powershell || exit 1
@@ -134,19 +134,21 @@ function createRemoteBackend() {
 }
 
 function startCiCd() {
+  echo "Starting CI/CD..." ? /dev/ttyS0
+
   cd /root/cicdzerotohero || exit 1
 
   ./start.sh
 }
 
 function main() {
-  clear
-
-  echo "Initializing the setup..."
+  echo "Initializing the setup..." > /dev/ttyS0
 
   updateSystem
   installRequiredSoftware
   startCiCd
+
+  echo "Setup is complete!" > /dev/ttyS0
 }
 
 main
