@@ -4,8 +4,8 @@ services:
   nginx:
     image: nginx:latest
     ports:
-      - "8443:8443"
-      - "8444:8444"
+      - "30443:8443"
+      - "30444:8444"
     volumes:
       - ../ingress/settings/cert.key:/etc/ssl/private/cert.key
       - ../ingress/settings/cert.crt:/etc/ssl/certs/cert.crt
@@ -25,7 +25,6 @@ services:
       - $HOME/powershell:/var/jenkins_home/powershell
       - /usr/bin/terraform:/var/jenkins_home/terraform
       - /usr/bin/akamai:/var/jenkins_home/akamai
-      - /opt/powershell:/var/jenkins_home/powershell
       - jenkins_data:/var/jenkins_home
 
 volumes:

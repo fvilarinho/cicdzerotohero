@@ -1,11 +1,23 @@
 #!/bin/bash
 
-DOCKER_CMD=$(which docker)
+function prepareToExecute() {
+  source functions.sh
 
-if [ -z "$DOCKER_CMD" ]; then
-  echo "Docker is not installed! Please install it first to continue!"
+  showBanner
+}
 
-  exit 1
-fi
+function stop() {
+  cd iac || exit 1
 
-$DOCKER_CMD compose down
+  $DOCKER_CMD compose down
+
+  echo "Stopped!"
+}
+
+function main() {
+  prepareToExecute
+  checkDependencies
+  stop
+}
+
+main
