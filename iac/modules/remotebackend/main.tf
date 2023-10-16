@@ -36,7 +36,7 @@ resource "local_sensitive_file" "accCredentials" {
   content  = <<EOT
 [default]
 aws_access_key_id = ${linode_object_storage_key.remotebackend.access_key}
-aws_secret_access_key=${linode_object_storage_key.remotebackend.secret_key}"
+aws_secret_access_key=${linode_object_storage_key.remotebackend.secret_key}
 EOT
 
   depends_on = [ linode_object_storage_key.remotebackend ]
