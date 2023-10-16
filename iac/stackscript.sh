@@ -12,6 +12,7 @@ function updateSystem() {
 }
 
 function installRequiredSoftware() {
+  # Install basic packages.
   apt -y install ca-certificates \
                  curl \
                  wget \
@@ -24,15 +25,22 @@ function installRequiredSoftware() {
                  unzip \
                  htop > /dev/ttys0
 
+  # Install Terraform.
   wget -O- https://apt.releases.hashicorp.com/gpg | gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg > /dev/ttyS0
-
   echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | tee /etc/apt/sources.list.d/hashicorp.list
-
   apt update
   apt -y install terraform > /dev/ttyS0
 
+  # Install Akamai CLI.
   wget https://github.com/akamai/cli/releases/download/v1.5.5/akamai-v1.5.5-linuxamd64 -o /usr/bin/akamai
   chmod +x /usr/bin/akamai
+
+  # Install Akamai Powershell.
+  wget https://github.com/PowerShell/PowerShell/releases/download/v7.3.8/powershell-7.3.8-linux-x64.tar.gz -o /tmp/powershell-7.3.8-linux-x64.tar.gz
+  mkdir /opt/powershell
+  mv /tmp/powershell-7.3.8-linux-x64.tar.gz /opt/powershell
+  cd /opt/powershell || exit 1
+  tar xvzf powershell-7.3.8-linux-x64.tar.gz
 }
 
 function installProject() {
