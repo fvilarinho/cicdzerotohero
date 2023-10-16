@@ -12,6 +12,8 @@ function setHostname() {
 }
 
 function updateSystem() {
+  setHostname
+
   apt update > /dev/ttyS0
   apt -y upgrade > /dev/ttyS0
 }
@@ -118,7 +120,6 @@ function startCiCd() {
 }
 
 function main() {
-  setHostname
   updateSystem
   installRequiredSoftware
   startCiCd
