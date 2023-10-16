@@ -21,6 +21,7 @@ services:
     image: jenkins/jenkins:lts
     volumes:
       - $HOME/.edgerc:/var/jenkins_home/.edgerc
+      - $HOME/.credentials:/var/jenkins_home/.aws/credentials
       - jenkins_data:/var/jenkins_home
 
 volumes:
