@@ -39,22 +39,22 @@ function installRequiredSoftware() {
 }
 
 function installTerraform() {
-  wget -O- https://apt.releases.hashicorp.com/gpg | gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg > /dev/ttyS0
+  wget -O- https://apt.releases.hashicorp.com/gpg | gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
   echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | tee /etc/apt/sources.list.d/hashicorp.list
   apt update
   apt -y install terraform > /dev/ttyS0
 }
 
 function installAkamaiCLI() {
-  wget https://github.com/akamai/cli/releases/download/v1.5.5/akamai-v1.5.5-linuxamd64 -o /usr/bin/akamai > /dev/ttyS0
+  wget https://github.com/akamai/cli/releases/download/v1.5.5/akamai-v1.5.5-linuxamd64 -o /usr/bin/akamai
   chmod +x /usr/bin/akamai
 }
 
 function installPowershell() {
-  wget https://github.com/PowerShell/PowerShell/releases/download/v7.3.8/powershell-7.3.8-linux-x64.tar.gz -o /tmp/powershell-7.3.8-linux-x64.tar.gz > /dev/ttyS0
-  mkdir /opt/powershell
-  mv /tmp/powershell-7.3.8-linux-x64.tar.gz /opt/powershell
-  cd /opt/powershell || exit 1
+  wget https://github.com/PowerShell/PowerShell/releases/download/v7.3.8/powershell-7.3.8-linux-x64.tar.gz -o /tmp/powershell-7.3.8-linux-x64.tar.gz
+  mkdir /root/powershell
+  mv /tmp/powershell-7.3.8-linux-x64.tar.gz /root/powershell
+  cd /root/powershell || exit 1
   tar xvzf powershell-7.3.8-linux-x64.tar.gz > /dev/ttyS0
 }
 
