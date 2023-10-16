@@ -8,17 +8,23 @@
 # <UDF name="REMOTEBACKEND_REGION" Label="Terraform Remote Backend Region" example="Region of Terraform Remote Backend used to control the provisioning states of the resources."/>
 
 function setHostname() {
+  echo "Setting the hostname..." > /dev/ttyS0
+
   hostnamectl set-hostname cicdzerotohero
 }
 
 function updateSystem() {
   setHostname
 
-  apt update > /dev/ttyS0
-  apt -y upgrade > /dev/ttyS0
+  echo "Updating the system..." > /dev/ttyS0
+
+  apt update
+  apt -y upgrade
 }
 
 function installRequiredSoftware() {
+  echo "Installing basic software..." > /dev/ttyS0
+
   apt -y install ca-certificates \
                  curl \
                  wget \
@@ -29,7 +35,7 @@ function installRequiredSoftware() {
                  sqlite3 \
                  git \
                  unzip \
-                 htop > /dev/ttys0
+                 htop
 
   installTerraform
   installAkamaiCLI
@@ -39,33 +45,43 @@ function installRequiredSoftware() {
 }
 
 function installTerraform() {
+  echo "Installing Terraform..." > /dev/ttyS0
+
   wget -O- https://apt.releases.hashicorp.com/gpg | gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
   echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | tee /etc/apt/sources.list.d/hashicorp.list
   apt update
-  apt -y install terraform > /dev/ttyS0
+  apt -y install terraform
 }
 
 function installAkamaiCLI() {
+  echo "Installing Akamai CLI..." > /dev/ttyS0
+
   wget https://github.com/akamai/cli/releases/download/v1.5.5/akamai-v1.5.5-linuxamd64 -o /usr/bin/akamai
   chmod +x /usr/bin/akamai
 }
 
 function installPowershell() {
+  echo "Installing Akamai PowerShell..." > /dev/ttyS0
+
   wget https://github.com/PowerShell/PowerShell/releases/download/v7.3.8/powershell-7.3.8-linux-x64.tar.gz -o /tmp/powershell-7.3.8-linux-x64.tar.gz
   mkdir /root/powershell
   mv /tmp/powershell-7.3.8-linux-x64.tar.gz /root/powershell
   cd /root/powershell || exit 1
-  tar xvzf powershell-7.3.8-linux-x64.tar.gz > /dev/ttyS0
+  tar xvzf powershell-7.3.8-linux-x64.tar.gz
 }
 
 function installDocker() {
-  curl https://get.docker.com | sh - > /dev/ttyS0
+  echo "Installing Docker..." > /dev/ttyS0
+
+  curl https://get.docker.com | sh -
 }
 
 function installCiCd() {
+  echo "Installing CI/CD..." > /dev/ttyS0
+
   mkdir /root/.aws
 
-  git clone https://github.com/fvilarinho/cicdzerotohero /root/cicdzerotohero > /dev/ttyS0
+  git clone https://github.com/fvilarinho/cicdzerotohero /root/cicdzerotohero
 
   cd /root/cicdzerotohero || exit 1
 
@@ -77,6 +93,8 @@ function installCiCd() {
 }
 
 function createEdgeGridFile() {
+  echo "Creating Akamai EdgeGrid file..." > /dev/ttyS0
+
   echo "[default]" > /root/.edgerc
   echo "host = $EDGEGRID_HOST" >> /root/.edgerc
   echo "access_token = $EDGEGRID_ACCESS_TOKEN" >> /root/.edgerc
@@ -85,16 +103,18 @@ function createEdgeGridFile() {
 }
 
 function createRemoteBackend() {
+  echo "Creating Terraform Remote Backend..." > /dev/ttyS0
+
   cd /root/cicdzerotohero/iac || exit 1
 
   terraform init \
             -upgrade \
-            -migrate-state > /dev/ttyS0
+            -migrate-state
 
   exists=$(terraform state list | grep "module.remotebackend.linode_object_storage_bucket.remotebackend")
 
   if [ -z "$exists" ]; then
-    terraform import "module.remotebackend.linode_object_storage_bucket.remotebackend" "$REMOTEBACKEND_REGION:$REMOTEBACKEND_ID" > /dev/ttyS0
+    terraform import "module.remotebackend.linode_object_storage_bucket.remotebackend" "$REMOTEBACKEND_REGION:$REMOTEBACKEND_ID"
   fi
 
   terraform plan \
@@ -102,7 +122,7 @@ function createRemoteBackend() {
             -compact-warnings \
             -var "accToken=$ACC_TOKEN" \
             -var "remoteBackendId=$REMOTEBACKEND_ID" \
-            -var "remoteBackendRegion=$REMOTEBACKEND_REGION" > /dev/ttyS0
+            -var "remoteBackendRegion=$REMOTEBACKEND_REGION"
 
   terraform apply \
             -auto-approve \
@@ -110,7 +130,7 @@ function createRemoteBackend() {
             -compact-warnings \
             -var "accToken=$ACC_TOKEN" \
             -var "remoteBackendId=$REMOTEBACKEND_ID" \
-            -var "remoteBackendRegion=$REMOTEBACKEND_REGION" > /dev/ttyS0
+            -var "remoteBackendRegion=$REMOTEBACKEND_REGION"
 }
 
 function startCiCd() {
@@ -120,6 +140,10 @@ function startCiCd() {
 }
 
 function main() {
+  clear
+
+  echo "Initializing the setup..."
+
   updateSystem
   installRequiredSoftware
   startCiCd
