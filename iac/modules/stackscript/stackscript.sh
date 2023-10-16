@@ -114,13 +114,13 @@ function startCiCd() {
 }
 
 function main() {
-  echo "Initializing the setup..." > /dev/ttyS0
-
   updateSystem
   installRequiredSoftware
   startCiCd
 
-  echo "Setup is complete!" > /dev/ttyS0
+  echo "Continue the setup in the UI!" > /dev/ttyS0
+  echo "For GITEA, access https://$(curl ipinfo.io/ip):8443"
+  echo "For Jenkins, access https://$(curl ipinfo.io/ip):8444"
 }
 
 main
