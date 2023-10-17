@@ -15,11 +15,20 @@ function deploy() {
 
   $TERRAFORM_CMD plan \
                  -compact-warnings \
-                 -target=module.stackscript
-
+                 -target=module.stackscript \
+                 -var "accToken=$ACC_TOKEN" \
+                 -var "edgeGridHost=$EDGEGRID_HOST" \
+                 -var "edgeGridAccessToken=$EDGEGRID_ACCESS_TOKEN" \
+                 -var "edgeGridClientToken=$EDGEGRID_CLIENT_TOKEN" \
+                 -var "edgeGridClientSecret=$EDGEGRID_CLIENT_SECRET"
   $TERRAFORM_CMD apply \
                  -compact-warnings \
                  -target=module.stackscript \
+                 -var "accToken=$ACC_TOKEN" \
+                 -var "edgeGridHost=$EDGEGRID_HOST" \
+                 -var "edgeGridAccessToken=$EDGEGRID_ACCESS_TOKEN" \
+                 -var "edgeGridClientToken=$EDGEGRID_CLIENT_TOKEN" \
+                 -var "edgeGridClientSecret=$EDGEGRID_CLIENT_SECRET" \
                  -auto-approve
 }
 
