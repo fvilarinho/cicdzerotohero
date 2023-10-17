@@ -111,24 +111,37 @@ function startCiCd() {
   cd /root/cicdzerotohero || exit 1
 
   ./start.sh
+
+  getJenkinsInitialPassword
 }
 
 function getJenkinsInitialPassword() {
-  cd /root/cicdzerotohero || exit 1
+  echo > /dev/ttyS0
 
   while true; do
-    containerId=$(docker ps|grep jenkins|awk '{print $1}')
+    containerId=$(docker ps | grep jenkins | awk '{print $1}')
 
     if [ -n "$containerId" ]; then
-      echo "Jenkins initial password is: " > /dev/ttyS0
+      while true; do
+        docker cp "$containerId":/var/jenkins_home/secrets/initialAdminPassword /root/cicdzerotohero/initialAdminPassword
 
-      docker cp "$containerId:/var/jenkins_home/secrets/initialAdminPassword" .
+        if [ -f /root/cicdzerotohero/initialAdminPassword ]; then
+          echo > /dev/ttyS0
+          echo "Jenkins initial password is: " > /dev/ttyS0
 
-      cat initialAdminPassword > /dev/ttyS0
+          cat /root/cicdzerotohero/initialAdminPassword > /dev/ttyS0
+
+          break
+        else
+          echo "Waiting for CI/CD boot..." > /dev/ttyS0
+
+          sleep 1
+        fi
+      done
 
       break
     else
-      echo "Jenkins is not running yet!" > /dev/ttyS0
+      echo "Waiting for CI/CD boot..." > /dev/ttyS0
 
       sleep 1
     fi
@@ -140,13 +153,14 @@ function main() {
   installRequiredSoftware
   startCiCd
 
+  echo > /dev/ttyS0
   echo "Continue the setup in the UI!" > /dev/ttyS0
   echo > /dev/ttyS0
-  echo "For GITEA, access https://$(curl ipinfo.io/ip):8443" > /dev/ttyS0
-  echo "For Jenkins, access https://$(curl ipinfo.io/ip):8444" > /dev/ttyS0
-  echo > /dev/ttyS0
 
-  getJenkinsInitialPassword
+  ip=$(curl ipinfo.io/ip)
+
+  echo "For Gitea, access https://$ip:8443" > /dev/ttyS0
+  echo "For Jenkins, access https://$ip:8444" > /dev/ttyS0
 }
 
 main
