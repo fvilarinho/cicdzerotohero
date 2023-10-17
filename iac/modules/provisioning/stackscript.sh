@@ -101,26 +101,14 @@ function setupCiCd() {
             -var "remoteBackendId=$REMOTEBACKEND_ID" \
             -var "remoteBackendRegion=$REMOTEBACKEND_REGION"
 
-  getJenkinsInitialPassword
-}
-
-function startCiCd() {
-  echo "Starting CI/CD..." > /dev/ttyS0
-
-  cd /root/cicdzerotohero || exit 1
-
-  ./start.sh
-
-  setupCiCd
-}
-
-function getJenkinsInitialPassword() {
   echo > /dev/ttyS0
 
   while true; do
     containerId=$(docker ps | grep jenkins | awk '{print $1}')
 
     if [ -n "$containerId" ]; then
+      docker exec -it "$containerId" "ssh-keyscan gitea > ~/.ssh/known_hosts"
+
       while true; do
         docker cp "$containerId":/var/jenkins_home/secrets/initialAdminPassword /root/cicdzerotohero/initialAdminPassword
 
@@ -147,10 +135,19 @@ function getJenkinsInitialPassword() {
   done
 }
 
+function startCiCd() {
+  echo "Starting CI/CD..." > /dev/ttyS0
+
+  cd /root/cicdzerotohero || exit 1
+
+  ./start.sh
+}
+
 function main() {
   updateSystem
   installRequiredSoftware
   startCiCd
+  setupCiCd
 
   echo > /dev/ttyS0
   echo "Continue the setup in the UI!" > /dev/ttyS0

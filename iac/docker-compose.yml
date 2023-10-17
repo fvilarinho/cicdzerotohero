@@ -4,6 +4,7 @@ services:
   nginx:
     platform: linux/amd64
     image: nginx:latest
+    restart: always
     ports:
       - "8443:8443"
       - "8444:8444"
@@ -16,6 +17,7 @@ services:
   gitea:
     platform: linux/amd64
     image: gitea/gitea:1.9
+    restart: always
     volumes:
       - gitea_data:/data
 
@@ -23,6 +25,7 @@ services:
     platform: linux/amd64
     build: .
     image: ${DOCKER_REGISTRY_URL}/${DOCKER_REGISTRY_ID}/jenkins:${BUILD_VERSION}
+    restart: always
     volumes:
       - $HOME/.edgerc:/var/jenkins_home/.edgerc
       - $HOME/.aws/credentials:/var/jenkins_home/.aws/credentials
