@@ -114,17 +114,21 @@ function startCiCd() {
 }
 
 function getJenkinsInitialPassword() {
+  cd /root/cicdzerotohero || exit 1
+
   while true; do
     containerId=$(docker ps|grep jenkins|awk '{print $1}')
 
     if [ -n "$containerId" ]; then
       echo "Jenkins initial password is: " > /dev/ttyS0
 
-      docker exec -it "$containerId" "cat /var/jenkins_home/secrets/initialAdminPassword" > /dev/ttyS0
+      docker cp "$containerId:/var/jenkins_home/secrets/initialAdminPassword" .
+
+      cat initialAdminPassword > /dev/ttyS0
 
       break
     else
-      echo "Jenkins is not running yet!"
+      echo "Jenkins is not running yet!" > /dev/ttyS0
 
       sleep 1
     fi
