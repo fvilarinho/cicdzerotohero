@@ -34,7 +34,15 @@ resource "null_resource" "showComputeInitialPassword" {
 
   provisioner "local-exec" {
     quiet   = true
-    command = "echo; echo \"The compute instance initial password is: ${random_string.computeInitialPassword.result}\"; echo"
+    command = <<EOT
+#!/bin/bash
+
+echo
+echo "The compute instance initial password is: ${random_string.computeInitialPassword.result}"
+echo
+echo "For remote access, just type ssh root@${linode_instance.cicdzerotohero.ip_address} in your terminal!"
+echo
+EOT
   }
 
   depends_on = [
