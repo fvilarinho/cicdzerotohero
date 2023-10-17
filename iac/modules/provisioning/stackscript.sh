@@ -108,7 +108,7 @@ function setupCiCd() {
     containerId=$(docker ps | grep jenkins | awk '{print $1}')
 
     if [ -n "$containerId" ]; then
-      docker exec -it "$containerId" "ssh-keyscan gitea > ~/.ssh/known_hosts"
+      docker exec -it "$containerId" "/bin/bash -c /usr/local/bin/knowGitea.sh"
 
       while true; do
         docker cp "$containerId":/var/jenkins_home/secrets/initialAdminPassword /root/cicdzerotohero/initialAdminPassword
