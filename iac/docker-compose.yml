@@ -22,6 +22,7 @@ services:
     image: gitea/gitea:1.9
     restart: always
     volumes:
+      - $HOME/.ssh/cicd_authorized_keys:/data/git/.ssh/authorized_keys
       - gitea_data:/data
 
   jenkins:
@@ -32,6 +33,7 @@ services:
     volumes:
       - $HOME/.edgerc:/var/jenkins_home/.edgerc
       - $HOME/.aws/credentials:/var/jenkins_home/.aws/credentials
+      - $HOME/.ssh/cicd:/var/jenkins_home/.ssh/id_rsa
       - jenkins_data:/var/jenkins_home
     depends_on:
       - gitea

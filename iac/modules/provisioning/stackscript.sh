@@ -66,6 +66,9 @@ function installCiCd() {
 
   rm -rf .git
   rm -f .gitignore
+
+  createEdgeGridFile
+  createSshKeys
 }
 
 function createEdgeGridFile() {
@@ -76,10 +79,15 @@ function createEdgeGridFile() {
   echo "client_secret = $EDGEGRID_CLIENT_SECRET" >> /root/.edgerc
 }
 
+function createSshKeys() {
+  ssh-keygen -q -N '' -f ~/.ssh/cicd
+
+  echo -n "command=\"/app/gitea/gitea --config='/data/gitea/conf/app.ini' serv key-1\",no-port-forwarding,no-X11-forwarding,no-agent-forwarding,no-pty " > ~/.ssh/cicd_authorized_keys
+  cat ~/.ssh/cicd.pub >> ~/.ssh/cicd_authorized_keys
+}
+
 function setupCiCd() {
   echo "Setting up the CI/CD..." > /dev/ttyS0
-
-  createEdgeGridFile
 
   cd /root/cicdzerotohero/iac || exit 1
 
