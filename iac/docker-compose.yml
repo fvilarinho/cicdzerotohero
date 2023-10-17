@@ -5,8 +5,8 @@ services:
     platform: linux/amd64
     image: nginx:latest
     ports:
-      - "30443:8443"
-      - "30444:8444"
+      - "8443:8443"
+      - "8444:8444"
     volumes:
       - ../ingress/settings/cert.key:/etc/ssl/private/cert.key
       - ../ingress/settings/cert.crt:/etc/ssl/certs/cert.crt
