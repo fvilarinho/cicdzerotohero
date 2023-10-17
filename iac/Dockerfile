@@ -33,6 +33,13 @@ RUN wget https://github.com/PowerShell/PowerShell/releases/download/v7.3.8/power
     ln -sf /opt/powershell/pwsh /usr/bin/pwsh
 
 RUN echo "mkdir -p /var/jenkins_home/.ssh; ssh-keyscan gitea > /var/jenkins_home/.ssh/known_hosts" > /usr/local/bin/knowGitea.sh && \
-    chmod +x /usr/local/bin/knowGitea.sh
+    chmod +x /usr/local/bin/knowGitea.sh && \
+    echo "#!/bin/bash" > /entrypoint.sh && \
+    echo >> /entrypoint.sh && \
+    echo "/usr/local/bin/knowGitea.sh" >> /entrypoint.sh && \
+    echo "/usr/local/bin/jenkins.sh" >> /entrypoint.sh && \
+    chmod +x /entrypoint.sh
 
 USER jenkins
+
+ENTRYPOINT [ "/entrypoint.sh" ]
