@@ -113,6 +113,24 @@ function startCiCd() {
   ./start.sh
 }
 
+function getJenkinsInitialPassword() {
+  while true; do
+    containerId=$(docker ps|grep jenkins|awk '{print $1}')
+
+    if [ -n "$containerId" ]; then
+      echo "Jenkins initial password is: " > /dev/ttyS0
+
+      docker exec -it "$containerId" "cat /var/jenkins_home/secrets/initialAdminPassword" > /dev/ttyS0
+
+      break
+    else
+      echo "Jenkins is not running yet!"
+
+      sleep 1
+    fi
+  done
+}
+
 function main() {
   updateSystem
   installRequiredSoftware
@@ -123,11 +141,8 @@ function main() {
   echo "For GITEA, access https://$(curl ipinfo.io/ip):8443" > /dev/ttyS0
   echo "For Jenkins, access https://$(curl ipinfo.io/ip):8444" > /dev/ttyS0
   echo > /dev/ttyS0
-  echo "Jenkins initial password is: " > /dev/ttyS0
 
-  initialPassword=$(docker exec -it "$(docker ps|grep jenkins|awk '{print $1}')" cat /var/jenkins_home/secrets/initialAdminPassword)
-
-  echo "$initialPassword" > /dev/ttyS0
+  getJenkinsInitialPassword
 }
 
 main
