@@ -1,5 +1,5 @@
-module "stackscript" {
-  source               = "./modules/stackscript"
+module "provisioning" {
+  source               = "modules/provisioning"
   edgeGridHost         = var.edgeGridHost
   edgeGridAccessToken  = var.edgeGridAccessToken
   edgeGridClientToken  = var.edgeGridClientToken
@@ -7,8 +7,8 @@ module "stackscript" {
   accToken             = var.accToken
 }
 
-module "remotebackend" {
-  source              = "./modules/remotebackend"
+module "setup" {
+  source              = "modules/setup"
   accToken            = var.accToken
   remoteBackendId     = var.remoteBackendId
   remoteBackendRegion = var.remoteBackendRegion

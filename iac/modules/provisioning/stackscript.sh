@@ -65,14 +65,9 @@ function installCiCd() {
 
   rm -rf .git
   rm -f .gitignore
-
-  createRemoteBackend
-  createEdgeGridFile
 }
 
 function createEdgeGridFile() {
-  echo "Creating Akamai EdgeGrid file..." > /dev/ttyS0
-
   echo "[default]" > /root/.edgerc
   echo "host = $EDGEGRID_HOST" >> /root/.edgerc
   echo "access_token = $EDGEGRID_ACCESS_TOKEN" >> /root/.edgerc
@@ -80,8 +75,10 @@ function createEdgeGridFile() {
   echo "client_secret = $EDGEGRID_CLIENT_SECRET" >> /root/.edgerc
 }
 
-function createRemoteBackend() {
-  echo "Creating Terraform Remote Backend..." > /dev/ttyS0
+function setupCiCd() {
+  echo "Setting up the CI/CD..." > /dev/ttyS0
+
+  createEdgeGridFile
 
   cd /root/cicdzerotohero/iac || exit 1
 
@@ -103,6 +100,9 @@ function createRemoteBackend() {
             -var "accToken=$ACC_TOKEN" \
             -var "remoteBackendId=$REMOTEBACKEND_ID" \
             -var "remoteBackendRegion=$REMOTEBACKEND_REGION"
+
+  getJenkinsInitialPassword
+
 }
 
 function startCiCd() {
@@ -112,7 +112,7 @@ function startCiCd() {
 
   ./start.sh
 
-  getJenkinsInitialPassword
+  setupCiCd
 }
 
 function getJenkinsInitialPassword() {

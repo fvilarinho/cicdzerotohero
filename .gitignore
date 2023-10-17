@@ -4,9 +4,8 @@
 /terraform.tfstate.backup
 /.terraform.lock.hcl
 /iac/.terraform.lock.hcl
-/iac/modules/stackscript/.credentials
+/iac/modules/provisioning/.credentials
 /iac/terraform.tfstate
 /iac/terraform.tfstate.backup
 /iac/.terraform/
 /iac/.terraform.tfstate.lock.info
-/iac/modules/stackscript/.credentials

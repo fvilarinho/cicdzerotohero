@@ -1,22 +1,3 @@
-terraform {
-  required_providers {
-    linode = {
-      source = "linode/linode"
-    }
-  }
-}
-
-provider "linode" {
-  token = var.accToken
-}
-
-resource "linode_stackscript" "cicdzerotohero" {
-  label       = var.stackscript.id
-  description = var.stackscript.description
-  script      = chomp(file(var.stackscript.filename))
-  images      = var.stackscript.images
-}
-
 resource "random_password" "cicdzerotohero" {
   length = 15
 }
@@ -38,5 +19,8 @@ resource "linode_instance" "cicdzerotohero" {
     REMOTEBACKEND_REGION   = "${var.instance.region}-1"
   }
 
-  depends_on = [ linode_stackscript.cicdzerotohero ]
+  depends_on = [
+    random_password.cicdzerotohero,
+    linode_stackscript.cicdzerotohero
+  ]
 }
