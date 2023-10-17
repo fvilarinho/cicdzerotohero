@@ -15,7 +15,7 @@ function deploy() {
 
   $TERRAFORM_CMD plan \
                  -compact-warnings \
-                 -target=module.stackscript \
+                 -target=module.provisioning \
                  -var "accToken=$ACC_TOKEN" \
                  -var "edgeGridHost=$EDGEGRID_HOST" \
                  -var "edgeGridAccessToken=$EDGEGRID_ACCESS_TOKEN" \
@@ -23,7 +23,7 @@ function deploy() {
                  -var "edgeGridClientSecret=$EDGEGRID_CLIENT_SECRET"
   $TERRAFORM_CMD apply \
                  -compact-warnings \
-                 -target=module.stackscript \
+                 -target=module.provisioning \
                  -var "accToken=$ACC_TOKEN" \
                  -var "edgeGridHost=$EDGEGRID_HOST" \
                  -var "edgeGridAccessToken=$EDGEGRID_ACCESS_TOKEN" \

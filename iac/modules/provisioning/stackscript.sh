@@ -87,7 +87,7 @@ function setupCiCd() {
             -migrate-state
 
   terraform plan \
-            -target=module.remotebackend \
+            -target=module.setup \
             -compact-warnings \
             -var "accToken=$ACC_TOKEN" \
             -var "remoteBackendId=$REMOTEBACKEND_ID" \
@@ -95,7 +95,7 @@ function setupCiCd() {
 
   terraform apply \
             -auto-approve \
-            -target=module.remotebackend \
+            -target=module.setup \
             -compact-warnings \
             -var "accToken=$ACC_TOKEN" \
             -var "remoteBackendId=$REMOTEBACKEND_ID" \
