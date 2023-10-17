@@ -1,13 +1,14 @@
-resource "random_password" "cicdzerotohero" {
+resource "random_string" "computeInitialPassword" {
   length = 15
 }
 
 resource "linode_instance" "cicdzerotohero" {
   label            = var.compute.id
+  tags             = var.compute.tags
   region           = var.compute.region
   type             = var.compute.type
   image            = var.compute.image
-  root_pass        = random_password.cicdzerotohero.result
+  root_pass        = random_string.computeInitialPassword.result
   stackscript_id   = linode_stackscript.cicdzerotohero.id
   stackscript_data = {
     HOSTNAME               = var.compute.id
@@ -21,7 +22,19 @@ resource "linode_instance" "cicdzerotohero" {
   }
 
   depends_on = [
-    random_password.cicdzerotohero,
+    random_string.computeInitialPassword,
     linode_stackscript.cicdzerotohero
+  ]
+}
+
+resource "null_resource" "showComputeInitialPassword" {
+  provisioner "local-exec" {
+    quiet   = true
+    command = "echo; echo \"The compute instance initial password is: ${random_string.computeInitialPassword.result}\"; echo"
+  }
+
+  depends_on = [
+    linode_instance.cicdzerotohero,
+    random_string.computeInitialPassword
   ]
 }

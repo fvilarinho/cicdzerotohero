@@ -19,6 +19,7 @@ variable "compute" {
     image  = "linode/debian11"
     type   = "g6-standard-2"
     region = "br-gru"
+    tags   = [ "devops" ]
   }
 }
 
