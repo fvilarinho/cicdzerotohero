@@ -3,6 +3,9 @@ terraform {
     linode = {
       source = "linode/linode"
     }
+    local = {
+      source = "hashicorp/local"
+    }
   }
 }
 
