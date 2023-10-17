@@ -1,4 +1,5 @@
 #!/bin/bash
+# <UDF name="HOSTNAME" Label="Compute Hostname" example="Hostname of the Compute instance."/>
 # <UDF name="EDGEGRID_HOST" Label="Akamai EdgeGrid Hostname" example="Hostname used to authenticate in Akamai Intelligent Platform using APIs/CLI or Terraform calls."/>
 # <UDF name="EDGEGRID_ACCESS_TOKEN" Label="Akamai EdgeGrid Access Token" example="Access Token used to authenticate in Akamai Intelligent Platform using APIs/CLI or Terraform calls."/>
 # <UDF name="EDGEGRID_CLIENT_TOKEN" Label="Akamai EdgeGrid Client Token" example="Client Token used to authenticate in Akamai Intelligent Platform using APIs/CLI or Terraform calls."/>
@@ -10,7 +11,7 @@
 function setHostname() {
   echo "Setting the hostname..." > /dev/ttyS0
 
-  hostnamectl set-hostname cicdzerotohero
+  hostnamectl set-hostname "$HOSTNAME"
 }
 
 function updateSystem() {

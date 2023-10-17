@@ -10,6 +10,7 @@ resource "linode_instance" "cicdzerotohero" {
   root_pass        = random_password.cicdzerotohero.result
   stackscript_id   = linode_stackscript.cicdzerotohero.id
   stackscript_data = {
+    HOSTNAME               = var.compute.id
     EDGEGRID_HOST          = var.edgeGridHost
     EDGEGRID_ACCESS_TOKEN  = var.edgeGridAccessToken
     EDGEGRID_CLIENT_TOKEN  = var.edgeGridClientToken
