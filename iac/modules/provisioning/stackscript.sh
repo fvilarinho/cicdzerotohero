@@ -102,7 +102,6 @@ function setupCiCd() {
             -var "remoteBackendRegion=$REMOTEBACKEND_REGION"
 
   getJenkinsInitialPassword
-
 }
 
 function startCiCd() {
