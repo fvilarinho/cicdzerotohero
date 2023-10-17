@@ -28,6 +28,10 @@ resource "linode_instance" "cicdzerotohero" {
 }
 
 resource "null_resource" "showComputeInitialPassword" {
+  triggers = {
+    always_run = timestamp()
+  }
+
   provisioner "local-exec" {
     quiet   = true
     command = "echo; echo \"The compute instance initial password is: ${random_string.computeInitialPassword.result}\"; echo"

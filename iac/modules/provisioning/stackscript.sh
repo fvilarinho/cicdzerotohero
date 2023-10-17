@@ -108,8 +108,6 @@ function setupCiCd() {
     containerId=$(docker ps | grep jenkins | awk '{print $1}')
 
     if [ -n "$containerId" ]; then
-      docker exec -it "$containerId" /bin/bash -c /usr/local/bin/knowGitea.sh
-
       while true; do
         docker cp "$containerId":/var/jenkins_home/secrets/initialAdminPassword /root/cicdzerotohero/initialAdminPassword
 
@@ -118,6 +116,8 @@ function setupCiCd() {
           echo "Jenkins initial password is: " > /dev/ttyS0
 
           cat /root/cicdzerotohero/initialAdminPassword > /dev/ttyS0
+
+          docker exec -it "$containerId" /bin/bash -c /usr/local/bin/knowGitea.sh
 
           break
         else
