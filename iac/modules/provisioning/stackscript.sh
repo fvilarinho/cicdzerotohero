@@ -117,7 +117,7 @@ function setupCiCd() {
 
           cat /root/cicdzerotohero/initialAdminPassword > /dev/ttyS0
 
-          docker exec -it "$containerId" /bin/bash -c /usr/local/bin/knowGitea.sh
+          docker exec -it "$containerId" /bin/bash -c /usr/local/bin/knowGitea.sh > /dev/ttyS0
 
           break
         else
