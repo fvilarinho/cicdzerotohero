@@ -103,7 +103,7 @@ function setupCiCd() {
 function initializeSetup() {
   $TERRAFORM_CMD init \
                  -upgrade \
-                 -migrate-state > /dev/ttyS0
+                 -migrate-state
 }
 
 function executeSetup() {
@@ -117,7 +117,7 @@ function executeSetup() {
                  -var "edgeGridClientSecret=$EDGEGRID_CLIENT_SECRET" \
                  -var "accToken=$ACC_TOKEN" \
                  -var "remoteBackendId=$REMOTEBACKEND_ID" \
-                 -var "remoteBackendRegion=$REMOTEBACKEND_REGION" > /dev/ttyS0
+                 -var "remoteBackendRegion=$REMOTEBACKEND_REGION"
 
   $TERRAFORM_CMD apply \
                  -auto-approve \
@@ -130,7 +130,7 @@ function executeSetup() {
                  -var "edgeGridClientSecret=$EDGEGRID_CLIENT_SECRET" \
                  -var "accToken=$ACC_TOKEN" \
                  -var "remoteBackendId=$REMOTEBACKEND_ID" \
-                 -var "remoteBackendRegion=$REMOTEBACKEND_REGION" > /dev/ttyS0
+                 -var "remoteBackendRegion=$REMOTEBACKEND_REGION"
 }
 
 function startCiCd() {
@@ -138,47 +138,46 @@ function startCiCd() {
 
   cd /root/cicdzerotohero || exit 1
 
+  ./start.sh
 
-  #./start.sh
+  c=0
 
-  #c=0
+  while true; do
+    containerId=$($DOCKER_CMD ps | grep jenkins | awk '{print $1}')
 
-  #while true; do
-  #  containerId=$(docker ps | grep jenkins | awk '{print $1}')
+    if [ -n "$containerId" ]; then
+      while true; do
+        $DOCKER_CMD cp "$containerId":/var/jenkins_home/secrets/initialAdminPassword /root/cicdzerotohero/initialAdminPassword
 
-  #  if [ -n "$containerId" ]; then
-  #    while true; do
-  #      docker cp "$containerId":/var/jenkins_home/secrets/initialAdminPassword /root/cicdzerotohero/initialAdminPassword
+        if [ -f /root/cicdzerotohero/initialAdminPassword ]; then
+          echo > /dev/ttyS0
+          echo "Jenkins initial password is: " > /dev/ttyS0
 
-  #      if [ -f /root/cicdzerotohero/initialAdminPassword ]; then
-  #        echo > /dev/ttyS0
-  #        echo "Jenkins initial password is: " > /dev/ttyS0
+          cat /root/cicdzerotohero/initialAdminPassword > /dev/ttyS0
 
-  #        cat /root/cicdzerotohero/initialAdminPassword > /dev/ttyS0
+          break
+        else
+          if [ $c -eq 0 ]; then
+            echo "Waiting for CI/CD boot..." > /dev/ttyS0
 
-  #        break
-  #      else
-  #        if [ $c -eq 0 ]; then
-  #          echo "Waiting for CI/CD boot..." > /dev/ttyS0
+            c=1
+          fi
 
-  #          c=1
-  #        fi
+          sleep 1
+        fi
+      done
 
-  #        sleep 1
-  #      fi
-  #    done
+      break
+    else
+      if [ $c -eq 0 ]; then
+        echo "Waiting for CI/CD boot..." > /dev/ttyS0
 
-  #    break
-  #  else
-  #    if [ $c -eq 0 ]; then
-  #      echo "Waiting for CI/CD boot..." > /dev/ttyS0
+        c=1
+      fi
 
-  #      c=1
-  #    fi
-
-  #    sleep 1
-  #  fi
-  #done
+      sleep 1
+    fi
+  done
 }
 
 function main() {
