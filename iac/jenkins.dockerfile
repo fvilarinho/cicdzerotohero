@@ -16,6 +16,12 @@ RUN apt update && \
                    python3 \
                    python3-pip
 
+RUN wget https://releases.hashicorp.com/terraform/1.5.7/terraform_1.5.7_linux_amd64.zip -O /tmp/terraform.zip && \
+    cd /tmp && \
+    unzip terraform.zip && \
+    mv terraform /usr/local/bin && \
+    chmod +x /usr/local/bin/terraform
+
 RUN wget -O- https://apt.releases.hashicorp.com/gpg | gpg --dearmor | tee /usr/share/keyrings/hashicorp-archive-keyring.gpg && \
     echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | tee /etc/apt/sources.list.d/hashicorp.list && \
     apt update && \
