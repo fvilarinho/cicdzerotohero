@@ -18,8 +18,6 @@ resource "linode_instance" "cicdzerotohero" {
     EDGEGRID_CLIENT_TOKEN  = var.edgeGridClientToken
     EDGEGRID_CLIENT_SECRET = var.edgeGridClientSecret
     ACC_TOKEN              = var.accToken
-    REMOTEBACKEND_ID       = var.compute.id
-    REMOTEBACKEND_REGION   = "${var.compute.region}-1"
   }
 
   depends_on = [
