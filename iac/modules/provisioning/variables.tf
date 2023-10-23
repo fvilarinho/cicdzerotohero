@@ -1,23 +1,20 @@
-variable "edgeGridHost" {
-}
+variable "edgeGridAccountKey" {}
 
-variable "edgeGridAccessToken" {
-}
+variable "edgeGridHost" {}
 
-variable "edgeGridClientToken" {
-}
+variable "edgeGridAccessToken" {}
 
-variable "edgeGridClientSecret" {
-}
+variable "edgeGridClientToken" {}
 
-variable "accToken" {
-}
+variable "edgeGridClientSecret" {}
+
+variable "accToken" {}
 
 variable "compute" {
   default = {
     id     = "cicdzerotohero"
     image  = "linode/debian11"
-    type   = "g6-standard-2"
+    type   = "g7-premium-4"
     region = "br-gru"
     tags   = [ "devops" ]
   }

@@ -17,6 +17,7 @@ function deploy() {
                  -compact-warnings \
                  -target=module.provisioning \
                  -var "accToken=$ACC_TOKEN" \
+                 -var "edgeGridAccountKey=$EDGEGRID_ACCOUNT_KEY" \
                  -var "edgeGridHost=$EDGEGRID_HOST" \
                  -var "edgeGridAccessToken=$EDGEGRID_ACCESS_TOKEN" \
                  -var "edgeGridClientToken=$EDGEGRID_CLIENT_TOKEN" \
@@ -25,6 +26,7 @@ function deploy() {
                  -compact-warnings \
                  -target=module.provisioning \
                  -var "accToken=$ACC_TOKEN" \
+                 -var "edgeGridAccountKey=$EDGEGRID_ACCOUNT_KEY" \
                  -var "edgeGridHost=$EDGEGRID_HOST" \
                  -var "edgeGridAccessToken=$EDGEGRID_ACCESS_TOKEN" \
                  -var "edgeGridClientToken=$EDGEGRID_CLIENT_TOKEN" \

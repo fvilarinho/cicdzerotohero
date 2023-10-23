@@ -1,5 +1,6 @@
 #!/bin/bash
 # <UDF name="HOSTNAME" Label="Compute Hostname" example="Hostname of the Compute instance."/>
+# <UDF name="EDGEGRID_ACCOUNT_KEY" Label="Akamai EdgeGrid Account Key" example="Account Key to be used all APIs/CLI or Terraform calls." default=""/>
 # <UDF name="EDGEGRID_HOST" Label="Akamai EdgeGrid Hostname" example="Hostname used to authenticate in Akamai Intelligent Platform using APIs/CLI or Terraform calls."/>
 # <UDF name="EDGEGRID_ACCESS_TOKEN" Label="Akamai EdgeGrid Access Token" example="Access Token used to authenticate in Akamai Intelligent Platform using APIs/CLI or Terraform calls."/>
 # <UDF name="EDGEGRID_CLIENT_TOKEN" Label="Akamai EdgeGrid Client Token" example="Client Token used to authenticate in Akamai Intelligent Platform using APIs/CLI or Terraform calls."/>
@@ -68,22 +69,19 @@ function installCiCd() {
   rm -f .gitignore
 
   createEdgeGridFile
-  createSshKeys
 }
 
 function createEdgeGridFile() {
   echo "[default]" > /root/.edgerc
+
+  if [ -n "$EDGEGRID_ACCOUNT_KEY" ]; then
+    echo "account_key = $EDGEGRID_ACCOUNT_KEY" >> /root/.edgerc
+  fi
+
   echo "host = $EDGEGRID_HOST" >> /root/.edgerc
   echo "access_token = $EDGEGRID_ACCESS_TOKEN" >> /root/.edgerc
   echo "client_token = $EDGEGRID_CLIENT_TOKEN" >> /root/.edgerc
   echo "client_secret = $EDGEGRID_CLIENT_SECRET" >> /root/.edgerc
-}
-
-function createSshKeys() {
-  ssh-keygen -q -N '' -f ~/.ssh/cicd
-
-  echo -n "command=\"/app/gitea/gitea --config='/data/gitea/conf/app.ini' serv key-1\",no-port-forwarding,no-X11-forwarding,no-agent-forwarding,no-pty " > ~/.ssh/cicd_authorized_keys
-  cat ~/.ssh/cicd.pub >> ~/.ssh/cicd_authorized_keys
 }
 
 function setupCiCd() {

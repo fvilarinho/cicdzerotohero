@@ -1,3 +1,7 @@
+variable "edgeGridAccountKey" {
+  default = ""
+}
+
 variable "edgeGridHost" {
   default = ""
 }

@@ -1,5 +1,6 @@
 module "provisioning" {
   source               = "./modules/provisioning"
+  edgeGridAccountKey   = var.edgeGridAccountKey
   edgeGridHost         = var.edgeGridHost
   edgeGridAccessToken  = var.edgeGridAccessToken
   edgeGridClientToken  = var.edgeGridClientToken

@@ -32,11 +32,18 @@ RUN wget https://github.com/PowerShell/PowerShell/releases/download/v7.3.8/power
     rm powershell-7.3.8-linux-x64.tar.gz && \
     ln -sf /opt/powershell/pwsh /usr/bin/pwsh
 
-RUN echo "mkdir -p /var/jenkins_home/.ssh; ssh-keyscan gitea > /var/jenkins_home/.ssh/known_hosts" > /usr/local/bin/knowGitea.sh && \
-    chmod +x /usr/local/bin/knowGitea.sh && \
+RUN mkdir -p /var/jenkins_home/.ssh
+
+COPY id_rsa /var/jenkins_home/.ssh
+
+RUN chown -R jenkins:jenkins /var/jenkins_home/.ssh && \
+    echo "#!/bin/bash" > /usr/local/bin/setup.sh && \
+    echo >> /usr/local/bin/setup.sh && \
+    echo "ssh-keyscan gitea > /var/jenkins_home/.ssh/known_hosts" >> /usr/local/bin/setup.sh && \
+    chmod +x /usr/local/bin/setup.sh && \
     echo "#!/bin/bash" > /entrypoint.sh && \
     echo >> /entrypoint.sh && \
-    echo "/usr/local/bin/knowGitea.sh" >> /entrypoint.sh && \
+    echo "/usr/local/bin/setup.sh" >> /entrypoint.sh && \
     echo "/usr/local/bin/jenkins.sh" >> /entrypoint.sh && \
     chmod +x /entrypoint.sh
 

@@ -9,3 +9,6 @@
 /iac/terraform.tfstate.backup
 /iac/.terraform/
 /iac/.terraform.tfstate.lock.info
+/iac/authorized_keys
+/iac/id_rsa
+/iac/id_rsa.pub

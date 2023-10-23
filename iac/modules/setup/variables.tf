@@ -1,12 +1,9 @@
-variable "accToken" {
-}
+variable "accToken" {}
 
 variable "remoteBackendCredentialsFilename" {
   default = "~/.aws/credentials"
 }
 
-variable "remoteBackendId" {
-}
+variable "remoteBackendId" {}
 
-variable "remoteBackendRegion" {
-}
+variable "remoteBackendRegion" {}
