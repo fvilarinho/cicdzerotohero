@@ -10,13 +10,25 @@ resource "linode_object_storage_key" "remotebackend" {
   depends_on = [ linode_object_storage_bucket.remotebackend ]
 }
 
-resource "local_sensitive_file" "accCredentials" {
-  filename = pathexpand(var.remoteBackendCredentialsFilename)
+resource "local_sensitive_file" "edgeGridCredentials" {
+  filename = pathexpand(var.edgeGridCredentialsFilename)
   content  = <<EOT
 [default]
-token = ${var.accToken}
-aws_access_key_id = ${linode_object_storage_key.remotebackend.access_key}
-aws_secret_access_key=${linode_object_storage_key.remotebackend.secret_key}
+account_key   = ${var.edgeGridAccountKey}
+host          = ${var.edgeGridHost}
+access_token  = ${var.edgeGridAccessToken}
+client_token  = ${var.edgeGridClientToken}
+client_secret = ${var.edgeGridClientSecret}
+EOT
+}
+
+resource "local_sensitive_file" "accCredentials" {
+  filename = pathexpand(var.accCredentialsFilename)
+  content  = <<EOT
+[default]
+token                 = ${var.accToken}
+aws_access_key_id     = ${linode_object_storage_key.remotebackend.access_key}
+aws_secret_access_key = ${linode_object_storage_key.remotebackend.secret_key}
 EOT
 
   depends_on = [ linode_object_storage_key.remotebackend ]

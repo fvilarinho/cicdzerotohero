@@ -59,29 +59,12 @@ function installDocker() {
 function installCiCd() {
   echo "Installing CI/CD..." > /dev/ttyS0
 
-  mkdir /root/.aws
-
   git clone https://github.com/fvilarinho/cicdzerotohero /root/cicdzerotohero
 
   cd /root/cicdzerotohero || exit 1
 
   rm -rf .git
   rm -f .gitignore
-
-  createEdgeGridFile
-}
-
-function createEdgeGridFile() {
-  echo "[default]" > /root/.edgerc
-
-  if [ -n "$EDGEGRID_ACCOUNT_KEY" ]; then
-    echo "account_key = $EDGEGRID_ACCOUNT_KEY" >> /root/.edgerc
-  fi
-
-  echo "host = $EDGEGRID_HOST" >> /root/.edgerc
-  echo "access_token = $EDGEGRID_ACCESS_TOKEN" >> /root/.edgerc
-  echo "client_token = $EDGEGRID_CLIENT_TOKEN" >> /root/.edgerc
-  echo "client_secret = $EDGEGRID_CLIENT_SECRET" >> /root/.edgerc
 }
 
 function setupCiCd() {
@@ -96,6 +79,11 @@ function setupCiCd() {
   terraform plan \
             -target=module.setup \
             -compact-warnings \
+            -var "edgeGridAccountKey=$EDGEGRID_ACCOUNT_KEY" \
+            -var "edgeGridHost=$EDGEGRID_HOST" \
+            -var "edgeGridAccessToken=$EDGEGRID_ACCESS_TOKEN" \
+            -var "edgeGridClientToken=$EDGEGRID_CLIENT_TOKEN" \
+            -var "edgeGridClientSecret=$EDGEGRID_CLIENT_SECRET" \
             -var "accToken=$ACC_TOKEN" \
             -var "remoteBackendId=$REMOTEBACKEND_ID" \
             -var "remoteBackendRegion=$REMOTEBACKEND_REGION"
@@ -104,6 +92,11 @@ function setupCiCd() {
             -auto-approve \
             -target=module.setup \
             -compact-warnings \
+            -var "edgeGridAccountKey=$EDGEGRID_ACCOUNT_KEY" \
+            -var "edgeGridHost=$EDGEGRID_HOST" \
+            -var "edgeGridAccessToken=$EDGEGRID_ACCESS_TOKEN" \
+            -var "edgeGridClientToken=$EDGEGRID_CLIENT_TOKEN" \
+            -var "edgeGridClientSecret=$EDGEGRID_CLIENT_SECRET" \
             -var "accToken=$ACC_TOKEN" \
             -var "remoteBackendId=$REMOTEBACKEND_ID" \
             -var "remoteBackendRegion=$REMOTEBACKEND_REGION"
