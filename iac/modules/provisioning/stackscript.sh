@@ -83,63 +83,78 @@ function installCiCd() {
 function setupCiCd() {
   echo "Setting up the CI/CD..." > /dev/ttyS0
 
-  cd /root/cicdzerotohero || exit 1
+  cd /root/cicdzerotohero/iac || exit 1
 
-  ./setup.sh
+  terraform init \
+            -upgrade \
+            -migrate-state > /dev/ttyS0
 }
 
 function startCiCd() {
   echo "Starting CI/CD..." > /dev/ttyS0
 
-  cd /root/cicdzerotohero || exit 1
+  cd /root/cicdzerotohero/iac || exit 1
 
-  ./start.sh
+  terraform plan \
+            -target=module.setup \
+            -compact-warnings \
+            -var "edgeGridAccountKey=$EDGEGRID_ACCOUNT_KEY" \
+            -var "edgeGridHost=$EDGEGRID_HOST" \
+            -var "edgeGridAccessToken=$EDGEGRID_ACCESS_TOKEN" \
+            -var "edgeGridClientToken=$EDGEGRID_CLIENT_TOKEN" \
+            -var "edgeGridClientSecret=$EDGEGRID_CLIENT_SECRET" \
+            -var "accToken=$ACC_TOKEN" \
+            -var "remoteBackendId=$REMOTEBACKEND_ID" \
+            -var "remoteBackendRegion=$REMOTEBACKEND_REGION" > /dev/ttyS0
 
-  c=0
 
-  while true; do
-    containerId=$(docker ps | grep jenkins | awk '{print $1}')
+  #./start.sh
 
-    if [ -n "$containerId" ]; then
-      while true; do
-        docker cp "$containerId":/var/jenkins_home/secrets/initialAdminPassword /root/cicdzerotohero/initialAdminPassword
+  #c=0
 
-        if [ -f /root/cicdzerotohero/initialAdminPassword ]; then
-          echo > /dev/ttyS0
-          echo "Jenkins initial password is: " > /dev/ttyS0
+  #while true; do
+  #  containerId=$(docker ps | grep jenkins | awk '{print $1}')
 
-          cat /root/cicdzerotohero/initialAdminPassword > /dev/ttyS0
+  #  if [ -n "$containerId" ]; then
+  #    while true; do
+  #      docker cp "$containerId":/var/jenkins_home/secrets/initialAdminPassword /root/cicdzerotohero/initialAdminPassword
 
-          break
-        else
-          if [ $c -eq 0 ]; then
-            echo "Waiting for CI/CD boot..." > /dev/ttyS0
+  #      if [ -f /root/cicdzerotohero/initialAdminPassword ]; then
+  #        echo > /dev/ttyS0
+  #        echo "Jenkins initial password is: " > /dev/ttyS0
 
-            c=1
-          fi
+  #        cat /root/cicdzerotohero/initialAdminPassword > /dev/ttyS0
 
-          sleep 1
-        fi
-      done
+  #        break
+  #      else
+  #        if [ $c -eq 0 ]; then
+  #          echo "Waiting for CI/CD boot..." > /dev/ttyS0
 
-      break
-    else
-      if [ $c -eq 0 ]; then
-        echo "Waiting for CI/CD boot..." > /dev/ttyS0
+  #          c=1
+  #        fi
 
-        c=1
-      fi
+  #        sleep 1
+  #      fi
+  #    done
 
-      sleep 1
-    fi
-  done
+  #    break
+  #  else
+  #    if [ $c -eq 0 ]; then
+  #      echo "Waiting for CI/CD boot..." > /dev/ttyS0
+
+  #      c=1
+  #    fi
+
+  #    sleep 1
+  #  fi
+  #done
 }
 
 function main() {
   updateSystem
   installRequiredSoftware
   setupCiCd
-  #startCiCd
+  startCiCd
 
   echo > /dev/ttyS0
   echo "Continue the setup in the UI!" > /dev/ttyS0
