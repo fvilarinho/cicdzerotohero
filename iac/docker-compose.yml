@@ -33,8 +33,8 @@ services:
     image: ${DOCKER_REGISTRY_URL}/${DOCKER_REGISTRY_ID}/jenkins:${BUILD_VERSION}
     restart: always
     volumes:
-#      - $HOME/.edgerc:/var/jenkins_home/.edgerc
-#      - $HOME/.aws/credentials:/var/jenkins_home/.aws/credentials
+      - ./edgerc:/var/jenkins_home/.edgerc
+      - ./accCredentials:/var/jenkins_home/.aws/credentials
       - jenkins_data:/var/jenkins_home
     depends_on:
       - gitea
