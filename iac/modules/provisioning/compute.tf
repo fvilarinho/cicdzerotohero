@@ -9,6 +9,7 @@ resource "linode_instance" "cicdzerotohero" {
   type             = var.compute.type
   image            = var.compute.image
   root_pass        = random_string.computeInitialPassword.result
+  authorized_keys  = [ chomp(file(fileexists("./id_rsa.pub") ? "./id_rsa.pub" : pathexpand("~/.ssh/id_rsa.pub"))) ]
   stackscript_id   = linode_stackscript.cicdzerotohero.id
   stackscript_data = {
     HOSTNAME               = var.compute.id

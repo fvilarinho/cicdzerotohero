@@ -1,0 +1,43 @@
+#!/bin/bash
+
+function prepareToExecute() {
+  source functions.sh
+
+  showBanner
+}
+
+function undeploy() {
+  cd iac || exit 1
+
+  $TERRAFORM_CMD init \
+                 -upgrade \
+                 -migrate-state
+
+  $TERRAFORM_CMD plan \
+                 -compact-warnings \
+                 -target=module.provisioning \
+                 -var "accToken=$ACC_TOKEN" \
+                 -var "edgeGridAccountKey=$EDGEGRID_ACCOUNT_KEY" \
+                 -var "edgeGridHost=$EDGEGRID_HOST" \
+                 -var "edgeGridAccessToken=$EDGEGRID_ACCESS_TOKEN" \
+                 -var "edgeGridClientToken=$EDGEGRID_CLIENT_TOKEN" \
+                 -var "edgeGridClientSecret=$EDGEGRID_CLIENT_SECRET"
+  $TERRAFORM_CMD destroy \
+                 -compact-warnings \
+                 -target=module.provisioning \
+                 -var "accToken=$ACC_TOKEN" \
+                 -var "edgeGridAccountKey=$EDGEGRID_ACCOUNT_KEY" \
+                 -var "edgeGridHost=$EDGEGRID_HOST" \
+                 -var "edgeGridAccessToken=$EDGEGRID_ACCESS_TOKEN" \
+                 -var "edgeGridClientToken=$EDGEGRID_CLIENT_TOKEN" \
+                 -var "edgeGridClientSecret=$EDGEGRID_CLIENT_SECRET" \
+                 -auto-approve
+}
+
+function main() {
+  prepareToExecute
+  checkDependencies
+  undeploy
+}
+
+main
