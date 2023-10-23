@@ -113,8 +113,6 @@ function setupCiCd() {
             -var "accToken=$ACC_TOKEN" \
             -var "remoteBackendId=$REMOTEBACKEND_ID" \
             -var "remoteBackendRegion=$REMOTEBACKEND_REGION"
-
-  echo > /dev/ttyS0
 }
 
 function startCiCd() {
@@ -123,6 +121,8 @@ function startCiCd() {
   cd /root/cicdzerotohero || exit 1
 
   ./start.sh
+
+  c=0
 
   while true; do
     containerId=$(docker ps | grep jenkins | awk '{print $1}')
@@ -139,7 +139,11 @@ function startCiCd() {
 
           break
         else
-          echo "Waiting for CI/CD boot..." > /dev/ttyS0
+          if [ $c -eq 0 ]; then
+            echo "Waiting for CI/CD boot..." > /dev/ttyS0
+
+            c=1
+          fi
 
           sleep 1
         fi
@@ -147,7 +151,11 @@ function startCiCd() {
 
       break
     else
-      echo "Waiting for CI/CD boot..." > /dev/ttyS0
+      if [ $c -eq 0 ]; then
+        echo "Waiting for CI/CD boot..." > /dev/ttyS0
+
+        c=1
+      fi
 
       sleep 1
     fi
