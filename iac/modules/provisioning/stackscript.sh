@@ -87,7 +87,7 @@ function setupCiCd() {
 
   terraform init \
             -upgrade \
-            -migrate-state
+            -migrate-state > /dev/ttyS0
 
   terraform plan \
             -target=module.setup \
@@ -99,7 +99,7 @@ function setupCiCd() {
             -var "edgeGridClientSecret=$EDGEGRID_CLIENT_SECRET" \
             -var "accToken=$ACC_TOKEN" \
             -var "remoteBackendId=$REMOTEBACKEND_ID" \
-            -var "remoteBackendRegion=$REMOTEBACKEND_REGION"
+            -var "remoteBackendRegion=$REMOTEBACKEND_REGION" > /dev/ttyS0
 
   terraform apply \
             -auto-approve \
@@ -112,7 +112,7 @@ function setupCiCd() {
             -var "edgeGridClientSecret=$EDGEGRID_CLIENT_SECRET" \
             -var "accToken=$ACC_TOKEN" \
             -var "remoteBackendId=$REMOTEBACKEND_ID" \
-            -var "remoteBackendRegion=$REMOTEBACKEND_REGION"
+            -var "remoteBackendRegion=$REMOTEBACKEND_REGION" > /dev/ttyS0
 }
 
 function startCiCd() {
