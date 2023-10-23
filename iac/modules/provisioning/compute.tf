@@ -2,10 +2,6 @@ resource "random_string" "computeInitialPassword" {
   length = 15
 }
 
-locals {
-  authorizedKeysFilename = fileexists("./id_rsa.pub") ? "./id_rsa.pub" : pathexpand("~/.ssh/id_rsa.pub")
-}
-
 resource "linode_instance" "cicdzerotohero" {
   label            = var.compute.id
   tags             = var.compute.tags
@@ -13,7 +9,6 @@ resource "linode_instance" "cicdzerotohero" {
   type             = var.compute.type
   image            = var.compute.image
   root_pass        = random_string.computeInitialPassword.result
-  authorized_keys  = [ chomp(file(local.authorizedKeysFilename)) ]
   stackscript_id   = linode_stackscript.cicdzerotohero.id
   stackscript_data = {
     HOSTNAME               = var.compute.id
