@@ -9,6 +9,18 @@
 # <UDF name="REMOTEBACKEND_ID" Label="Terraform Remote Backend Identifier" example="Identifier of Terraform Remote Backend used to control the provisioning states of the resources."/>
 # <UDF name="REMOTEBACKEND_REGION" Label="Terraform Remote Backend Region" example="Region of Terraform Remote Backend used to control the provisioning states of the resources."/>
 
+function createEnvironmentFile() {
+  echo "export HOSTNAME=$HOSTNAME" > /root/.env
+  echo "export EDGEGRID_ACCOUNT_KEY=$EDGEGRID_ACCOUNT_KEY" >> /root/.env
+  echo "export EDGEGRID_HOST=$EDGEGRID_HOST" >> /root/.env
+  echo "export EDGEGRID_ACCESS_TOKEN=$EDGEGRID_ACCESS_TOKEN" >> /root/.env
+  echo "export EDGEGRID_CLIENT_TOKEN=$EDGEGRID_CLIENT_TOKEN" >> /root/.env
+  echo "export EDGEGRID_CLIENT_SECRET=$EDGEGRID_CLIENT_SECRET" >> /root/.env
+  echo "export ACC_TOKEN=$ACC_TOKEN" >> /root/.env
+  echo "export REMOTEBACKEND_ID=$REMOTEBACKEND_ID" >> /root/.env
+  echo "export REMOTEBACKEND_REGION=$REMOTEBACKEND_REGION" >> /root/.env
+}
+
 function setHostname() {
   echo "Setting the hostname..." > /dev/ttyS0
 
@@ -16,9 +28,10 @@ function setHostname() {
 }
 
 function updateSystem() {
-  setHostname
-
   echo "Updating the system..." > /dev/ttyS0
+
+  createEnvironmentFile
+  setHostname
 
   apt update
   apt -y upgrade

@@ -9,13 +9,13 @@ variable "edgeGridClientToken" {}
 variable "edgeGridClientSecret" {}
 
 variable "edgeGridCredentialsFilename" {
-  default = "./edgerc"
+  default = "edgerc"
 }
 
 variable "accToken" {}
 
 variable "accCredentialsFilename" {
-  default = "./accCredentials"
+  default = "accCredentials"
 }
 
 variable "remoteBackendId" {}
