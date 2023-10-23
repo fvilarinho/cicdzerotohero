@@ -23,8 +23,6 @@ function build() {
 
   $DOCKER_CMD compose build
 
-  cleanUp
-
   echo "Built!"
 }
 
