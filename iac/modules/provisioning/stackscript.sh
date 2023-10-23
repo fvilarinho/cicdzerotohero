@@ -60,12 +60,15 @@ function installRequiredSoftware() {
 function installTerraform() {
   echo "Installing Terraform..." > /dev/ttyS0
 
-  $WGET_CMD -O- https://apt.releases.hashicorp.com/gpg | $GPG_CMD --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
+  wget https://releases.hashicorp.com/terraform/1.5.7/terraform_1.5.7_linux_arm.zip -O /tmp/terraform.zip
 
-  echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | tee /etc/apt/sources.list.d/hashicorp.list
+  cd /tmp || exit 1
 
-  apt update
-  apt -y install terraform
+  unzip terraform.zip
+
+  mv terraform /usr/local/bin
+
+  chmod +x /usr/local/bin/terraform
 
   export TERRAFORM_CMD=$(which terraform)
 }
