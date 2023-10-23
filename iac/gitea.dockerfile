@@ -1,1 +1,1 @@
-FROM gitea/gitea:1.20
+FROM gitea/gitea:1.9
