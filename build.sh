@@ -1,31 +1,23 @@
 #!/bin/bash
 
+# Prepares the environment to execute this script.
 function prepareToExecute() {
+  # Loads utility functions.
   source functions.sh
 
   showBanner
 }
 
-function createSshKeys() {
-  cleanUp
-
-  ssh-keygen -q -N '' -f ./id_rsa
-}
-
-function cleanUp() {
-  rm -f ./id_rsa*
-}
-
+# Build the container images.
 function build() {
   cd iac || exit 1
-
-  createSshKeys
 
   $DOCKER_CMD compose build
 
   echo "Built!"
 }
 
+# Main function.
 function main() {
   prepareToExecute
   checkDependencies

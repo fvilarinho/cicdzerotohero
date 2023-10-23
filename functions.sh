@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# Check the dependencies to run this scripts.
 function checkDependencies() {
   export DOCKER_CMD=$(which docker)
 
@@ -18,8 +19,17 @@ function checkDependencies() {
   fi
 }
 
+# Show banner.
 function showBanner() {
+  # Check if the banner file exists.
   if [ -f banner.txt ]; then
     cat banner.txt
+  fi
+}
+
+# Create SSH pair keys.
+function createSshKeys() {
+  if [ ! -f ~/.ssh/id_rsa ]; then
+    ssh-keygen -q -N '' -f ~/.ssh/id_rsa
   fi
 }

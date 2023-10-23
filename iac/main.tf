@@ -1,3 +1,4 @@
+# Provisioning module.
 module "provisioning" {
   source               = "./modules/provisioning"
   edgeGridAccountKey   = var.edgeGridAccountKey
@@ -8,6 +9,7 @@ module "provisioning" {
   accToken             = var.accToken
 }
 
+# Setup module.
 module "setup" {
   source               = "./modules/setup"
   edgeGridAccountKey   = var.edgeGridAccountKey

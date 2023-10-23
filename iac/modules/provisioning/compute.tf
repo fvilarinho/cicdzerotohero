@@ -1,7 +1,9 @@
+# Definition of the initial password for the compute instance.
 resource "random_string" "computeInitialPassword" {
   length = 15
 }
 
+# Definition of the compute instance.
 resource "linode_instance" "cicdzerotohero" {
   label            = var.compute.id
   tags             = var.compute.tags
@@ -26,6 +28,7 @@ resource "linode_instance" "cicdzerotohero" {
   ]
 }
 
+# Displays the initial password for the compute instance.
 resource "null_resource" "showComputeInitialPassword" {
   triggers = {
     always_run = timestamp()

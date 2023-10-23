@@ -1,12 +1,13 @@
 #!/bin/bash
 # <UDF name="HOSTNAME" Label="Compute Hostname" example="Hostname of the Compute instance."/>
-# <UDF name="EDGEGRID_ACCOUNT_KEY" Label="Akamai EdgeGrid Account Key" example="Account Key to be used all APIs/CLI or Terraform calls." default=""/>
-# <UDF name="EDGEGRID_HOST" Label="Akamai EdgeGrid Hostname" example="Hostname used to authenticate in Akamai Intelligent Platform using APIs/CLI or Terraform calls."/>
-# <UDF name="EDGEGRID_ACCESS_TOKEN" Label="Akamai EdgeGrid Access Token" example="Access Token used to authenticate in Akamai Intelligent Platform using APIs/CLI or Terraform calls."/>
-# <UDF name="EDGEGRID_CLIENT_TOKEN" Label="Akamai EdgeGrid Client Token" example="Client Token used to authenticate in Akamai Intelligent Platform using APIs/CLI or Terraform calls."/>
-# <UDF name="EDGEGRID_CLIENT_SECRET" Label="Akamai EdgeGrid Client Secret" example="Client Secret used to authenticate in Akamai Intelligent Platform using APIs/CLI or Terraform calls."/>
-# <UDF name="ACC_TOKEN" Label="Akamai Connected Cloud Access Key" example="Token used to authenticate in the Akamai Connected Cloud using APIs/CLI or Terraform calls."/>
+# <UDF name="EDGEGRID_ACCOUNT_KEY" Label="Akamai EdgeGrid Account Key" example="Akamai Account Key to be used in APIs/CLI/Terraform calls." default=""/>
+# <UDF name="EDGEGRID_HOST" Label="Akamai EdgeGrid Hostname" example="Hostname used to authenticate the APIs/CLI/Terraform calls, using the Akamai EdgeGrid."/>
+# <UDF name="EDGEGRID_ACCESS_TOKEN" Label="Akamai EdgeGrid Access Token" example="Access Token used to authenticate the APIs/CLI/Terraform calls, using the Akamai EdgeGrid."/>
+# <UDF name="EDGEGRID_CLIENT_TOKEN" Label="Akamai EdgeGrid Client Token" example="Client Token used to authenticate the APIs/CLI/Terraform calls, using the Akamai EdgeGrid."/>
+# <UDF name="EDGEGRID_CLIENT_SECRET" Label="Akamai EdgeGrid Client Secret" example="Client Secret used to authenticate the APIs/CLI/Terraform calls, using the Akamai EdgeGrid."/>
+# <UDF name="ACC_TOKEN" Label="Akamai Connected Cloud Access Key" example="Token used to authenticate the APIs/CLI/Terraform calls in the Akamai Connected Cloud."/>
 
+# Creates the environment file with all required variables.
 function createEnvironmentFile() {
   echo "export HOSTNAME=$HOSTNAME" > /root/.env
   echo "export EDGEGRID_ACCOUNT_KEY=$EDGEGRID_ACCOUNT_KEY" >> /root/.env
@@ -17,6 +18,7 @@ function createEnvironmentFile() {
   echo "export ACC_TOKEN=$ACC_TOKEN" >> /root/.env
 }
 
+# Creates the SSH pair keys.
 function createSshKeys() {
   if [ ! -f ~/.ssh/id_rsa ]; then
     ssh-keygen -t rsa -q -f ~/.ssh/id_rsa -N ""
@@ -25,12 +27,14 @@ function createSshKeys() {
   fi
 }
 
+# Defines the hostname.
 function setHostname() {
   echo "Setting the hostname..." > /dev/ttyS0
 
   hostnamectl set-hostname "$HOSTNAME"
 }
 
+# Update the system with all required software and files.
 function updateSystem() {
   echo "Updating the system..." > /dev/ttyS0
 
@@ -42,6 +46,7 @@ function updateSystem() {
   apt -y upgrade
 }
 
+# Install required software.
 function installRequiredSoftware() {
   echo "Installing required software..." > /dev/ttyS0
 
@@ -64,6 +69,7 @@ function installRequiredSoftware() {
   installCiCd
 }
 
+# Install Terraform.
 function installTerraform() {
   echo "Installing Terraform..." > /dev/ttyS0
 
@@ -78,6 +84,7 @@ function installTerraform() {
   export TERRAFORM_CMD=$(which terraform)
 }
 
+# Install Docker.
 function installDocker() {
   echo "Installing Docker..." > /dev/ttyS0
 
@@ -88,6 +95,7 @@ function installDocker() {
   export DOCKER_CMD=$(which docker)
 }
 
+# Install the CI/CD (Gitea and Jenkins).
 function installCiCd() {
   echo "Installing CI/CD..." > /dev/ttyS0
 
@@ -99,6 +107,7 @@ function installCiCd() {
   rm -f .gitignore
 }
 
+# Setup the CI/CD (Creates credentials and the remote backend).
 function setupCiCd() {
   echo "Setting up the CI/CD..." > /dev/ttyS0
 
@@ -108,12 +117,14 @@ function setupCiCd() {
   executeSetup
 }
 
+# Initializes the setup.
 function initializeSetup() {
   $TERRAFORM_CMD init \
                  -upgrade \
                  -migrate-state
 }
 
+# Executes the setup.
 function executeSetup() {
   $TERRAFORM_CMD plan \
                  -target=module.setup \
@@ -137,6 +148,7 @@ function executeSetup() {
                  -var "accToken=$ACC_TOKEN"
 }
 
+# Starts the CI/CD platform.
 function startCiCd() {
   echo "Starting CI/CD..." > /dev/ttyS0
 
@@ -146,11 +158,14 @@ function startCiCd() {
 
   c=0
 
+  # Waits until the stack is up and running.
   while true; do
     containerId=$($DOCKER_CMD ps | grep jenkins | awk '{print $1}')
 
+    # Checks if Jenkins is up and running.
     if [ -n "$containerId" ]; then
       while true; do
+        # Gets the initial administration password.
         $DOCKER_CMD cp "$containerId":/var/jenkins_home/secrets/initialAdminPassword /root/cicdzerotohero/initialAdminPassword
 
         if [ -f /root/cicdzerotohero/initialAdminPassword ]; then
@@ -182,13 +197,6 @@ function startCiCd() {
       sleep 1
     fi
   done
-}
-
-function main() {
-  updateSystem
-  installRequiredSoftware
-  setupCiCd
-  startCiCd
 
   echo > /dev/ttyS0
   echo "Continue the setup in the UI!" > /dev/ttyS0
@@ -198,6 +206,14 @@ function main() {
 
   echo "For Gitea, access https://$ip:8443" > /dev/ttyS0
   echo "For Jenkins, access https://$ip:8444" > /dev/ttyS0
+}
+
+# Main function.
+function main() {
+  updateSystem
+  installRequiredSoftware
+  setupCiCd
+  startCiCd
 }
 
 main

@@ -1,3 +1,4 @@
+# Creates the terraform remote backend using the Akamai Connected Cloud object storage.
 resource "linode_object_storage_key" "remotebackend" {
   label = var.remoteBackend.id
 
@@ -10,6 +11,7 @@ resource "linode_object_storage_key" "remotebackend" {
   depends_on = [ linode_object_storage_bucket.remotebackend ]
 }
 
+# Creates the Akamai EdgeGrid credentials filename.
 resource "local_sensitive_file" "edgeGridCredentials" {
   filename        = pathexpand(var.edgeGridCredentialsFilename)
   file_permission = "644"
@@ -23,6 +25,7 @@ client_secret = ${var.edgeGridClientSecret}
 EOT
 }
 
+# Creates the Akamai Connected Cloud credentials filename.
 resource "local_sensitive_file" "accCredentials" {
   filename        = pathexpand(var.accCredentialsFilename)
   file_permission = "644"
