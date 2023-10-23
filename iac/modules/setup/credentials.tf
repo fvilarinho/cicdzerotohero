@@ -11,8 +11,9 @@ resource "linode_object_storage_key" "remotebackend" {
 }
 
 resource "local_sensitive_file" "edgeGridCredentials" {
-  filename = var.edgeGridCredentialsFilename
-  content  = <<EOT
+  filename        = var.edgeGridCredentialsFilename
+  file_permission = "644"
+  content         = <<EOT
 [default]
 account_key   = ${var.edgeGridAccountKey}
 host          = ${var.edgeGridHost}
@@ -23,8 +24,9 @@ EOT
 }
 
 resource "local_sensitive_file" "accCredentials" {
-  filename = var.accCredentialsFilename
-  content  = <<EOT
+  filename        = var.accCredentialsFilename
+  file_permission = "644"
+  content         = <<EOT
 [default]
 token                 = ${var.accToken}
 aws_access_key_id     = ${linode_object_storage_key.remotebackend.access_key}
