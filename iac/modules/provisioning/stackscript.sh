@@ -47,6 +47,11 @@ function installRequiredSoftware() {
                  vim \
                  git
 
+  export CURL_CMD=$(which curl)
+  export WGET_CMD=$(which wget)
+  export GPG_CMD=$(which gpg)
+  export GIT_CMD=$(which git)
+
   installTerraform
   installDocker
   installCiCd
@@ -55,24 +60,30 @@ function installRequiredSoftware() {
 function installTerraform() {
   echo "Installing Terraform..." > /dev/ttyS0
 
-  wget -O- https://apt.releases.hashicorp.com/gpg | gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
+  $WGET_CMD -O- https://apt.releases.hashicorp.com/gpg | $GPG_CMD --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
+
   echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | tee /etc/apt/sources.list.d/hashicorp.list
+
   apt update
   apt -y install terraform
+
+  export TERRAFORM_CMD=$(which terraform)
 }
 
 function installDocker() {
   echo "Installing Docker..." > /dev/ttyS0
 
-  curl https://get.docker.com | sh -
+  $CURL_CMD https://get.docker.com | sh -
 
   systemctl enable docker
+
+  export DOCKER_CMD=$(which docker)
 }
 
 function installCiCd() {
   echo "Installing CI/CD..." > /dev/ttyS0
 
-  git clone https://github.com/fvilarinho/cicdzerotohero /root/cicdzerotohero
+  $GIT_CMD clone https://github.com/fvilarinho/cicdzerotohero /root/cicdzerotohero
 
   cd /root/cicdzerotohero || exit 1
 
@@ -85,40 +96,48 @@ function setupCiCd() {
 
   cd /root/cicdzerotohero/iac || exit 1
 
-  terraform init \
-            -upgrade \
-            -migrate-state > /dev/ttyS0
+  initializeSetup
+  executeSetup
+}
+
+function initializeSetup() {
+  $TERRAFORM_CMD init \
+                 -upgrade \
+                 -migrate-state > /dev/ttyS0
+}
+
+function executeSetup() {
+  $TERRAFORM_CMD plan \
+                 -target=module.setup \
+                 -compact-warnings \
+                 -var "edgeGridAccountKey=$EDGEGRID_ACCOUNT_KEY" \
+                 -var "edgeGridHost=$EDGEGRID_HOST" \
+                 -var "edgeGridAccessToken=$EDGEGRID_ACCESS_TOKEN" \
+                 -var "edgeGridClientToken=$EDGEGRID_CLIENT_TOKEN" \
+                 -var "edgeGridClientSecret=$EDGEGRID_CLIENT_SECRET" \
+                 -var "accToken=$ACC_TOKEN" \
+                 -var "remoteBackendId=$REMOTEBACKEND_ID" \
+                 -var "remoteBackendRegion=$REMOTEBACKEND_REGION" > /dev/ttyS0
+
+  $TERRAFORM_CMD apply \
+                 -auto-approve \
+                 -target=module.setup \
+                 -compact-warnings \
+                 -var "edgeGridAccountKey=$EDGEGRID_ACCOUNT_KEY" \
+                 -var "edgeGridHost=$EDGEGRID_HOST" \
+                 -var "edgeGridAccessToken=$EDGEGRID_ACCESS_TOKEN" \
+                 -var "edgeGridClientToken=$EDGEGRID_CLIENT_TOKEN" \
+                 -var "edgeGridClientSecret=$EDGEGRID_CLIENT_SECRET" \
+                 -var "accToken=$ACC_TOKEN" \
+                 -var "remoteBackendId=$REMOTEBACKEND_ID" \
+                 -var "remoteBackendRegion=$REMOTEBACKEND_REGION" > /dev/ttyS0
 }
 
 function startCiCd() {
   echo "Starting CI/CD..." > /dev/ttyS0
 
-  cd /root/cicdzerotohero/iac || exit 1
+  cd /root/cicdzerotohero || exit 1
 
-  terraform plan \
-            -target=module.setup \
-            -compact-warnings \
-            -var "edgeGridAccountKey=$EDGEGRID_ACCOUNT_KEY" \
-            -var "edgeGridHost=$EDGEGRID_HOST" \
-            -var "edgeGridAccessToken=$EDGEGRID_ACCESS_TOKEN" \
-            -var "edgeGridClientToken=$EDGEGRID_CLIENT_TOKEN" \
-            -var "edgeGridClientSecret=$EDGEGRID_CLIENT_SECRET" \
-            -var "accToken=$ACC_TOKEN" \
-            -var "remoteBackendId=$REMOTEBACKEND_ID" \
-            -var "remoteBackendRegion=$REMOTEBACKEND_REGION" > /dev/ttyS0
-
-  terraform apply \
-            -auto-approve \
-            -target=module.setup \
-            -compact-warnings \
-            -var "edgeGridAccountKey=$EDGEGRID_ACCOUNT_KEY" \
-            -var "edgeGridHost=$EDGEGRID_HOST" \
-            -var "edgeGridAccessToken=$EDGEGRID_ACCESS_TOKEN" \
-            -var "edgeGridClientToken=$EDGEGRID_CLIENT_TOKEN" \
-            -var "edgeGridClientSecret=$EDGEGRID_CLIENT_SECRET" \
-            -var "accToken=$ACC_TOKEN" \
-            -var "remoteBackendId=$REMOTEBACKEND_ID" \
-            -var "remoteBackendRegion=$REMOTEBACKEND_REGION" > /dev/ttyS0
 
   #./start.sh
 
