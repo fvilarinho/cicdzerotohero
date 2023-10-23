@@ -13,6 +13,8 @@ function setup() {
             -upgrade \
             -migrate-state > /dev/ttyS0
 
+  echo $? > /dev/ttyS0
+
   terraform plan \
             -target=module.setup \
             -compact-warnings \

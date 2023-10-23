@@ -139,7 +139,7 @@ function main() {
   updateSystem
   installRequiredSoftware
   setupCiCd
-  startCiCd
+  #startCiCd
 
   echo > /dev/ttyS0
   echo "Continue the setup in the UI!" > /dev/ttyS0
