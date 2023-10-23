@@ -6,8 +6,6 @@
 # <UDF name="EDGEGRID_CLIENT_TOKEN" Label="Akamai EdgeGrid Client Token" example="Client Token used to authenticate in Akamai Intelligent Platform using APIs/CLI or Terraform calls."/>
 # <UDF name="EDGEGRID_CLIENT_SECRET" Label="Akamai EdgeGrid Client Secret" example="Client Secret used to authenticate in Akamai Intelligent Platform using APIs/CLI or Terraform calls."/>
 # <UDF name="ACC_TOKEN" Label="Akamai Connected Cloud Access Key" example="Token used to authenticate in the Akamai Connected Cloud using APIs/CLI or Terraform calls."/>
-# <UDF name="REMOTEBACKEND_ID" Label="Terraform Remote Backend Identifier" example="Identifier of Terraform Remote Backend used to control the provisioning states of the resources."/>
-# <UDF name="REMOTEBACKEND_REGION" Label="Terraform Remote Backend Region" example="Region of Terraform Remote Backend used to control the provisioning states of the resources."/>
 
 function createEnvironmentFile() {
   echo "export HOSTNAME=$HOSTNAME" > /root/.env
@@ -17,8 +15,6 @@ function createEnvironmentFile() {
   echo "export EDGEGRID_CLIENT_TOKEN=$EDGEGRID_CLIENT_TOKEN" >> /root/.env
   echo "export EDGEGRID_CLIENT_SECRET=$EDGEGRID_CLIENT_SECRET" >> /root/.env
   echo "export ACC_TOKEN=$ACC_TOKEN" >> /root/.env
-  echo "export REMOTEBACKEND_ID=$REMOTEBACKEND_ID" >> /root/.env
-  echo "export REMOTEBACKEND_REGION=$REMOTEBACKEND_REGION" >> /root/.env
 }
 
 function setHostname() {
@@ -118,9 +114,7 @@ function executeSetup() {
                  -var "edgeGridAccessToken=$EDGEGRID_ACCESS_TOKEN" \
                  -var "edgeGridClientToken=$EDGEGRID_CLIENT_TOKEN" \
                  -var "edgeGridClientSecret=$EDGEGRID_CLIENT_SECRET" \
-                 -var "accToken=$ACC_TOKEN" \
-                 -var "remoteBackendId=$REMOTEBACKEND_ID" \
-                 -var "remoteBackendRegion=$REMOTEBACKEND_REGION"
+                 -var "accToken=$ACC_TOKEN"
 
   $TERRAFORM_CMD apply \
                  -auto-approve \
@@ -131,9 +125,7 @@ function executeSetup() {
                  -var "edgeGridAccessToken=$EDGEGRID_ACCESS_TOKEN" \
                  -var "edgeGridClientToken=$EDGEGRID_CLIENT_TOKEN" \
                  -var "edgeGridClientSecret=$EDGEGRID_CLIENT_SECRET" \
-                 -var "accToken=$ACC_TOKEN" \
-                 -var "remoteBackendId=$REMOTEBACKEND_ID" \
-                 -var "remoteBackendRegion=$REMOTEBACKEND_REGION"
+                 -var "accToken=$ACC_TOKEN"
 }
 
 function startCiCd() {

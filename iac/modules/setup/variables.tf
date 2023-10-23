@@ -18,6 +18,9 @@ variable "accCredentialsFilename" {
   default = "accCredentials"
 }
 
-variable "remoteBackendId" {}
-
-variable "remoteBackendRegion" {}
+variable "remoteBackend" {
+  default = {
+    id     = "fvilarin-devops"
+    region = "us-east-1"
+  }
+}

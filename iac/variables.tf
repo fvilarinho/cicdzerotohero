@@ -1,31 +1,11 @@
-variable "edgeGridAccountKey" {
-  default = ""
-}
+variable "edgeGridAccountKey" {}
 
-variable "edgeGridHost" {
-  default = ""
-}
+variable "edgeGridHost" {}
 
-variable "edgeGridAccessToken" {
-  default = ""
-}
+variable "edgeGridAccessToken" {}
 
-variable "edgeGridClientToken" {
-  default = ""
-}
+variable "edgeGridClientToken" {}
 
-variable "edgeGridClientSecret" {
-  default = ""
-}
+variable "edgeGridClientSecret" {}
 
-variable "accToken" {
-  default = ""
-}
-
-variable "remoteBackendId" {
-  default = ""
-}
-
-variable "remoteBackendRegion" {
-  default = ""
-}
+variable "accToken" {}

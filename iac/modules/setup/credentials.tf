@@ -1,8 +1,8 @@
 resource "linode_object_storage_key" "remotebackend" {
-  label = var.remoteBackendId
+  label = var.remoteBackend.id
 
   bucket_access {
-    bucket_name = var.remoteBackendId
+    bucket_name = var.remoteBackend.id
     cluster     = data.linode_object_storage_cluster.default.id
     permissions = "read_write"
   }

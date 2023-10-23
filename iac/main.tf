@@ -16,6 +16,4 @@ module "setup" {
   edgeGridClientToken  = var.edgeGridClientToken
   edgeGridClientSecret = var.edgeGridClientSecret
   accToken             = var.accToken
-  remoteBackendId      = var.remoteBackendId
-  remoteBackendRegion  = var.remoteBackendRegion
 }
