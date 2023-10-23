@@ -45,6 +45,7 @@ function installRequiredSoftware() {
                  curl \
                  wget \
                  vim \
+                 unzip \
                  git
 
   export CURL_CMD=$(which curl)

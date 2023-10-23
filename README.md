@@ -23,6 +23,7 @@ won't be able to get the token after you clock the popup.
 
 Then define an environment variable called `ACC_TOKEN` in your local machine with the token value.
 You will need also to define following environment variables for Akamai EdgeGrid:
+- `EDGEGRID_ACCOUNT_KEY`
 - `EDGEGRID_HOST`
 - `EDGEGRID_ACCESS_TOKEN`
 - `EDGEGRID_CLIENT_TOKEN`
@@ -34,7 +35,10 @@ EdgeGrid credentials.
 After that, just execute the command `./deploy.sh` in your project directory. Follow the instructions in the console of
 your instance.
 
-If you want to customize the specifications of your instance, please edit the attribute `instance` in `iac/modules/stackscript`
+To undeploy, just execute the command `./undeploy.sh` in your project directory.
+
+If you want to customize the specifications of your provisioning/setup, please edit `iac/modules/provisioning` and/or
+`iac/modules/setup`.
 
 If you
 
