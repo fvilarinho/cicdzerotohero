@@ -20,6 +20,8 @@ function createEnvironmentFile() {
 function createSshKeys() {
   if [ ! -f ~/.ssh/id_rsa ]; then
     ssh-keygen -t rsa -q -f ~/.ssh/id_rsa -N ""
+
+    chmod og+r ~/.ssh/id_rsa
   fi
 }
 
