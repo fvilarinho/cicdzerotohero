@@ -11,7 +11,7 @@ resource "linode_object_storage_key" "remotebackend" {
 }
 
 resource "local_sensitive_file" "edgeGridCredentials" {
-  filename        = var.edgeGridCredentialsFilename
+  filename        = pathexpand(var.edgeGridCredentialsFilename)
   file_permission = "644"
   content         = <<EOT
 [default]
@@ -24,7 +24,7 @@ EOT
 }
 
 resource "local_sensitive_file" "accCredentials" {
-  filename        = var.accCredentialsFilename
+  filename        = pathexpand(var.accCredentialsFilename)
   file_permission = "644"
   content         = <<EOT
 [default]
