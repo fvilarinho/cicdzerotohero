@@ -35,6 +35,7 @@ services:
     volumes:
       - $HOME/.edgerc:/var/jenkins_home/.edgerc
       - $HOME/.aws/credentials:/var/jenkins_home/.aws/credentials
+      - $HOME/.ssh/id_rsa:/var/jenkins_home/.ssh/id_rsa
       - jenkins_data:/var/jenkins_home
     depends_on:
       - gitea

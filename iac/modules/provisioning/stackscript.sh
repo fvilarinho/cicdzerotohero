@@ -17,6 +17,12 @@ function createEnvironmentFile() {
   echo "export ACC_TOKEN=$ACC_TOKEN" >> /root/.env
 }
 
+function createSshKeys() {
+  if [ ! -f ~/.ssh/id_rsa ]; then
+    ssh-keygen -t rsa -q -f ~/.ssh/id_rsa -N ""
+  fi
+}
+
 function setHostname() {
   echo "Setting the hostname..." > /dev/ttyS0
 
@@ -28,6 +34,7 @@ function updateSystem() {
 
   createEnvironmentFile
   setHostname
+  createSshKeys
 
   apt update
   apt -y upgrade

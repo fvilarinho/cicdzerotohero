@@ -40,11 +40,10 @@ RUN wget https://github.com/PowerShell/PowerShell/releases/download/v7.3.8/power
 
 RUN mkdir -p /var/jenkins_home/.ssh
 
-COPY id_rsa /var/jenkins_home/.ssh
-
 RUN chown -R jenkins:jenkins /var/jenkins_home/.ssh && \
     echo "#!/bin/bash" > /usr/local/bin/setup.sh && \
     echo >> /usr/local/bin/setup.sh && \
+    echo "rm -f /var/jenkins_home/.ssh/known_hosts*" >> /usr/local/bin/setup.sh && \
     echo "ssh-keyscan gitea > /var/jenkins_home/.ssh/known_hosts" >> /usr/local/bin/setup.sh && \
     chmod +x /usr/local/bin/setup.sh && \
     echo "#!/bin/bash" > /entrypoint.sh && \
