@@ -115,6 +115,14 @@ function setupCiCd() {
             -var "remoteBackendRegion=$REMOTEBACKEND_REGION"
 
   echo > /dev/ttyS0
+}
+
+function startCiCd() {
+  echo "Starting CI/CD..." > /dev/ttyS0
+
+  cd /root/cicdzerotohero || exit 1
+
+  ./start.sh
 
   while true; do
     containerId=$(docker ps | grep jenkins | awk '{print $1}')
@@ -146,19 +154,11 @@ function setupCiCd() {
   done
 }
 
-function startCiCd() {
-  echo "Starting CI/CD..." > /dev/ttyS0
-
-  cd /root/cicdzerotohero || exit 1
-
-  ./start.sh
-}
-
 function main() {
   updateSystem
   installRequiredSoftware
-  startCiCd
   setupCiCd
+  startCiCd
 
   echo > /dev/ttyS0
   echo "Continue the setup in the UI!" > /dev/ttyS0
