@@ -52,6 +52,7 @@ function installRequiredSoftware() {
   export WGET_CMD=$(which wget)
   export GPG_CMD=$(which gpg)
   export GIT_CMD=$(which git)
+  export UNZIP_CMD=$(which unzip)
 
   installTerraform
   installDocker
@@ -61,11 +62,11 @@ function installRequiredSoftware() {
 function installTerraform() {
   echo "Installing Terraform..." > /dev/ttyS0
 
-  wget https://releases.hashicorp.com/terraform/1.5.7/terraform_1.5.7_linux_amd64.zip -O /tmp/terraform.zip
+  $WGET_CMD https://releases.hashicorp.com/terraform/1.5.7/terraform_1.5.7_linux_amd64.zip -O /tmp/terraform.zip
 
   cd /tmp || exit 1
 
-  unzip terraform.zip
+  $UNZIP_CMD terraform.zip
   mv terraform /usr/local/bin
   chmod +x /usr/local/bin/terraform
 
