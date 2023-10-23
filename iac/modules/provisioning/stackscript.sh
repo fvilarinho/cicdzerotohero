@@ -83,34 +83,9 @@ function installCiCd() {
 function setupCiCd() {
   echo "Setting up the CI/CD..." > /dev/ttyS0
 
-  cd /root/cicdzerotohero/iac || exit 1
+  cd /root/cicdzerotohero || exit 1
 
-  terraform init \
-            -upgrade \
-            -migrate-state > /dev/ttyS0 && \
-  terraform plan \
-            -target=module.setup \
-            -compact-warnings \
-            -var "edgeGridAccountKey=$EDGEGRID_ACCOUNT_KEY" \
-            -var "edgeGridHost=$EDGEGRID_HOST" \
-            -var "edgeGridAccessToken=$EDGEGRID_ACCESS_TOKEN" \
-            -var "edgeGridClientToken=$EDGEGRID_CLIENT_TOKEN" \
-            -var "edgeGridClientSecret=$EDGEGRID_CLIENT_SECRET" \
-            -var "accToken=$ACC_TOKEN" \
-            -var "remoteBackendId=$REMOTEBACKEND_ID" \
-            -var "remoteBackendRegion=$REMOTEBACKEND_REGION" > /dev/ttyS0 && \
-  terraform apply \
-            -auto-approve \
-            -target=module.setup \
-            -compact-warnings \
-            -var "edgeGridAccountKey=$EDGEGRID_ACCOUNT_KEY" \
-            -var "edgeGridHost=$EDGEGRID_HOST" \
-            -var "edgeGridAccessToken=$EDGEGRID_ACCESS_TOKEN" \
-            -var "edgeGridClientToken=$EDGEGRID_CLIENT_TOKEN" \
-            -var "edgeGridClientSecret=$EDGEGRID_CLIENT_SECRET" \
-            -var "accToken=$ACC_TOKEN" \
-            -var "remoteBackendId=$REMOTEBACKEND_ID" \
-            -var "remoteBackendRegion=$REMOTEBACKEND_REGION" > /dev/ttyS0
+  ./setup.sh
 }
 
 function startCiCd() {
