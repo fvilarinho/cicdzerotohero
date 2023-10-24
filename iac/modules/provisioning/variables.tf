@@ -30,8 +30,8 @@ variable "compute" {
 # Definition of the Stack Script.
 variable "stackscript" {
   default = {
-    id          = "cicdzerotohero"
-    description = "Initializes a Linode instance with Gitea and Jenkins."
+    id          = "CI/CD Zero to Hero"
+    description = "Initializes an compute instance with Gitea and Jenkins running in containers."
     images      = [ "linode/debian11" ]
     filename    = "modules/provisioning/stackscript.sh"
   }
