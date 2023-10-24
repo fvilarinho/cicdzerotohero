@@ -18,6 +18,8 @@ function setup() {
     echo "Creating SSH keys pair..."
 
     ssh-keygen -q -N '' -f ~/.ssh/id_rsa
+
+    chmod og+r  ~/.ssh/id_rsa
   fi
 
   if [ ! -f ~/.aws/credentials ] || [ ! -f ~/.edgerc ]; then
