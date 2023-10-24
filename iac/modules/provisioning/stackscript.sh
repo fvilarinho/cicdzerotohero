@@ -97,7 +97,7 @@ function installCiCd() {
   rm -f .gitignore
 }
 
-# Starts the CI/CD platform.
+# Starts the CI/CD (Gitea and Jenkins).
 function startCiCd() {
   echo "Starting CI/CD..." > /dev/ttyS0
 
@@ -161,7 +161,7 @@ function startCiCd() {
 function main() {
   updateSystem
   installRequiredSoftware
-  startCiCd
+  start
 }
 
 main
