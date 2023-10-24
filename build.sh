@@ -6,12 +6,12 @@ function prepareToExecute() {
   source functions.sh
 
   showBanner
+
+  cd iac || exit 1
 }
 
 # Build the container images.
 function build() {
-  cd iac || exit 1
-
   $DOCKER_CMD compose build
 
   echo "Built!"

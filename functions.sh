@@ -26,10 +26,3 @@ function showBanner() {
     cat banner.txt
   fi
 }
-
-# Create SSH pair keys.
-function createSshKeys() {
-  if [ ! -f ~/.ssh/id_rsa ]; then
-    ssh-keygen -q -N '' -f ~/.ssh/id_rsa
-  fi
-}

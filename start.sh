@@ -6,15 +6,46 @@ function prepareToExecute() {
   source functions.sh
 
   showBanner
-}
 
-# Starts the stack locally.
-function start() {
   cd iac || exit 1
 
   # Loads the environment variables.
   source .env
+}
 
+function setup() {
+  if [ ! -f ~/.ssh/id_rsa ]; then
+    ssh-keygen -q -N '' -f ~/.ssh/id_rsa
+  fi
+
+  $TERRAFORM_CMD init \
+                 -upgrade \
+                 -migrate-state
+
+  $TERRAFORM_CMD plan \
+                 -target=module.setup \
+                 -compact-warnings \
+                 -var "edgeGridAccountKey=$EDGEGRID_ACCOUNT_KEY" \
+                 -var "edgeGridHost=$EDGEGRID_HOST" \
+                 -var "edgeGridAccessToken=$EDGEGRID_ACCESS_TOKEN" \
+                 -var "edgeGridClientToken=$EDGEGRID_CLIENT_TOKEN" \
+                 -var "edgeGridClientSecret=$EDGEGRID_CLIENT_SECRET" \
+                 -var "accToken=$ACC_TOKEN"
+
+  $TERRAFORM_CMD apply \
+                 -auto-approve \
+                 -target=module.setup \
+                 -compact-warnings \
+                 -var "edgeGridAccountKey=$EDGEGRID_ACCOUNT_KEY" \
+                 -var "edgeGridHost=$EDGEGRID_HOST" \
+                 -var "edgeGridAccessToken=$EDGEGRID_ACCESS_TOKEN" \
+                 -var "edgeGridClientToken=$EDGEGRID_CLIENT_TOKEN" \
+                 -var "edgeGridClientSecret=$EDGEGRID_CLIENT_SECRET" \
+                 -var "accToken=$ACC_TOKEN"
+}
+
+# Starts the stack locally.
+function start() {
   $DOCKER_CMD compose up -d
 
   echo "Started!"
@@ -24,7 +55,7 @@ function start() {
 function main() {
   prepareToExecute
   checkDependencies
-  createSshKeys
+  setup
   start
 }
 

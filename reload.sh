@@ -6,15 +6,15 @@ function prepareToExecute() {
   source functions.sh
 
   showBanner
-}
 
-# Reloads the stack locally.
-function reload() {
   cd iac || exit 1
 
   # Loads the environment variables.
   source .env
+}
 
+# Reloads the stack locally.
+function reload() {
   $DOCKER_CMD compose down
   $DOCKER_CMD compose up -d
 

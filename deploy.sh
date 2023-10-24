@@ -6,12 +6,12 @@ function prepareToExecute() {
   source functions.sh
 
   showBanner
+
+  cd iac || exit 1
 }
 
 # Deploy the infrastructure.
 function deploy() {
-  cd iac || exit 1
-
   # Initializes Terraform providers and state.
   $TERRAFORM_CMD init \
                  -upgrade \

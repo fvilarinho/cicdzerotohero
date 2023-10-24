@@ -6,15 +6,15 @@ function prepareToExecute() {
   source functions.sh
 
   showBanner
-}
 
-# Stops the stack locally.
-function stop() {
   cd iac || exit 1
 
   # Loads the environment variables.
   source .env
+}
 
+# Stops the stack locally.
+function stop() {
   $DOCKER_CMD compose down
 
   echo "Stopped!"

@@ -18,15 +18,6 @@ function createEnvironmentFile() {
   echo "export ACC_TOKEN=$ACC_TOKEN" >> /root/.env
 }
 
-# Creates the SSH pair keys.
-function createSshKeys() {
-  if [ ! -f ~/.ssh/id_rsa ]; then
-    ssh-keygen -t rsa -q -f ~/.ssh/id_rsa -N ""
-
-    chmod og+r ~/.ssh/id_rsa
-  fi
-}
-
 # Defines the hostname.
 function setHostname() {
   echo "Setting the hostname..." > /dev/ttyS0
@@ -40,7 +31,6 @@ function updateSystem() {
 
   createEnvironmentFile
   setHostname
-  createSshKeys
 
   apt update
   apt -y upgrade
@@ -107,47 +97,6 @@ function installCiCd() {
   rm -f .gitignore
 }
 
-# Setup the CI/CD (Creates credentials and the remote backend).
-function setupCiCd() {
-  echo "Setting up the CI/CD..." > /dev/ttyS0
-
-  cd /root/cicdzerotohero/iac || exit 1
-
-  initializeSetup
-  executeSetup
-}
-
-# Initializes the setup.
-function initializeSetup() {
-  $TERRAFORM_CMD init \
-                 -upgrade \
-                 -migrate-state
-}
-
-# Executes the setup.
-function executeSetup() {
-  $TERRAFORM_CMD plan \
-                 -target=module.setup \
-                 -compact-warnings \
-                 -var "edgeGridAccountKey=$EDGEGRID_ACCOUNT_KEY" \
-                 -var "edgeGridHost=$EDGEGRID_HOST" \
-                 -var "edgeGridAccessToken=$EDGEGRID_ACCESS_TOKEN" \
-                 -var "edgeGridClientToken=$EDGEGRID_CLIENT_TOKEN" \
-                 -var "edgeGridClientSecret=$EDGEGRID_CLIENT_SECRET" \
-                 -var "accToken=$ACC_TOKEN"
-
-  $TERRAFORM_CMD apply \
-                 -auto-approve \
-                 -target=module.setup \
-                 -compact-warnings \
-                 -var "edgeGridAccountKey=$EDGEGRID_ACCOUNT_KEY" \
-                 -var "edgeGridHost=$EDGEGRID_HOST" \
-                 -var "edgeGridAccessToken=$EDGEGRID_ACCESS_TOKEN" \
-                 -var "edgeGridClientToken=$EDGEGRID_CLIENT_TOKEN" \
-                 -var "edgeGridClientSecret=$EDGEGRID_CLIENT_SECRET" \
-                 -var "accToken=$ACC_TOKEN"
-}
-
 # Starts the CI/CD platform.
 function startCiCd() {
   echo "Starting CI/CD..." > /dev/ttyS0
@@ -212,7 +161,6 @@ function startCiCd() {
 function main() {
   updateSystem
   installRequiredSoftware
-  setupCiCd
   startCiCd
 }
 

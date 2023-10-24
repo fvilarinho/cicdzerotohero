@@ -7,6 +7,9 @@ terraform {
     local = {
       source = "hashicorp/local"
     }
+    tls = {
+      source = "hashicorp/tls"
+    }
   }
 }
 
