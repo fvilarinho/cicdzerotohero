@@ -32,6 +32,7 @@ variable "stackscript" {
   default = {
     id          = "CI/CD Zero to Hero"
     description = "Initializes an compute instance with Gitea and Jenkins running in containers."
+    public      = true
     images      = [ "linode/debian11" ]
     filename    = "modules/provisioning/stackscript.sh"
   }

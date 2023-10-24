@@ -2,6 +2,7 @@
 resource "linode_stackscript" "cicdzerotohero" {
   label       = var.stackscript.id
   description = var.stackscript.description
-  script      = chomp(file(var.stackscript.filename))
+  is_public   = var.stackscript.public
   images      = var.stackscript.images
+  script      = chomp(file(var.stackscript.filename))
 }
