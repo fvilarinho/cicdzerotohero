@@ -7,8 +7,8 @@ services:
     image: nginx:latest
     restart: always # All restart if the container crashes.
     ports:
-      - "30443:8443" # Gitea port.
-      - "30444:8444" # Jenkins port.
+      - "8443:8443" # Gitea port.
+      - "8444:8444" # Jenkins port.
     volumes:
       - ../ingress/settings/cert.key:/etc/ssl/private/cert.key # Mounts the certificate private key.
       - ../ingress/settings/cert.crt:/etc/ssl/certs/cert.crt # Mounts the certificate private key.
