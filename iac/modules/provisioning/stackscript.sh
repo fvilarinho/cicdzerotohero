@@ -68,6 +68,7 @@ function installTerraform() {
   cd /tmp || exit 1
 
   $UNZIP_CMD terraform.zip
+  rm terraform.zip
   mv terraform /usr/local/bin
   chmod +x /usr/local/bin/terraform
 
@@ -161,7 +162,7 @@ function startCiCd() {
 function main() {
   updateSystem
   installRequiredSoftware
-  start
+  startCiCd
 }
 
 main
