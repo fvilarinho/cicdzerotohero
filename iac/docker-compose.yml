@@ -2,7 +2,7 @@ version: "3"
 
 services:
   # Proxies Gitea and Jenkins with HTTPs.
-  nginx:
+  ingress:
     platform: linux/amd64 # Force the build and run, to use AMD64 architecture.
     image: nginx:latest
     restart: always # All restart if the container crashes.
