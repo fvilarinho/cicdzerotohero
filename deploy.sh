@@ -45,7 +45,6 @@ function deploy() {
 function main() {
   prepareToExecute
   checkDependencies
-  createSshKeys
   deploy
 }
 

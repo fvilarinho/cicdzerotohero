@@ -15,33 +15,39 @@ function prepareToExecute() {
 
 function setup() {
   if [ ! -f ~/.ssh/id_rsa ]; then
+    echo "Creating SSH keys pair..."
+
     ssh-keygen -q -N '' -f ~/.ssh/id_rsa
   fi
 
-  $TERRAFORM_CMD init \
-                 -upgrade \
-                 -migrate-state
+  if [ ! -f ~/.aws/credentials ] || [ ! -f ~/.edgerc ]; then
+    echo "Creating credentials files..."
 
-  $TERRAFORM_CMD plan \
-                 -target=module.setup \
-                 -compact-warnings \
-                 -var "edgeGridAccountKey=$EDGEGRID_ACCOUNT_KEY" \
-                 -var "edgeGridHost=$EDGEGRID_HOST" \
-                 -var "edgeGridAccessToken=$EDGEGRID_ACCESS_TOKEN" \
-                 -var "edgeGridClientToken=$EDGEGRID_CLIENT_TOKEN" \
-                 -var "edgeGridClientSecret=$EDGEGRID_CLIENT_SECRET" \
-                 -var "accToken=$ACC_TOKEN"
+    $TERRAFORM_CMD init \
+                   -upgrade \
+                   -migrate-state > /dev/null
 
-  $TERRAFORM_CMD apply \
-                 -auto-approve \
-                 -target=module.setup \
-                 -compact-warnings \
-                 -var "edgeGridAccountKey=$EDGEGRID_ACCOUNT_KEY" \
-                 -var "edgeGridHost=$EDGEGRID_HOST" \
-                 -var "edgeGridAccessToken=$EDGEGRID_ACCESS_TOKEN" \
-                 -var "edgeGridClientToken=$EDGEGRID_CLIENT_TOKEN" \
-                 -var "edgeGridClientSecret=$EDGEGRID_CLIENT_SECRET" \
-                 -var "accToken=$ACC_TOKEN"
+    $TERRAFORM_CMD plan \
+                   -target=module.setup \
+                   -compact-warnings \
+                   -var "edgeGridAccountKey=$EDGEGRID_ACCOUNT_KEY" \
+                   -var "edgeGridHost=$EDGEGRID_HOST" \
+                   -var "edgeGridAccessToken=$EDGEGRID_ACCESS_TOKEN" \
+                   -var "edgeGridClientToken=$EDGEGRID_CLIENT_TOKEN" \
+                   -var "edgeGridClientSecret=$EDGEGRID_CLIENT_SECRET" \
+                   -var "accToken=$ACC_TOKEN" > /dev/null
+
+    $TERRAFORM_CMD apply \
+                   -auto-approve \
+                   -target=module.setup \
+                   -compact-warnings \
+                   -var "edgeGridAccountKey=$EDGEGRID_ACCOUNT_KEY" \
+                   -var "edgeGridHost=$EDGEGRID_HOST" \
+                   -var "edgeGridAccessToken=$EDGEGRID_ACCESS_TOKEN" \
+                   -var "edgeGridClientToken=$EDGEGRID_CLIENT_TOKEN" \
+                   -var "edgeGridClientSecret=$EDGEGRID_CLIENT_SECRET" \
+                   -var "accToken=$ACC_TOKEN" > /dev/null
+  fi
 }
 
 # Starts the stack locally.
