@@ -19,18 +19,19 @@ function prepareToExecute() {
   cd iac || exit 1
 }
 
-# Build the container images.
-function build() {
-  $DOCKER_CMD compose build
+# Reloads the stack locally.
+function reload() {
+  $DOCKER_CMD compose down
+  $DOCKER_CMD compose up -d
 
-  echo "Built!"
+  echo "Reloaded!"
 }
 
 # Main function.
 function main() {
   prepareToExecute
   checkDependencies
-  build
+  reload
 }
 
 main

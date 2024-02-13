@@ -36,6 +36,14 @@ Define the environment variables below in your local machine:
 
 or define the credentials in the `iac/.credentials` filename. Please follow the template `iac/.credentials.template`.
 
+### To run it in you local machine
+
+Just execute the commands below:
+
+- `start.sh`: Starts the stack.
+- `stop.sh`: Stops the stack.
+- `reload.sh`: Reloads the stack.
+
 ### To run it in Akamai Connected Cloud
 
 You'll need to create an API Token in Akamai Connected Cloud. Please follow this path: Click in your

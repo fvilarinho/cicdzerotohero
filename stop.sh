@@ -19,18 +19,18 @@ function prepareToExecute() {
   cd iac || exit 1
 }
 
-# Build the container images.
-function build() {
-  $DOCKER_CMD compose build
+# Stops the stack locally.
+function stop() {
+  $DOCKER_CMD compose down
 
-  echo "Built!"
+  echo "Stopped!"
 }
 
 # Main function.
 function main() {
   prepareToExecute
   checkDependencies
-  build
+  stop
 }
 
 main

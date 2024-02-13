@@ -48,6 +48,8 @@ function deploy() {
                  -var "edgeGridClientToken=$EDGEGRID_CLIENT_TOKEN" \
                  -var "edgeGridClientSecret=$EDGEGRID_CLIENT_SECRET" \
                  -var "accToken=$ACC_TOKEN"
+
+  echo "Deployed!"
 }
 
 # Main function.
