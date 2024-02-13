@@ -160,8 +160,18 @@ function startCiCd() {
 
   ip=$(curl ipinfo.io/ip)
 
-  echo "For Gitea, access https://$ip:8443" > /dev/ttyS0
-  echo "For Jenkins, access https://$ip:8444" > /dev/ttyS0
+  echo "Edit your hosts file and add the following lines:" > /dev/ttyS0
+  echo "$ip gitea.localdomain" > /dev/ttyS0
+  echo "$ip jenkins.localdomain" > /dev/ttyS0
+
+  echo > /dev/ttyS0
+
+  echo "Then" > /dev/ttyS0
+
+  echo > /dev/ttyS0
+
+  echo "For Gitea, browse https://gitea.localdomain" > /dev/ttyS0
+  echo "For Jenkins, browse https://jenkins.localdomain" > /dev/ttyS0
 }
 
 # Main function.
