@@ -1,5 +1,14 @@
 #!/bin/bash
 
+# Check the dependencies to run this scripts.
+function checkDependencies() {
+  if [ -z "$TERRAFORM_CMD" ]; then
+    echo "Terraform is not installed! Please install it first to continue!"
+
+    exit 1
+  fi
+}
+
 # Prepares the environment to execute this script.
 function prepareToExecute() {
   # Loads utility functions.
@@ -8,6 +17,8 @@ function prepareToExecute() {
   showBanner
 
   cd iac || exit 1
+
+  source .env
 }
 
 # Deploy the infrastructure.
