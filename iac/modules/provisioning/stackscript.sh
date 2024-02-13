@@ -98,6 +98,8 @@ function installCiCd() {
 
   cd /root/cicdzerotohero || exit 1
 
+  chmod +x *.sh
+
   rm -rf .git
   rm -f .gitignore
 }
