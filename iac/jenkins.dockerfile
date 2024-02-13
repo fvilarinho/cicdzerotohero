@@ -5,7 +5,8 @@ FROM jenkins/jenkins:lts
 USER root
 
 # Update the system and install basic software.
-RUN apt update && \
+RUN export DEBIAN_FRONTEND=noninteractive && \
+    apt update && \
     apt -y upgrade && \
     apt -y install ca-certificates \
                    gnupg2 \

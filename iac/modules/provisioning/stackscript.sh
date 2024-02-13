@@ -32,6 +32,8 @@ function updateSystem() {
   createEnvironmentFile
   setHostname
 
+  export DEBIAN_FRONTEND=noninteractive && \
+
   apt update
   apt -y upgrade
 }
@@ -39,6 +41,8 @@ function updateSystem() {
 # Install required software.
 function installRequiredSoftware() {
   echo "Installing required software..." > /dev/ttyS0
+
+  export DEBIAN_FRONTEND=noninteractive
 
   apt -y install ca-certificates \
                  gnupg2 \
