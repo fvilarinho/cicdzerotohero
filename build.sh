@@ -8,6 +8,9 @@ function prepareToExecute() {
   showBanner
 
   cd iac || exit 1
+
+  # Loads the environment variables.
+  source .env
 }
 
 # Build the container images.
