@@ -32,7 +32,7 @@ function updateSystem() {
   createEnvironmentFile
   setHostname
 
-  export DEBIAN_FRONTEND=noninteractive && \
+  export DEBIAN_FRONTEND=noninteractive
 
   apt update
   apt -y upgrade
