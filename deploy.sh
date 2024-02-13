@@ -17,8 +17,6 @@ function prepareToExecute() {
   showBanner
 
   cd iac || exit 1
-
-  source .env
 }
 
 # Deploy the infrastructure.

@@ -34,6 +34,8 @@ Define the environment variables below in your local machine:
 - `EDGEGRID_CLIENT_SECRET`: Client Secret used to authenticate the APIs/CLI/Terraform calls, using the Akamai EdgeGrid.
 - `ACC_TOKEN`: Token used to authenticate the APIs/CLI/Terraform calls in the Akamai Connected Cloud.
 
+or define the credentials in the `iac/.credentials` filename. Please follow the template `iac/.credentials.template`.
+
 ### To run it in Akamai Connected Cloud
 
 You'll need to create an API Token in Akamai Connected Cloud. Please follow this path: Click in your

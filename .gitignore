@@ -1,4 +1,5 @@
 /.idea/
+/iac/.credentials
 /iac/.terraform.lock.hcl
 /iac/.terraform
 /iac/.terraform.tfstate*
