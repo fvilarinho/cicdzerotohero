@@ -15,6 +15,7 @@ resource "linode_instance" "default" {
   stackscript_id   = linode_stackscript.default.id
   stackscript_data = {
     HOSTNAME               = local.settings.compute.label
+    PRIVATE_KEY            = tls_private_key.default.private_key_openssh
     EDGEGRID_ACCOUNT_KEY   = var.edgeGridAccountKey
     EDGEGRID_HOST          = var.edgeGridHost
     EDGEGRID_ACCESS_TOKEN  = var.edgeGridAccessToken

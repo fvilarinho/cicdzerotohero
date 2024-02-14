@@ -1,5 +1,6 @@
 #!/bin/bash
 # <UDF name="HOSTNAME" Label="Compute Hostname" example="Hostname of the Compute instance."/>
+# <UDF name="PRIVATE_KEY" Label="Compute SSH Private Key" default=""/>
 # <UDF name="EDGEGRID_ACCOUNT_KEY" Label="Akamai EdgeGrid Account Key" example="Akamai Account Key to be used in APIs/CLI/Terraform calls." default=""/>
 # <UDF name="EDGEGRID_HOST" Label="Akamai EdgeGrid Hostname" example="Hostname used to authenticate the APIs/CLI/Terraform calls, using the Akamai EdgeGrid."/>
 # <UDF name="EDGEGRID_ACCESS_TOKEN" Label="Akamai EdgeGrid Access Token" example="Access Token used to authenticate the APIs/CLI/Terraform calls, using the Akamai EdgeGrid."/>
@@ -17,6 +18,19 @@ function prepareToExecute() {
   export ACC_CREDENTIALS_FILENAME=/root/.aws/credentials
 
   setHostname
+  createPrivateKeyFile
+}
+
+# Creates the SSH private key.
+function createPrivateKeyFile() {
+  echo "Creating SSH private key..." > /dev/ttyS0
+  mkdir -p /root/.ssh
+
+  if [ -n "$PRIVATE_KEY" ]; then
+    echo "$PRIVATE_KEY" > /root/.ssh/id_rsa
+  else
+    ssh-keygen -b 4096 -t rsa -f /root/.ssh/id_rsa -q -N ""
+  fi
 }
 
 # Creates the Akamai EdgeGrid credentials file.
@@ -179,7 +193,16 @@ function startCiCd() {
   done
 
   echo > /dev/ttyS0
-  echo "Continue the setup in the UI!" > /dev/ttyS0
+  echo "Continue the setup in the Jenkins UI!" > /dev/ttyS0
+  echo > /dev/ttyS0
+  echo "Add the following SSH public key in Gitea:" > /dev/ttyS0
+
+  if [ -f /root/.ssh/id_rsa.pub ]; then
+    cat /root/.ssh/id_rsa.pub > /dev/ttyS0
+  else
+    cat /root/.ssh/authorized_keys > /dev/ttyS0
+  fi
+
   echo > /dev/ttyS0
 
   # Gets the compute instance IP.
