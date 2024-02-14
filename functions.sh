@@ -1,5 +1,26 @@
 #!/bin/bash
 
+# Shows the labels.
+function showLabel() {
+  if [[ "$0" == *"build.sh"* ]]; then
+    echo "** Build/Package **"
+  elif [[ "$0" == *"publish.sh"* ]]; then
+    echo "** Publish **"
+  elif [[ "$0" == *"start.sh"* ]]; then
+    echo "** Start **"
+  elif [[ "$0" == *"stop.sh"* ]]; then
+    echo "** Stop **"
+  elif [[ "$0" == *"reload.sh"* ]]; then
+    echo "** Reload **"
+  elif [[ "$0" == *"undeploy.sh"* ]]; then
+    echo "** Undeploy **"
+  elif [[ "$0" == *"deploy.sh"* ]]; then
+    echo "** Deploy **"
+  fi
+
+  echo
+}
+
 # Gets a credential value.
 function getCredential() {
   if [ -f "$CREDENTIALS_FILENAME" ]; then
@@ -52,6 +73,8 @@ function showBanner() {
   if [ -f banner.txt ]; then
     cat banner.txt
   fi
+
+  showLabel
 }
 
 prepareToExecute
