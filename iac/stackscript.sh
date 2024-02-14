@@ -5,17 +5,44 @@
 # <UDF name="EDGEGRID_ACCESS_TOKEN" Label="Akamai EdgeGrid Access Token" example="Access Token used to authenticate the APIs/CLI/Terraform calls, using the Akamai EdgeGrid."/>
 # <UDF name="EDGEGRID_CLIENT_TOKEN" Label="Akamai EdgeGrid Client Token" example="Client Token used to authenticate the APIs/CLI/Terraform calls, using the Akamai EdgeGrid."/>
 # <UDF name="EDGEGRID_CLIENT_SECRET" Label="Akamai EdgeGrid Client Secret" example="Client Secret used to authenticate the APIs/CLI/Terraform calls, using the Akamai EdgeGrid."/>
-# <UDF name="ACC_TOKEN" Label="Akamai Connected Cloud Access Key" example="Token used to authenticate the APIs/CLI/Terraform calls in the Akamai Connected Cloud."/>
+# <UDF name="ACC_TOKEN" Label="Akamai Connected Cloud Token" example="Token used to authenticate the APIs/CLI/Terraform calls in the Akamai Connected Cloud."/>
+# <UDF name="ACC_ACCESS_KEY" Label="Akamai Connected Cloud Access Key" example="Access Key used to authenticate in Akamai Connected Cloud Object Storage, used for Terraform State Management."/>
+# <UDF name="ACC_SECRET_KEY" Label="Akamai Connected Cloud Secret Key" example="Access Key used to authenticate in Akamai Connected Cloud Object Storage, used for Terraform State Management."/>
 
-# Creates the environment file with all required variables.
-function createEnvironmentFile() {
-  echo "export HOSTNAME=$HOSTNAME" > /root/.env
-  echo "export EDGEGRID_ACCOUNT_KEY=$EDGEGRID_ACCOUNT_KEY" >> /root/.env
-  echo "export EDGEGRID_HOST=$EDGEGRID_HOST" >> /root/.env
-  echo "export EDGEGRID_ACCESS_TOKEN=$EDGEGRID_ACCESS_TOKEN" >> /root/.env
-  echo "export EDGEGRID_CLIENT_TOKEN=$EDGEGRID_CLIENT_TOKEN" >> /root/.env
-  echo "export EDGEGRID_CLIENT_SECRET=$EDGEGRID_CLIENT_SECRET" >> /root/.env
-  echo "export ACC_TOKEN=$ACC_TOKEN" >> /root/.env
+# Prepares the environment to execute this script.
+function prepareToExecute() {
+  # Required environment variables.
+  export EDGEGRID_CREDENTIALS_FILENAME=/root/.edgerc
+  export ACC_CREDENTIALS_DIR=/root/.aws
+  export ACC_CREDENTIALS_FILENAME=/root/.aws/credentials
+
+  setHostname
+}
+
+# Creates the Akamai EdgeGrid credentials file.
+function createEdgeGridCredentialsFile() {
+  echo "[default]" > "$EDGEGRID_CREDENTIALS_FILENAME"
+
+  # Checks if the account key was defined.
+  if [ -n "$EDGEGRID_ACCOUNT_KEY" ]; then
+    echo "account_key   = $EDGEGRID_ACCOUNT_KEY" >> "$EDGEGRID_CREDENTIALS_FILENAME"
+  fi
+
+  echo "client_secret = $EDGEGRID_CLIENT_SECRET" >> "$EDGEGRID_CREDENTIALS_FILENAME"
+  echo "host          = $EDGEGRID_HOST" >> "$EDGEGRID_CREDENTIALS_FILENAME"
+  echo "access_token  = $EDGEGRID_ACCESS_TOKEN" >> "$EDGEGRID_CREDENTIALS_FILENAME"
+  echo "client_token  = $EDGEGRID_CLIENT_TOKEN" >> "$EDGEGRID_CREDENTIALS_FILENAME"
+}
+
+# Creates the Akamai Connected Cloud credentials file.
+function createAccCredentialsFile() {
+  # Creates the directory if does not exist.
+  mkdir -p "$ACC_CREDENTIALS_DIR"
+
+  echo "[default]" > "$ACC_CREDENTIALS_FILENAME"
+  echo "token                 = $ACC_TOKEN" >> "$ACC_CREDENTIALS_FILENAME"
+  echo "aws_access_key_id     = $ACC_ACCESS_KEY" >> "$ACC_CREDENTIALS_FILENAME"
+  echo "aws_secret_access_key = $ACC_SECRET_KEY" >> "$ACC_CREDENTIALS_FILENAME"
 }
 
 # Defines the hostname.
@@ -25,25 +52,30 @@ function setHostname() {
   hostnamectl set-hostname "$HOSTNAME"
 }
 
-# Update the system with all required software and files.
+# Updates the system with all required software and files.
 function updateSystem() {
   echo "Updating the system..." > /dev/ttyS0
 
-  createEnvironmentFile
-  setHostname
-
+  # Avoid human interaction.
   export DEBIAN_FRONTEND=noninteractive
 
+  # Update the packages repositories.
   apt update
+
+  # Update the system.
   apt -y upgrade
+
+  installRequiredSoftware
 }
 
-# Install required software.
+# Installs the required software.
 function installRequiredSoftware() {
   echo "Installing required software..." > /dev/ttyS0
 
+  # Avoid human interaction.
   export DEBIAN_FRONTEND=noninteractive
 
+  # Install required binaries.
   apt -y install ca-certificates \
                  gnupg2 \
                  curl \
@@ -52,54 +84,43 @@ function installRequiredSoftware() {
                  unzip \
                  git
 
+  # Required binaries environment variables.
   export CURL_CMD=$(which curl)
   export WGET_CMD=$(which wget)
   export GPG_CMD=$(which gpg)
   export GIT_CMD=$(which git)
   export UNZIP_CMD=$(which unzip)
 
-  installTerraform
   installDocker
   installCiCd
 }
 
-# Install Terraform.
-function installTerraform() {
-  echo "Installing Terraform..." > /dev/ttyS0
-
-  $WGET_CMD https://releases.hashicorp.com/terraform/1.5.7/terraform_1.5.7_linux_amd64.zip -O /tmp/terraform.zip
-
-  cd /tmp || exit 1
-
-  $UNZIP_CMD terraform.zip
-  rm terraform.zip
-  mv terraform /usr/local/bin
-  chmod +x /usr/local/bin/terraform
-
-  export TERRAFORM_CMD=$(which terraform)
-}
-
-# Install Docker.
+# Installs Docker.
 function installDocker() {
   echo "Installing Docker..." > /dev/ttyS0
 
+  # Downloads Docker installation script.
   $CURL_CMD https://get.docker.com | sh -
 
+  # Enables it in boot.
   systemctl enable docker
 
   export DOCKER_CMD=$(which docker)
 }
 
-# Install the CI/CD (Gitea and Jenkins).
+# Installs the CI/CD (Gitea and Jenkins).
 function installCiCd() {
   echo "Installing CI/CD..." > /dev/ttyS0
 
+  # Downloads the CI/CD repository.
   $GIT_CMD clone https://github.com/fvilarinho/cicdzerotohero /root/cicdzerotohero
 
   cd /root/cicdzerotohero || exit 1
 
+  # Gives permission to execute.
   chmod +x *.sh
 
+  # Clean-up.
   rm -rf .git
   rm -f .gitignore
 }
@@ -107,6 +128,9 @@ function installCiCd() {
 # Starts the CI/CD (Gitea and Jenkins).
 function startCiCd() {
   echo "Starting CI/CD..." > /dev/ttyS0
+
+  createEdgeGridCredentialsFile
+  createAccCredentialsFile
 
   cd /root/cicdzerotohero || exit 1
 
@@ -158,7 +182,8 @@ function startCiCd() {
   echo "Continue the setup in the UI!" > /dev/ttyS0
   echo > /dev/ttyS0
 
-  ip=$(curl ipinfo.io/ip)
+  # Gets the compute instance IP.
+  ip=$($CURL_CMD ipinfo.io/ip)
 
   echo "Edit your hosts file and add the following lines:" > /dev/ttyS0
   echo "$ip gitea.localdomain" > /dev/ttyS0
@@ -176,8 +201,8 @@ function startCiCd() {
 
 # Main function.
 function main() {
+  prepareToExecute
   updateSystem
-  installRequiredSoftware
   startCiCd
 }
 

@@ -1,21 +1,20 @@
-# Provisioning module.
-module "provisioning" {
-  source               = "./modules/provisioning"
-  edgeGridAccountKey   = var.edgeGridAccountKey
-  edgeGridHost         = var.edgeGridHost
-  edgeGridAccessToken  = var.edgeGridAccessToken
-  edgeGridClientToken  = var.edgeGridClientToken
-  edgeGridClientSecret = var.edgeGridClientSecret
-  accToken             = var.accToken
+# Terraform definition.
+terraform {
+  # Required providers definition.
+  required_providers {
+    linode = {
+      source = "linode/linode"
+    }
+    null = {
+      source = "hashicorp/null"
+    }
+    random = {
+      source = "hashicorp/random"
+    }
+  }
 }
 
-# Setup module.
-module "setup" {
-  source               = "./modules/setup"
-  edgeGridAccountKey   = var.edgeGridAccountKey
-  edgeGridHost         = var.edgeGridHost
-  edgeGridAccessToken  = var.edgeGridAccessToken
-  edgeGridClientToken  = var.edgeGridClientToken
-  edgeGridClientSecret = var.edgeGridClientSecret
-  accToken             = var.accToken
+# Definition of local variables.
+locals {
+  settings = jsondecode(file(pathexpand(var.settingsFilename)))
 }

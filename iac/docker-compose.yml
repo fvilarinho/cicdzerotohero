@@ -20,8 +20,7 @@ services:
   # Git server (Gitea).
   gitea:
     platform: linux/amd64 # Force the build and run, to use AMD64 architecture.
-    build:
-      dockerfile: gitea.dockerfile
+    build: ../gitea
     image: ${DOCKER_REGISTRY_URL}/${DOCKER_REGISTRY_ID}/gitea:${BUILD_VERSION}
     restart: always # All restart if the container crashes.
     volumes:
@@ -30,9 +29,10 @@ services:
   # CI/CD server (Jenkins).
   jenkins:
     platform: linux/amd64 # Force the build and run, to use AMD64 architecture.
-    build:
-      dockerfile: jenkins.dockerfile
+    build: ../jenkins
     image: ${DOCKER_REGISTRY_URL}/${DOCKER_REGISTRY_ID}/jenkins:${BUILD_VERSION}
+    # environment:
+    #   - GITEA_HOST=gitea
     restart: always # All restart if the container crashes.
     volumes:
       - $HOME/.edgerc:/var/jenkins_home/.edgerc # Mount the Akamai EdgeGrid credentials.

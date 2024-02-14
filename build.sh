@@ -11,7 +11,6 @@ function checkDependencies() {
 
 # Prepares the environment to execute this script.
 function prepareToExecute() {
-  # Loads utility functions.
   source functions.sh
 
   showBanner
@@ -19,11 +18,9 @@ function prepareToExecute() {
   cd iac || exit 1
 }
 
-# Build the container images.
+# Builds the container images.
 function build() {
   $DOCKER_CMD compose build
-
-  echo "Built!"
 }
 
 # Main function.

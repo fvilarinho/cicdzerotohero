@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Check the dependencies to run this scripts.
+# Checks the dependencies to run this scripts.
 function checkDependencies() {
   if [ -z "$DOCKER_CMD" ]; then
     echo "Docker is not installed! Please install it first to continue!"
@@ -11,7 +11,6 @@ function checkDependencies() {
 
 # Prepares the environment to execute this script.
 function prepareToExecute() {
-  # Loads utility functions.
   source functions.sh
 
   showBanner
@@ -19,11 +18,9 @@ function prepareToExecute() {
   cd iac || exit 1
 }
 
-# Stops the stack locally.
+# Stops the stack.
 function stop() {
   $DOCKER_CMD compose down
-
-  echo "Stopped!"
 }
 
 # Main function.

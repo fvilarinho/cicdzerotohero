@@ -1,6 +1,6 @@
 /.idea/
 /iac/.credentials
-/iac/.terraform.lock.hcl
-/iac/.terraform
-/iac/.terraform.tfstate*
+/iac/.terraform*
+/iac/settings.json
 /iac/terraform.tfstate*
+/iac/.id_rsa

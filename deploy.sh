@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Check the dependencies to run this scripts.
+# Checks the dependencies to run this scripts.
 function checkDependencies() {
   if [ -z "$TERRAFORM_CMD" ]; then
     echo "Terraform is not installed! Please install it first to continue!"
@@ -11,7 +11,6 @@ function checkDependencies() {
 
 # Prepares the environment to execute this script.
 function prepareToExecute() {
-  # Loads utility functions.
   source functions.sh
 
   showBanner
@@ -19,37 +18,19 @@ function prepareToExecute() {
   cd iac || exit 1
 }
 
-# Deploy the infrastructure.
+# Deploys the infrastructure based on the IaC files.
 function deploy() {
   # Initializes Terraform providers and state.
   $TERRAFORM_CMD init \
                  -upgrade \
-                 -migrate-state
+                 -migrate-state || exit 1
 
-  # Plans/Validates the infrastructure provisioning.
-  $TERRAFORM_CMD plan \
-                 -compact-warnings \
-                 -target=module.provisioning \
-                 -var "edgeGridAccountKey=$EDGEGRID_ACCOUNT_KEY" \
-                 -var "edgeGridHost=$EDGEGRID_HOST" \
-                 -var "edgeGridAccessToken=$EDGEGRID_ACCESS_TOKEN" \
-                 -var "edgeGridClientToken=$EDGEGRID_CLIENT_TOKEN" \
-                 -var "edgeGridClientSecret=$EDGEGRID_CLIENT_SECRET" \
-                 -var "accToken=$ACC_TOKEN"
+  # Plans/Validates the provisioning.
+  $TERRAFORM_CMD plan || exit 1
 
-  # Applies the infrastructure provisioning.
+  # Applies the provisioning based on the plan.
   $TERRAFORM_CMD apply \
-                 -compact-warnings \
-                 -auto-approve \
-                 -target=module.provisioning \
-                 -var "edgeGridAccountKey=$EDGEGRID_ACCOUNT_KEY" \
-                 -var "edgeGridHost=$EDGEGRID_HOST" \
-                 -var "edgeGridAccessToken=$EDGEGRID_ACCESS_TOKEN" \
-                 -var "edgeGridClientToken=$EDGEGRID_CLIENT_TOKEN" \
-                 -var "edgeGridClientSecret=$EDGEGRID_CLIENT_SECRET" \
-                 -var "accToken=$ACC_TOKEN"
-
-  echo "Deployed!"
+                 -auto-approve
 }
 
 # Main function.

@@ -1,17 +1,39 @@
 # Akamai EdgeGrid Account Key.
-variable "edgeGridAccountKey" {}
+variable "edgeGridAccountKey" {
+  type = string
+}
 
 # Akamai EdgeGrid Hostname.
-variable "edgeGridHost" {}
+variable "edgeGridHost" {
+  type = string
+}
 
 # Akamai EdgeGrid Access Token.
-variable "edgeGridAccessToken" {}
+variable "edgeGridAccessToken" {
+  type = string
+}
 
 # Akamai EdgeGrid Client Token.
-variable "edgeGridClientToken" {}
+variable "edgeGridClientToken" {
+  type = string
+}
 
 # Akamai EdgeGrid Client Secret.
-variable "edgeGridClientSecret" {}
+variable "edgeGridClientSecret" {
+  type = string
+}
 
 # Akamai Connected Cloud Token.
-variable "accToken" {}
+variable "accToken" {
+  type = string
+}
+
+# Definition of the settings filename.
+variable "settingsFilename" {
+  type = string
+}
+
+# Definition of the SSH private key filename.
+variable "privateKeyFilename" {
+  type = string
+}
