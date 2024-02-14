@@ -195,7 +195,7 @@ function startCiCd() {
   echo > /dev/ttyS0
   echo "Continue the setup in the Jenkins UI!" > /dev/ttyS0
   echo > /dev/ttyS0
-  echo "Add the following SSH public key in Gitea:" > /dev/ttyS0
+  echo "Add the SSH public key in Gitea!" > /dev/ttyS0
 
   if [ -f /root/.ssh/id_rsa.pub ]; then
     cat /root/.ssh/id_rsa.pub > /dev/ttyS0
