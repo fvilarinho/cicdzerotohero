@@ -26,7 +26,7 @@ resource "linode_sshkey" "default" {
 
 # Creates the Terraform remote backend for state management in the Akamai Connected Cloud object storage.
 resource "linode_object_storage_key" "remoteBackend" {
-  label = local.settings.remoteBackend.id
+  label = local.settings.id
 
   bucket_access {
     bucket_name = local.settings.remoteBackend.id
