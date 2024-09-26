@@ -1,0 +1,31 @@
+name: CI/CD Zero to Hero pipeline
+
+on:
+  push:
+    tags: [ "*" ]
+    branches: [ "*" ]
+    paths-ignore:
+      - "iac/*.tf"
+      - "bin/**/*"
+      - "etc/**/*"
+      - "deploy.sh"
+      - "undeploy.sh"
+      - "functions.sh"
+      - "*.md"
+      - "LICENSE"
+      - "banner.txt"
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Jobs
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download the project files.
+        uses: actions/checkout@v4
+
+      - name: Build services.
+        run: ./build.sh
