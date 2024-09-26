@@ -2,14 +2,14 @@ data "linode_domain" "default" {
   domain = var.settings.general.domain
 }
 
-resource "linode_domain_record" "default" {
+resource "linode_domain_record" "server" {
   domain_id   = data.linode_domain.default.id
   name        = "gitea.${var.settings.general.domain}"
   record_type = "A"
-  target      = linode_instance.default.ip_address
+  target      = linode_instance.server.ip_address
   ttl_sec     = 30
   depends_on  = [
     data.linode_domain.default,
-    linode_instance.default
+    linode_instance.server
   ]
 }

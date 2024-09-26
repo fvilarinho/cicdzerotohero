@@ -1,5 +1,5 @@
 # Definition of the compute instance.
-resource "linode_instance" "default" {
+resource "linode_instance" "server" {
   label           = var.settings.server.label
   tags            = var.settings.server.tags
   region          = var.settings.server.region
@@ -32,14 +32,14 @@ resource "linode_instance" "default" {
   ]
 }
 
-resource "null_resource" "applyStack" {
+resource "null_resource" "applyServerStack" {
   triggers = {
     always_run = timestamp()
   }
 
   provisioner "remote-exec" {
     connection {
-      host        = linode_instance.default.ip_address
+      host        = linode_instance.server.ip_address
       user        = "root"
       private_key = tls_private_key.default.private_key_openssh
     }
@@ -53,7 +53,7 @@ resource "null_resource" "applyStack" {
 
   provisioner "file" {
     connection {
-      host        = linode_instance.default.ip_address
+      host        = linode_instance.server.ip_address
       user        = "root"
       private_key = tls_private_key.default.private_key_openssh
     }
@@ -64,7 +64,7 @@ resource "null_resource" "applyStack" {
 
   provisioner "file" {
     connection {
-      host        = linode_instance.default.ip_address
+      host        = linode_instance.server.ip_address
       user        = "root"
       private_key = tls_private_key.default.private_key_openssh
     }
@@ -75,7 +75,7 @@ resource "null_resource" "applyStack" {
 
   provisioner "file" {
     connection {
-      host        = linode_instance.default.ip_address
+      host        = linode_instance.server.ip_address
       user        = "root"
       private_key = tls_private_key.default.private_key_openssh
     }
@@ -86,7 +86,7 @@ resource "null_resource" "applyStack" {
 
   provisioner "file" {
     connection {
-      host        = linode_instance.default.ip_address
+      host        = linode_instance.server.ip_address
       user        = "root"
       private_key = tls_private_key.default.private_key_openssh
     }
@@ -97,7 +97,7 @@ resource "null_resource" "applyStack" {
 
   provisioner "remote-exec" {
     connection {
-      host        = linode_instance.default.ip_address
+      host        = linode_instance.server.ip_address
       user        = "root"
       private_key = tls_private_key.default.private_key_openssh
     }
@@ -105,5 +105,32 @@ resource "null_resource" "applyStack" {
     inline = [ "cd /root/${var.settings.server.label} ; docker compose up -d"]
   }
 
-  depends_on = [ linode_instance.default ]
+  depends_on = [ linode_instance.server ]
+}
+
+resource "linode_instance" "runner" {
+  label           = var.settings.runner.label
+  tags            = var.settings.runner.tags
+  region          = var.settings.runner.region
+  type            = var.settings.runner.type
+  image           = var.settings.runner.image
+  authorized_keys = [ linode_sshkey.default.ssh_key ]
+
+  provisioner "remote-exec" {
+    connection {
+      host        = self.ip_address
+      user        = "root"
+      private_key = tls_private_key.default.private_key_openssh
+    }
+
+    inline = [
+      "apt update",
+      "apt -y upgrade",
+      "hostnamectl set-hostname ${var.settings.runner.label}",
+      "apt -y install curl wget unzip zip dnsutils net-tools htop",
+      "curl https://get.docker.com | sh -",
+    ]
+  }
+
+  depends_on = [ linode_instance.server ]
 }

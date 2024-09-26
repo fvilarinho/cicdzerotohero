@@ -16,18 +16,19 @@ variable "settings" {
 
     server = {
       label  = "gitea-server"
-      tags = ["cicd", "devops"]
+      tags = ["cicd", "server", "devops"]
       region = "br-gru"
       type   = "g6-standard-4"
       image  = "linode/debian11"
     }
 
     runner = {
-      label  = "gitea-runner"
-      tags = ["cicd", "devops"]
-      region = "br-gru"
-      type   = "g6-standard-4"
-      image  = "linode/debian11"
+      label             = "gitea-runner"
+      tags              = ["cicd", "runner", "devops"]
+      region            = "br-gru"
+      type              = "g6-standard-4"
+      image             = "linode/debian11"
+      registrationToken = "<registrationToken>"
     }
   }
 }
