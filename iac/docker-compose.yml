@@ -1,48 +1,26 @@
-version: "3"
-
 services:
-  # Proxies Gitea and Jenkins with HTTPs.
   ingress:
-    platform: linux/amd64 # Force the build and run, to use AMD64 architecture.
     image: nginx:latest
-    restart: always # All restart if the container crashes.
+    container_name: ingress
+    hostname: ingress
     ports:
       - "443:443"
     volumes:
-      - ../ingress/settings/cert.key:/etc/ssl/private/cert.key # Mounts the certificate private key.
-      - ../ingress/settings/cert.crt:/etc/ssl/certs/cert.crt # Mounts the certificate private key.
-      - ../ingress/settings/default.conf:/etc/nginx/conf.d/default.conf # Mounts the proxy configuration for Gitea.
-      - ../ingress/settings/jenkins.conf:/etc/nginx/conf.d/jenkins.conf # Mounts the proxy configuration for Jenkins.
+      - ./etc/ssl/private/privkey.pem:/etc/ssl/private/privkey.pem
+      - ./etc/ssl/certs/fullchain.pem:/etc/ssl/certs/fullchain.pem
+      - ./etc/nginx/conf.d/default.conf:/etc/nginx/conf.d/default.conf
+    restart: always
     depends_on:
       - gitea
-      - jenkins
 
-  # Git server (Gitea).
   gitea:
-    platform: linux/amd64 # Force the build and run, to use AMD64 architecture.
-    build: ../gitea
-    image: ${DOCKER_REGISTRY_URL}/${DOCKER_REGISTRY_ID}/gitea:${BUILD_VERSION}
-    restart: always # All restart if the container crashes.
+    image: gitea/gitea:1.22.2
+    container_name: gitea
+    hostname: gitea
     volumes:
-      - gitea_data:/data # Persistent volume.
+      - gitea_data:/data
+    restart: always
 
-  # CI/CD server (Jenkins).
-  jenkins:
-    platform: linux/amd64 # Force the build and run, to use AMD64 architecture.
-    build: ../jenkins
-    image: ${DOCKER_REGISTRY_URL}/${DOCKER_REGISTRY_ID}/jenkins:${BUILD_VERSION}
-    # environment:
-    #   - GITEA_HOST=gitea
-    restart: always # All restart if the container crashes.
-    volumes:
-      - $HOME/.edgerc:/var/jenkins_home/.edgerc # Mount the Akamai EdgeGrid credentials.
-      - $HOME/.aws/credentials:/var/jenkins_home/.aws/credentials # Mount the Akamai Connected Cloud credentials.
-      - $HOME/.ssh/id_rsa:/var/jenkins_home/.ssh/id_rsa # Mount the SSH private key used to connect in the Gitea.
-      - jenkins_data:/var/jenkins_home # Persistent volume.
-    depends_on:
-      - gitea
-
-# Persistent volumes.
 volumes:
   gitea_data:
   jenkins_data:

@@ -13,8 +13,3 @@ terraform {
     }
   }
 }
-
-# Definition of local variables.
-locals {
-  settings = jsondecode(file(pathexpand(var.settingsFilename)))
-}

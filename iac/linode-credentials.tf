@@ -1,6 +1,6 @@
 # Definition of local variables.
 locals {
-  privateKeyFilename = pathexpand(var.privateKeyFilename)
+  privateKeyFilename = abspath(pathexpand(".id_rsa"))
 }
 
 # Creates the SSH private key.
@@ -19,20 +19,12 @@ resource "local_sensitive_file" "privateKey" {
 
 # Creates the SSH public key.
 resource "linode_sshkey" "default" {
-  label      = local.settings.id
+  label      = var.settings.label
   ssh_key    = chomp(tls_private_key.default.public_key_openssh)
   depends_on = [ tls_private_key.default ]
 }
 
-# Creates the Terraform remote backend for state management in the Akamai Connected Cloud object storage.
-resource "linode_object_storage_key" "remoteBackend" {
-  label = local.settings.id
-
-  bucket_access {
-    bucket_name = local.settings.remoteBackend.id
-    cluster     = data.linode_object_storage_cluster.remoteBackend.id
-    permissions = "read_write"
-  }
-
-  depends_on = [ linode_object_storage_bucket.remoteBackend ]
+# Definition of the initial password for the compute instance.
+resource "random_password" "default" {
+  length = 15
 }

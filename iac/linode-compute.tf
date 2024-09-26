@@ -1,33 +1,110 @@
-# Definition of the initial password for the compute instance.
-resource "random_password" "default" {
-  length = 15
-}
-
 # Definition of the compute instance.
 resource "linode_instance" "default" {
-  label            = local.settings.compute.label
-  tags             = local.settings.tags
-  region           = local.settings.compute.region
-  type             = local.settings.compute.type
-  image            = local.settings.stackScript.images[0]
-  root_pass        = random_password.default.result
-  authorized_keys  = [ linode_sshkey.default.ssh_key ]
-  stackscript_id   = linode_stackscript.default.id
-  stackscript_data = {
-    HOSTNAME               = local.settings.compute.label
-    PRIVATE_KEY            = tls_private_key.default.private_key_openssh
-    EDGEGRID_ACCOUNT_KEY   = var.edgeGridAccountKey
-    EDGEGRID_HOST          = var.edgeGridHost
-    EDGEGRID_ACCESS_TOKEN  = var.edgeGridAccessToken
-    EDGEGRID_CLIENT_TOKEN  = var.edgeGridClientToken
-    EDGEGRID_CLIENT_SECRET = var.edgeGridClientSecret
-    ACC_TOKEN              = var.accToken
-    ACC_ACCESS_KEY         = linode_object_storage_key.remoteBackend.access_key
-    ACC_SECRET_KEY         = linode_object_storage_key.remoteBackend.secret_key
+  label           = var.settings.label
+  tags            = var.settings.tags
+  region          = var.settings.region
+  type            = var.settings.type
+  image           = var.settings.image
+  authorized_keys = [ linode_sshkey.default.ssh_key ]
+
+  provisioner "remote-exec" {
+    connection {
+      host        = self.ip_address
+      user        = "root"
+      private_key = tls_private_key.default.private_key_openssh
+    }
+
+    inline = [
+      "apt update",
+      "apt -y upgrade",
+      "hostnamectl set-hostname ${var.settings.label}",
+      "apt -y install curl wget unzip zip dnsutils net-tools htop",
+      "curl https://get.docker.com | sh -",
+    ]
   }
 
   depends_on = [
-    random_password.default,
-    linode_stackscript.default
+    tls_private_key.default,
+    linode_sshkey.default,
+    random_password.default
+  ]
+}
+
+resource "null_resource" "applyStack" {
+  triggers = {
+    always_run = timestamp()
+  }
+
+  provisioner "remote-exec" {
+    connection {
+      host        = linode_instance.default.ip_address
+      user        = "root"
+      private_key = tls_private_key.default.private_key_openssh
+    }
+
+    inline = [
+      "mkdir -p /root/${var.settings.label}/etc/nginx/conf.d",
+      "mkdir -p /root/${var.settings.label}/etc/ssl/certs",
+      "mkdir -p /root/${var.settings.label}/etc/ssl/private"
+    ]
+  }
+
+  provisioner "file" {
+    connection {
+      host        = linode_instance.default.ip_address
+      user        = "root"
+      private_key = tls_private_key.default.private_key_openssh
+    }
+
+    source      = "docker-compose.yml"
+    destination = "/root/${var.settings.label}/docker-compose.yml"
+  }
+
+  provisioner "file" {
+    connection {
+      host        = linode_instance.default.ip_address
+      user        = "root"
+      private_key = tls_private_key.default.private_key_openssh
+    }
+
+    source      = "../ingress/etc/nginx/conf.d/default.conf"
+    destination = "/root/${var.settings.label}/etc/nginx/conf.d/default.conf"
+  }
+
+  provisioner "file" {
+    connection {
+      host        = linode_instance.default.ip_address
+      user        = "root"
+      private_key = tls_private_key.default.private_key_openssh
+    }
+
+    source      = "../ingress/etc/ssl/certs/fullchain.pem"
+    destination = "/root/${var.settings.label}/etc/ssl/certs/fullchain.pem"
+  }
+
+  provisioner "file" {
+    connection {
+      host        = linode_instance.default.ip_address
+      user        = "root"
+      private_key = tls_private_key.default.private_key_openssh
+    }
+
+    source      = "../ingress/etc/ssl/private/privkey.pem"
+    destination = "/root/${var.settings.label}/etc/ssl/private/privkey.pem"
+  }
+
+  provisioner "remote-exec" {
+    connection {
+      host        = linode_instance.default.ip_address
+      user        = "root"
+      private_key = tls_private_key.default.private_key_openssh
+    }
+
+    inline = [ "cd /root/${var.settings.label} ; docker compose up -d"]
+  }
+
+  depends_on = [
+    linode_instance.default,
+    tls_private_key.default
   ]
 }

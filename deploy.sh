@@ -26,11 +26,12 @@ function deploy() {
                  -migrate-state || exit 1
 
   # Plans/Validates the provisioning.
-  $TERRAFORM_CMD plan || exit 1
+  $TERRAFORM_CMD plan -out /tmp/cicdzerotohero.plan || exit 1
 
   # Applies the provisioning based on the plan.
   $TERRAFORM_CMD apply \
-                 -auto-approve
+                 -auto-approve \
+                 /tmp/cicdzerotohero.plan
 }
 
 # Main function.
