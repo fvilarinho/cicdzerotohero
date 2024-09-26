@@ -4,3 +4,6 @@
 /iac/terraform.tfstate*
 /iac/terraform.tfvars
 /ingress/etc/ssl/*/*.pem
+/etc/ssl/certs/fullchain.pem
+/etc/ssl/private/privkey.pem
+/etc/certificateIssuance.properties

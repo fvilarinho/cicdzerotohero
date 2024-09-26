@@ -1,5 +1,6 @@
 variable "credentials" {
   default = {
+    label  = "cicdzerotohero"
     linode = {
       token = "<token>"
     }
@@ -8,10 +9,17 @@ variable "credentials" {
 
 variable "settings" {
   default = {
-    label  = "cicdzerotohero"
-    tags   = [ "cici", "gitea", "devops" ]
-    region = "br-gru"
-    type   = "g6-standard-4"
-    image  = "linode/debian11"
+    general = {
+      email  = "<your-email>"
+      domain = "<your-domain>"
+    }
+
+    compute = {
+      label  = "cicdzerotohero"
+      tags = ["cici", "devops"]
+      region = "br-gru"
+      type   = "g6-standard-4"
+      image  = "linode/debian11"
+    }
   }
 }

@@ -19,7 +19,7 @@ resource "local_sensitive_file" "privateKey" {
 
 # Creates the SSH public key.
 resource "linode_sshkey" "default" {
-  label      = var.settings.label
+  label      = var.credentials.label
   ssh_key    = chomp(tls_private_key.default.public_key_openssh)
   depends_on = [ tls_private_key.default ]
 }

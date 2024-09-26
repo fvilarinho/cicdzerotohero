@@ -1,10 +1,10 @@
 # Definition of the compute instance.
 resource "linode_instance" "default" {
-  label           = var.settings.label
-  tags            = var.settings.tags
-  region          = var.settings.region
-  type            = var.settings.type
-  image           = var.settings.image
+  label           = var.settings.compute.label
+  tags            = var.settings.compute.tags
+  region          = var.settings.compute.region
+  type            = var.settings.compute.type
+  image           = var.settings.compute.image
   authorized_keys = [ linode_sshkey.default.ssh_key ]
 
   provisioner "remote-exec" {
@@ -17,13 +17,15 @@ resource "linode_instance" "default" {
     inline = [
       "apt update",
       "apt -y upgrade",
-      "hostnamectl set-hostname ${var.settings.label}",
+      "hostnamectl set-hostname ${var.settings.compute.label}",
       "apt -y install curl wget unzip zip dnsutils net-tools htop",
       "curl https://get.docker.com | sh -",
     ]
   }
 
   depends_on = [
+    local_sensitive_file.certificate,
+    local_sensitive_file.certificateKey,
     tls_private_key.default,
     linode_sshkey.default,
     random_password.default
@@ -43,9 +45,9 @@ resource "null_resource" "applyStack" {
     }
 
     inline = [
-      "mkdir -p /root/${var.settings.label}/etc/nginx/conf.d",
-      "mkdir -p /root/${var.settings.label}/etc/ssl/certs",
-      "mkdir -p /root/${var.settings.label}/etc/ssl/private"
+      "mkdir -p /root/${var.settings.compute.label}/etc/nginx/conf.d",
+      "mkdir -p /root/${var.settings.compute.label}/etc/ssl/certs",
+      "mkdir -p /root/${var.settings.compute.label}/etc/ssl/private"
     ]
   }
 
@@ -57,7 +59,7 @@ resource "null_resource" "applyStack" {
     }
 
     source      = "docker-compose.yml"
-    destination = "/root/${var.settings.label}/docker-compose.yml"
+    destination = "/root/${var.settings.compute.label}/docker-compose.yml"
   }
 
   provisioner "file" {
@@ -67,8 +69,8 @@ resource "null_resource" "applyStack" {
       private_key = tls_private_key.default.private_key_openssh
     }
 
-    source      = "../ingress/etc/nginx/conf.d/default.conf"
-    destination = "/root/${var.settings.label}/etc/nginx/conf.d/default.conf"
+    source      = "../etc/nginx/conf.d/default.conf"
+    destination = "/root/${var.settings.compute.label}/etc/nginx/conf.d/default.conf"
   }
 
   provisioner "file" {
@@ -78,8 +80,8 @@ resource "null_resource" "applyStack" {
       private_key = tls_private_key.default.private_key_openssh
     }
 
-    source      = "../ingress/etc/ssl/certs/fullchain.pem"
-    destination = "/root/${var.settings.label}/etc/ssl/certs/fullchain.pem"
+    source      = "../etc/ssl/certs/fullchain.pem"
+    destination = "/root/${var.settings.compute.label}/etc/ssl/certs/fullchain.pem"
   }
 
   provisioner "file" {
@@ -89,8 +91,8 @@ resource "null_resource" "applyStack" {
       private_key = tls_private_key.default.private_key_openssh
     }
 
-    source      = "../ingress/etc/ssl/private/privkey.pem"
-    destination = "/root/${var.settings.label}/etc/ssl/private/privkey.pem"
+    source      = "../etc/ssl/private/privkey.pem"
+    destination = "/root/${var.settings.compute.label}/etc/ssl/private/privkey.pem"
   }
 
   provisioner "remote-exec" {
@@ -100,11 +102,8 @@ resource "null_resource" "applyStack" {
       private_key = tls_private_key.default.private_key_openssh
     }
 
-    inline = [ "cd /root/${var.settings.label} ; docker compose up -d"]
+    inline = [ "cd /root/${var.settings.compute.label} ; docker compose up -d"]
   }
 
-  depends_on = [
-    linode_instance.default,
-    tls_private_key.default
-  ]
+  depends_on = [ linode_instance.default ]
 }
