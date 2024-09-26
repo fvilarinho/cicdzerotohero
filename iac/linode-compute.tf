@@ -140,6 +140,9 @@ resource "local_file" "runnerEnvironment" {
   count    = (length(var.settings.runner.registrationToken) == 0 ? 0 : 1)
   filename = local.runnerEnvironmentFilename
   content  = <<EOT
+DOCKER_REGISTRY_URL=ghcr.io
+DOCKER_REGISTRY_ID=fvilarinho
+BUILD_VERSION=latest
 GITEA_INSTANCE_URL=https://gitea.${var.settings.general.domain}
 GITEA_RUNNER_REGISTRATION_TOKEN=${var.settings.runner.registrationToken}
 GITEA_RUNNER_NAME=${var.settings.runner.label}
