@@ -17,6 +17,7 @@ function showLabel() {
 function prepareToExecute() {
   # Required binaries
   export TERRAFORM_CMD=$(which terraform)
+  export DOCKER_CMD=$(which docker)
 }
 
 # Shows the banner.
