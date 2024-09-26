@@ -29,3 +29,8 @@ jobs:
 
       - name: Build services.
         run: ./build.sh
+
+      - name: Publish services.
+        env:
+          DOCKER_REGISTRY_PASSWORD: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
+        run: ./publish.sh
