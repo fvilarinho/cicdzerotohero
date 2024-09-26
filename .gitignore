@@ -7,3 +7,4 @@
 /etc/ssl/certs/fullchain.pem
 /etc/ssl/private/privkey.pem
 /etc/certificateIssuance.properties
+/iac/.id_rsa.pub

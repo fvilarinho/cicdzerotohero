@@ -14,9 +14,17 @@ variable "settings" {
       domain = "<your-domain>"
     }
 
-    compute = {
-      label  = "cicdzerotohero"
-      tags = ["cici", "devops"]
+    server = {
+      label  = "gitea-server"
+      tags = ["cicd", "devops"]
+      region = "br-gru"
+      type   = "g6-standard-4"
+      image  = "linode/debian11"
+    }
+
+    runner = {
+      label  = "gitea-runner"
+      tags = ["cicd", "devops"]
       region = "br-gru"
       type   = "g6-standard-4"
       image  = "linode/debian11"
