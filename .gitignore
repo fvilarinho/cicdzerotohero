@@ -1,10 +1,7 @@
 /.idea/
-/iac/.id_rsa
+/etc/runner/.env
+/etc/tls/certificateIssuance.properties
+/etc/tls/*/*.pem
 /iac/.terraform*
 /iac/terraform.tfstate*
 /iac/terraform.tfvars
-/ingress/etc/ssl/*/*.pem
-/etc/ssl/certs/fullchain.pem
-/etc/ssl/private/privkey.pem
-/etc/certificateIssuance.properties
-/iac/.id_rsa.pub

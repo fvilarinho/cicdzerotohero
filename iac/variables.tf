@@ -28,7 +28,7 @@ variable "settings" {
       region            = "br-gru"
       type              = "g6-standard-4"
       image             = "linode/debian11"
-      registrationToken = "<registrationToken>"
+      registrationToken = ""
     }
   }
 }

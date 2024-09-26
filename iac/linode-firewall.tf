@@ -12,7 +12,10 @@ resource "linode_firewall" "server" {
     action   = "ACCEPT"
     label    = "allowed-ips"
     protocol = "TCP"
-    ipv4     = [ "${jsondecode(data.http.myIp.response_body).ip}/32" ]
+    ipv4     = [
+      "${jsondecode(data.http.myIp.response_body).ip}/32",
+      "${linode_instance.runner.ip_address}/32"
+    ]
   }
 
   inbound {
@@ -26,6 +29,7 @@ resource "linode_firewall" "server" {
 
   depends_on = [
     linode_instance.server,
+    linode_instance.runner,
     data.http.myIp
   ]
 }
@@ -39,7 +43,10 @@ resource "linode_firewall" "runner" {
     action   = "ACCEPT"
     label    = "allowed-ips"
     protocol = "TCP"
-    ipv4     = [ "${jsondecode(data.http.myIp.response_body).ip}/32" ]
+    ipv4     = [
+      "${jsondecode(data.http.myIp.response_body).ip}/32",
+      "${linode_instance.server.ip_address}/32"
+    ]
   }
 
   inbound {
@@ -52,6 +59,7 @@ resource "linode_firewall" "runner" {
   linodes = [ linode_instance.runner.id]
 
   depends_on = [
+    linode_instance.server,
     linode_instance.runner,
     data.http.myIp
   ]

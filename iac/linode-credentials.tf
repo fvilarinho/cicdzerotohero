@@ -1,45 +1,13 @@
 # Definition of local variables.
 locals {
-  privateKeyFilename = abspath(pathexpand(".id_rsa"))
-  publicKeyFilename = abspath(pathexpand(".id_rsa.pub"))
-}
-
-# Creates the SSH private key.
-resource "tls_private_key" "default" {
-  algorithm = "RSA"
-  rsa_bits  = "4096"
-}
-
-# Saves the SSH private key file.
-resource "local_sensitive_file" "privateKey" {
-  filename        = local.privateKeyFilename
-  content         = tls_private_key.default.private_key_openssh
-  file_permission = "600"
-  depends_on      = [ tls_private_key.default ]
-}
-
-resource "null_resource" "addSshPrivateKey" {
-  provisioner "local-exec" {
-    quiet   = true
-    command = "ssh-add ${local.privateKeyFilename}"
-  }
-
-  depends_on = [ local_sensitive_file.privateKey ]
-}
-
-# Saves the SSH public key file.
-resource "local_sensitive_file" "publicKey" {
-  filename        = local.publicKeyFilename
-  content         = tls_private_key.default.public_key_openssh
-  file_permission = "600"
-  depends_on      = [ tls_private_key.default ]
+  privateKeyFilename = abspath(pathexpand("~/.ssh/id_rsa"))
+  publicKeyFilename = abspath(pathexpand("~/.ssh/id_rsa.pub"))
 }
 
 # Creates the SSH public key.
 resource "linode_sshkey" "default" {
-  label      = var.credentials.label
-  ssh_key    = chomp(tls_private_key.default.public_key_openssh)
-  depends_on = [ tls_private_key.default ]
+  label   = var.credentials.label
+  ssh_key = chomp(file(local.publicKeyFilename))
 }
 
 # Definition of the initial password for the compute instance.

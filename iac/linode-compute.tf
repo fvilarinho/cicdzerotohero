@@ -1,3 +1,8 @@
+locals {
+  runnerEnvironmentFilename = abspath(pathexpand("../etc/runner/.env"))
+  startRunnerScript         = abspath(pathexpand("../bin/runner/start.sh"))
+}
+
 # Definition of the compute instance.
 resource "linode_instance" "server" {
   label           = var.settings.server.label
@@ -11,7 +16,7 @@ resource "linode_instance" "server" {
     connection {
       host        = self.ip_address
       user        = "root"
-      private_key = tls_private_key.default.private_key_openssh
+      private_key = chomp(file(local.privateKeyFilename))
     }
 
     inline = [
@@ -26,22 +31,17 @@ resource "linode_instance" "server" {
   depends_on = [
     local_sensitive_file.certificate,
     local_sensitive_file.certificateKey,
-    tls_private_key.default,
     linode_sshkey.default,
     random_password.default
   ]
 }
 
 resource "null_resource" "applyServerStack" {
-  triggers = {
-    always_run = timestamp()
-  }
-
   provisioner "remote-exec" {
     connection {
       host        = linode_instance.server.ip_address
       user        = "root"
-      private_key = tls_private_key.default.private_key_openssh
+      private_key = chomp(file(local.privateKeyFilename))
     }
 
     inline = [
@@ -55,7 +55,7 @@ resource "null_resource" "applyServerStack" {
     connection {
       host        = linode_instance.server.ip_address
       user        = "root"
-      private_key = tls_private_key.default.private_key_openssh
+      private_key = chomp(file(local.privateKeyFilename))
     }
 
     source      = "docker-compose.yml"
@@ -66,7 +66,7 @@ resource "null_resource" "applyServerStack" {
     connection {
       host        = linode_instance.server.ip_address
       user        = "root"
-      private_key = tls_private_key.default.private_key_openssh
+      private_key = chomp(file(local.privateKeyFilename))
     }
 
     source      = "../etc/nginx/conf.d/default.conf"
@@ -77,10 +77,10 @@ resource "null_resource" "applyServerStack" {
     connection {
       host        = linode_instance.server.ip_address
       user        = "root"
-      private_key = tls_private_key.default.private_key_openssh
+      private_key = chomp(file(local.privateKeyFilename))
     }
 
-    source      = "../etc/ssl/certs/fullchain.pem"
+    source      = local.certificateFilename
     destination = "/root/${var.settings.server.label}/etc/ssl/certs/fullchain.pem"
   }
 
@@ -88,10 +88,10 @@ resource "null_resource" "applyServerStack" {
     connection {
       host        = linode_instance.server.ip_address
       user        = "root"
-      private_key = tls_private_key.default.private_key_openssh
+      private_key = chomp(file(local.privateKeyFilename))
     }
 
-    source      = "../etc/ssl/private/privkey.pem"
+    source      = local.certificateKeyFilename
     destination = "/root/${var.settings.server.label}/etc/ssl/private/privkey.pem"
   }
 
@@ -99,7 +99,7 @@ resource "null_resource" "applyServerStack" {
     connection {
       host        = linode_instance.server.ip_address
       user        = "root"
-      private_key = tls_private_key.default.private_key_openssh
+      private_key = chomp(file(local.privateKeyFilename))
     }
 
     inline = [ "cd /root/${var.settings.server.label} ; docker compose up -d"]
@@ -120,7 +120,7 @@ resource "linode_instance" "runner" {
     connection {
       host        = self.ip_address
       user        = "root"
-      private_key = tls_private_key.default.private_key_openssh
+      private_key = chomp(file(local.privateKeyFilename))
     }
 
     inline = [
@@ -129,8 +129,65 @@ resource "linode_instance" "runner" {
       "hostnamectl set-hostname ${var.settings.runner.label}",
       "apt -y install curl wget unzip zip dnsutils net-tools htop",
       "curl https://get.docker.com | sh -",
+      "mkdir -p /root/${var.settings.runner.label}"
     ]
   }
 
   depends_on = [ linode_instance.server ]
+}
+
+resource "local_file" "runnerEnvironment" {
+  count    = (length(var.settings.runner.registrationToken) == 0 ? 0 : 1)
+  filename = local.runnerEnvironmentFilename
+  content  = <<EOT
+GITEA_INSTANCE_URL=https://gitea.${var.settings.general.domain}
+GITEA_RUNNER_REGISTRATION_TOKEN=${var.settings.runner.registrationToken}
+GITEA_RUNNER_NAME=${var.settings.runner.label}
+GITEA_RUNNER_LABELS=${var.settings.runner.label}
+EOT
+}
+
+resource "null_resource" "applyRunnerStack" {
+  count = (length(var.settings.runner.registrationToken) == 0 ? 0 : 1)
+
+  provisioner "file" {
+    connection {
+      host        = linode_instance.runner.ip_address
+      user        = "root"
+      private_key = chomp(file(local.privateKeyFilename))
+    }
+
+    source      = local.runnerEnvironmentFilename
+    destination = "/root/${var.settings.runner.label}/.env"
+  }
+
+  provisioner "file" {
+    connection {
+      host        = linode_instance.runner.ip_address
+      user        = "root"
+      private_key = chomp(file(local.privateKeyFilename))
+    }
+
+    source      = local.startRunnerScript
+    destination = "/root/${var.settings.runner.label}/start.sh"
+  }
+
+  provisioner "remote-exec" {
+    connection {
+      host        = linode_instance.runner.ip_address
+      user        = "root"
+      private_key = chomp(file(local.privateKeyFilename))
+    }
+
+    inline = [
+      "cd /root/${var.settings.runner.label}",
+      "chmod +x *.sh",
+      "./start.sh"
+    ]
+  }
+
+  depends_on = [
+    linode_instance.runner,
+    local_file.runnerEnvironment
+  ]
 }

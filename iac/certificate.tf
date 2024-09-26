@@ -1,9 +1,9 @@
 # Required variables.
 locals {
-  certificateIssuanceScript              = abspath(pathexpand("../bin/certificateIssuance.sh"))
-  certificateIssuanceCredentialsFilename = abspath(pathexpand("../etc/certificateIssuance.properties"))
-  certificateFilename                    = abspath(pathexpand("../etc/ssl/certs/fullchain.pem"))
-  certificateKeyFilename                 = abspath(pathexpand("../etc/ssl/private/privkey.pem"))
+  certificateIssuanceScript              = abspath(pathexpand("../bin/tls/certificateIssuance.sh"))
+  certificateIssuanceCredentialsFilename = abspath(pathexpand("../etc/tls/certificateIssuance.properties"))
+  certificateFilename                    = abspath(pathexpand("../etc/tls/certs/fullchain.pem"))
+  certificateKeyFilename                 = abspath(pathexpand("../etc/tls/private/privkey.pem"))
 }
 
 resource "linode_token" "certificateIssuance" {
