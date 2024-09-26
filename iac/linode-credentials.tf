@@ -18,6 +18,15 @@ resource "local_sensitive_file" "privateKey" {
   depends_on      = [ tls_private_key.default ]
 }
 
+resource "null_resource" "addSshPrivateKey" {
+  provisioner "local-exec" {
+    quiet   = true
+    command = "ssh-add ${local.privateKeyFilename}"
+  }
+
+  depends_on = [ local_sensitive_file.privateKey ]
+}
+
 # Saves the SSH public key file.
 resource "local_sensitive_file" "publicKey" {
   filename        = local.publicKeyFilename
