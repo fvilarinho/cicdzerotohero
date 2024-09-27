@@ -3,7 +3,7 @@ terraform {
   # Stores the provisioning state in Akamai Cloud Computing Object Storage (Please change to use your own).
   backend "s3" {
     bucket                      = "fvilarin-devops"
-    key                         = "akamai-as-code.tfstate"
+    key                         = "cicdzerotohero.tfstate"
     region                      = "us-east-1"
     endpoint                    = "us-east-1.linodeobjects.com"
     skip_credentials_validation = true
