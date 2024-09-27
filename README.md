@@ -2,76 +2,47 @@
 
 ### Introduction
 This project has the intention to demonstrate the basics of a CI/CD pipeline by provisioning a compute instance with 
-Git server (Gitea) and Jenkins in Akamai Connected Cloud with pre-installed tools:
+Git server (Gitea with Actions Runner) in Akamai Cloud Computing with pre-installed tools:
 
-- [`Terraform 1.5.7`](https://terraform.io)
-- [`Akamai CLI 1.5.5`](https://github.com/akamai/cli)
-- [`Akamai Poweshell 7.3.8`](https://github.com/akamai/akamaipowershell)
+- [`Terraform 1.5.x`](https://terraform.io)
 - [`Docker 24.x`](https://www.docker.com)
 - [`NodeJS 20.x`](https://nodejs.org)
 - [`NPM 10.x`](https://www.npmjs.com)
-- [`Python 3.x`](https://www.python.org/)
-- [`Gitea 1.9`](https://gitea.com)
-- [`JQ 1.7`](https://jqlang.github.io/jq/)
-- [`Jenkins LTS`](https://jenkins.io)
+- [`Gitea 1.22.x`](https://gitea.com)
+- [`Gitea Action Runner 0.2.x`](https://docs.gitea.com/usage/actions/act-runner)
 
-It also provisions the StackScript that contains the recipe to set up everything using the Akamai Connected Cloud UI.
+It automates (using **Terraform**) the provisioning of the following resources in Akamai Cloud Computing (former Linode) 
+environment:
+- **Domains**: Authoritative DNS server. (Please check the file `iac/linode-dns.tf` for more details).
+- **Firewall**: Cloud Firewall. (Please check the file `iac/linode-firewall.tf` for more details).
+- **Linodes**: Compute instances to run Gitea and Action Runner. (Please check the file `iac/linode-compute.tf` for more 
+- **Credentials**: SSH Private/Public Keys used to access the compute instances (Please check the file `iac/linode-credentials.tf`
+for more details).
+- **TLS Certificate**: LetsEncrypt signed certificate to enable HTTPs traffic in the compute instances. (Please check 
+the file `iac/certificate.tf` for more details).
 
-### Requirements in you local machine
-- [`Terraform 1.5.7`](https://terraform.io)
+### Requirements for you local machine
+- [`Terraform 1.5.x`](https://terraform.io)
 - [`Docker 24.x`](https://www.docker.com)
-- [`NodeJS 20.x`](https://nodejs.org)
-- [`NPM 10.x`](https://www.npmjs.com)
 - `Any Linux Distribution` or
 - `Windows 10 or later` or
 - `MacOS Catalina or later`
 
-Define the environment variables below in your local machine:
-- `EDGEGRID_ACCOUNT_KEY`: Akamai Account Key to be used in APIs/CLI or Terraform calls.
-- `EDGEGRID_HOST`: Hostname used to authenticate the APIs/CLI/Terraform calls, using the Akamai EdgeGrid.
-- `EDGEGRID_ACCESS_TOKEN`: Access Token used to authenticate the APIs/CLI/Terraform calls, using the Akamai EdgeGrid.
-- `EDGEGRID_CLIENT_TOKEN`: Client Token used to authenticate the APIs/CLI/Terraform calls, using the Akamai EdgeGrid.
-- `EDGEGRID_CLIENT_SECRET`: Client Secret used to authenticate the APIs/CLI/Terraform calls, using the Akamai EdgeGrid.
-- `ACC_TOKEN`: Token used to authenticate the APIs/CLI/Terraform calls in the Akamai Connected Cloud.
+All Terraform files use `variables` that are stored in the `iac/variables.tf`.
 
-or define the credentials in the `iac/.credentials` filename. Please follow the template `iac/.credentials.template`.
+Please check this [link](https://developer.hashicorp.com/terraform/tutorials/configuration-language/variables) to know how to customize the variables.
 
-### To run it in you local machine
+### To deploy it in Akamai Cloud Computing
 
-Just execute the commands below:
+Just execute the command `deploy.sh` in your project directory. To undeploy, just execute the command `undeploy.sh` in 
+your project directory.
 
-- `start.sh`: Starts the stack.
-- `stop.sh`: Stops the stack.
-- `reload.sh`: Reloads the stack.
+### To customize the Gitea Action Runner
 
-### To run it in Akamai Connected Cloud
-
-You'll need to create an API Token in Akamai Connected Cloud. Please follow this path: Click in your
-`Profile Icon -> API Tokens -> Create a Personal Access Token`. You need to select `Read-Write` permission for the 
-following:
-
-- Linodes (Compute instances)
-- StackScripts (Recipes to automate provisioning/install/setup)
-- Object Storage (Used to store static files and the provisioning states).
-
-Then click in the `Create Token` button. A dialog with the token will popup. Please note the token value before you 
-close the popup. You won't be able to get the token after.
-
-After that, just execute the command `deploy.sh` in your project directory. Follow the instructions in the console of
-your instance. If you want to customize the specifications of your provisioning/setup, please edit 
-`iac/modules/provisioning` and/or`iac/modules/setup`.
-
-To undeploy, just execute the command `undeploy.sh` in your project directory.
-
-### To build Gitea and Jenkins
-
-To customize the container images, just edit the following files:
+You can customize the Action Runner adding new software and/or patching. To do it, just edit the following files:
 
 - `iac/.env`: It contains the container registry information and the build version.
-- `iac/docker-compose.yml`: It contains the definition of the container images (platform, ports, volumes, environments, 
-etc.).
-- `iac/gitea.dockerfile`: It contains the definition to build Gitea.
-- `iac/jenkins.dockerfile`: It contains the definition to build Jenkins.
+- `iac/Dockerfile`: It contains the definition of the container image (required software, etc.). 
 
 After that, execute the following commands:
 
@@ -81,11 +52,7 @@ After that, execute the following commands:
 ### Documentation
 
 Follow the documentation below to know more about Akamai:
-
-- [**How to create Akamai EdgeGrid credentials**](https://techdocs.akamai.com/developer/docs/make-your-first-api-call)
-- [**How to create Akamai Connected Cloud credentials**](https://www.linode.com/docs/api)
 - [**Akamai Techdocs**](https://techdocs.akamai.com)
-- [**Akamai Connected Cloud Documentation**](https://www.linode.com/docs/)
 
 ### Important notes
 - **DON'T EXPOSE OR COMMIT ANY SENSITIVE DATA, SUCH AS CREDENTIALS, IN THE PROJECT.**
