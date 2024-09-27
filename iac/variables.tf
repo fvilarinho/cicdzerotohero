@@ -1,15 +1,7 @@
-variable "credentials" {
-  default = {
-    label  = "cicdzerotohero"
-    linode = {
-      token = "<token>"
-    }
-  }
-}
-
 variable "settings" {
   default = {
     general = {
+      label  = "cicdzerotohero"
       email  = "<your-email>"
       domain = "<your-domain>"
     }

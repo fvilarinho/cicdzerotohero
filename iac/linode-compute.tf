@@ -1,9 +1,10 @@
+# Required variables.
 locals {
   runnerEnvironmentFilename = abspath(pathexpand("../etc/runner/.env"))
   startRunnerScript         = abspath(pathexpand("../bin/runner/start.sh"))
 }
 
-# Definition of the compute instance.
+# Definition of the Gitea server instance.
 resource "linode_instance" "server" {
   label           = var.settings.server.label
   tags            = var.settings.server.tags
@@ -12,6 +13,7 @@ resource "linode_instance" "server" {
   image           = var.settings.server.image
   authorized_keys = [ linode_sshkey.default.ssh_key ]
 
+  # Installs the required software.
   provisioner "remote-exec" {
     connection {
       host        = self.ip_address
@@ -36,7 +38,9 @@ resource "linode_instance" "server" {
   ]
 }
 
+# Applies the Gitea server stack.
 resource "null_resource" "applyServerStack" {
+  # Default directories.
   provisioner "remote-exec" {
     connection {
       host        = linode_instance.server.ip_address
@@ -51,6 +55,7 @@ resource "null_resource" "applyServerStack" {
     ]
   }
 
+  # Docker containers definition.
   provisioner "file" {
     connection {
       host        = linode_instance.server.ip_address
@@ -62,6 +67,7 @@ resource "null_resource" "applyServerStack" {
     destination = "/root/${var.settings.server.label}/docker-compose.yml"
   }
 
+  # Ingress files.
   provisioner "file" {
     connection {
       host        = linode_instance.server.ip_address
@@ -95,6 +101,7 @@ resource "null_resource" "applyServerStack" {
     destination = "/root/${var.settings.server.label}/etc/ssl/private/privkey.pem"
   }
 
+  # Start the stack.
   provisioner "remote-exec" {
     connection {
       host        = linode_instance.server.ip_address
@@ -108,6 +115,7 @@ resource "null_resource" "applyServerStack" {
   depends_on = [ linode_instance.server ]
 }
 
+# Definition of the Gitea action runner instance.
 resource "linode_instance" "runner" {
   label           = var.settings.runner.label
   tags            = var.settings.runner.tags
@@ -116,6 +124,7 @@ resource "linode_instance" "runner" {
   image           = var.settings.runner.image
   authorized_keys = [ linode_sshkey.default.ssh_key ]
 
+  # Installs the required software.
   provisioner "remote-exec" {
     connection {
       host        = self.ip_address
@@ -136,6 +145,7 @@ resource "linode_instance" "runner" {
   depends_on = [ linode_instance.server ]
 }
 
+# Creates the environment file to run the actions runner.
 resource "local_file" "runnerEnvironment" {
   count    = (length(var.settings.runner.registrationToken) == 0 ? 0 : 1)
   filename = local.runnerEnvironmentFilename
@@ -150,6 +160,7 @@ GITEA_RUNNER_LABELS=${var.settings.runner.label}
 EOT
 }
 
+# Applies the Gitea action runner stack.
 resource "null_resource" "applyRunnerStack" {
   count = (length(var.settings.runner.registrationToken) == 0 ? 0 : 1)
 
@@ -164,6 +175,7 @@ resource "null_resource" "applyRunnerStack" {
     destination = "/root/${var.settings.runner.label}/.env"
   }
 
+  # Startup script.
   provisioner "file" {
     connection {
       host        = linode_instance.runner.ip_address
@@ -175,6 +187,7 @@ resource "null_resource" "applyRunnerStack" {
     destination = "/root/${var.settings.runner.label}/start.sh"
   }
 
+  # Start the stack.
   provisioner "remote-exec" {
     connection {
       host        = linode_instance.runner.ip_address

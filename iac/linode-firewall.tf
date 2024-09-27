@@ -1,8 +1,10 @@
+# Fetches the local IP.
 data "http" "myIp" {
   url    = "https://ipinfo.io"
   method = "GET"
 }
 
+# Firewall rules to protect Gitea server.
 resource "linode_firewall" "server" {
   label           = "${var.settings.server.label}-firewall"
   inbound_policy  = "DROP"
@@ -34,6 +36,7 @@ resource "linode_firewall" "server" {
   ]
 }
 
+# Firewall rules to protect Gitea actions runner.
 resource "linode_firewall" "runner" {
   label           = "${var.settings.runner.label}-firewall"
   inbound_policy  = "DROP"

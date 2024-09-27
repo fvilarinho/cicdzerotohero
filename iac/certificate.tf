@@ -6,12 +6,13 @@ locals {
   certificateKeyFilename                 = abspath(pathexpand("../etc/tls/private/privkey.pem"))
 }
 
+# Creates the certificate issuance credentials used to add the DNS validation entries in the DNS server.
 resource "linode_token" "certificateIssuance" {
   label  = "certificate-issuance"
   scopes = "domains:read_write"
 }
 
-# Creates the certificate issuance credentials.
+# Creates the certificate issuance credentials filename.
 resource "local_sensitive_file" "certificateIssuanceCredentials" {
   filename = local.certificateIssuanceCredentialsFilename
   content  = <<EOT
@@ -38,6 +39,7 @@ resource "null_resource" "certificateIssuance" {
   depends_on = [ local_sensitive_file.certificateIssuanceCredentials ]
 }
 
+# Saves the issued certificate locally to enable HTTPs traffic in Gitea.
 resource "local_sensitive_file" "certificate" {
   count      = (fileexists("/etc/letsencrypt/live/${var.settings.general.domain}/fullchain.pem") ? 1 : 0)
   filename   = local.certificateFilename
@@ -45,6 +47,7 @@ resource "local_sensitive_file" "certificate" {
   depends_on = [ null_resource.certificateIssuance]
 }
 
+# Saves the issued certificate key locally to enable HTTPs traffic in Gitea.
 resource "local_sensitive_file" "certificateKey" {
   count      = (fileexists("/etc/letsencrypt/live/${var.settings.general.domain}/privkey.pem") ? 1 : 0)
   filename   = local.certificateKeyFilename

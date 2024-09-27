@@ -22,7 +22,6 @@ function prepareToExecute() {
 
 # Builds the container images.
 function build() {
-
   $DOCKER_CMD build -t "$DOCKER_REGISTRY_URL/$DOCKER_REGISTRY_ID/gitea-runner:$BUILD_VERSION" .
 }
 

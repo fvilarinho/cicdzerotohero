@@ -1,9 +1,15 @@
 #!/bin/bash
 
+# Reads the environment variables.
 source .env
 
+# Create the persistent volume.
 docker volume create gitea-runner_data
+
+# Download the container image from the registry.
 docker pull "$DOCKER_REGISTRY_URL/$DOCKER_REGISTRY_ID/gitea-runner:$BUILD_VERSION"
+
+# Start the container image.
 docker run --rm \
        -d \
        --name gitea-runner \

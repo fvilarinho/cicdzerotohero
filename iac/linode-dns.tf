@@ -1,7 +1,9 @@
+# Definition of the DNS zone.
 data "linode_domain" "default" {
   domain = var.settings.general.domain
 }
 
+# DNS record for the Gitea server.
 resource "linode_domain_record" "server" {
   domain_id   = data.linode_domain.default.id
   name        = "gitea.${var.settings.general.domain}"
@@ -14,6 +16,7 @@ resource "linode_domain_record" "server" {
   ]
 }
 
+# DNS record for the Gitea actions runner.
 resource "linode_domain_record" "runner" {
   domain_id   = data.linode_domain.default.id
   name        = "runner.${var.settings.general.domain}"
