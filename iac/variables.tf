@@ -7,11 +7,15 @@ variable "settings" {
     }
 
     server = {
-      label  = "gitea-server"
-      tags = ["cicd", "server", "devops"]
-      region = "br-gru"
-      type   = "g6-standard-4"
-      image  = "linode/debian11"
+      label      = "gitea-server"
+      tags       = ["cicd", "server", "devops"]
+      region     = "br-gru"
+      type       = "g6-standard-4"
+      image      = "linode/debian11"
+      allowedIps = {
+        ipv4 = [ "0.0.0.0/0" ]
+        ipv6 = []
+      }
     }
 
     runner = {
@@ -21,6 +25,10 @@ variable "settings" {
       type              = "g6-standard-4"
       image             = "linode/debian11"
       registrationToken = ""
+      allowedIps        = {
+        ipv4 = [ "0.0.0.0/0" ]
+        ipv6 = []
+      }
     }
   }
 }
