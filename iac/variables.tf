@@ -8,7 +8,7 @@ variable "settings" {
 
     server = {
       label      = "gitea-server"
-      tags       = ["devops"]
+      tags       = ["devops", "demo"]
       region     = "br-gru"
       type       = "g6-standard-4"
       image      = "linode/debian11"

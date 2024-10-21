@@ -7,6 +7,7 @@ data "http" "myIp" {
 # Firewall rules to protect Gitea server.
 resource "linode_firewall" "server" {
   label           = "${var.settings.server.label}-firewall"
+  tags            = var.settings.server.tags
   inbound_policy  = "DROP"
   outbound_policy = "ACCEPT"
 
@@ -37,6 +38,7 @@ resource "linode_firewall" "server" {
 # Firewall rules to protect Gitea actions runner.
 resource "linode_firewall" "runner" {
   label           = "${var.settings.runner.label}-firewall"
+  tags            = var.settings.runner.tags
   inbound_policy  = "DROP"
   outbound_policy = "ACCEPT"
 
