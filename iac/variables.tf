@@ -8,7 +8,7 @@ variable "settings" {
 
     server = {
       label      = "gitea-server"
-      tags       = ["cicd", "server", "devops"]
+      tags       = ["devops"]
       region     = "br-gru"
       type       = "g6-standard-4"
       image      = "linode/debian11"
@@ -20,7 +20,7 @@ variable "settings" {
 
     runner = {
       label             = "gitea-runner"
-      tags              = ["cicd", "runner", "devops"]
+      tags              = ["devops"]
       region            = "br-gru"
       type              = "g6-standard-4"
       image             = "linode/debian11"
