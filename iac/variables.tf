@@ -20,7 +20,7 @@ variable "settings" {
 
     runner = {
       label             = "gitea-runner"
-      tags              = ["devops"]
+      tags              = ["devops", "demo"]
       region            = "br-gru"
       type              = "g6-standard-4"
       image             = "linode/debian11"
