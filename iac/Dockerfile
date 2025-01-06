@@ -1,4 +1,4 @@
-FROM gitea/act_runner:latest
+FROM gitea/act_runner:0.2.11
 
 # Updates the stock image and install NodeJS.
 RUN apk update && \
