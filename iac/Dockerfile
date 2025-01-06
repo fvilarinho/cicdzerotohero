@@ -7,7 +7,8 @@ RUN apk update && \
                        curl \
                        jq \
                        openjdk17-jre \
-                       docker && \
+                       docker \
+                       docker-cli-compose && \
     npm install snyk -g
 
 # Installs Terraform.
