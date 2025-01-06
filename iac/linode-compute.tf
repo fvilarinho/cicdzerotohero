@@ -50,8 +50,8 @@ resource "null_resource" "applyServerStack" {
 
     inline = [
       "mkdir -p /root/${var.settings.server.label}/etc/nginx/conf.d",
-      "mkdir -p /root/${var.settings.server.label}/etc/ssl/certs",
-      "mkdir -p /root/${var.settings.server.label}/etc/ssl/private"
+      "mkdir -p /root/${var.settings.server.label}/etc/tls/certs",
+      "mkdir -p /root/${var.settings.server.label}/etc/tls/private"
     ]
   }
 
@@ -87,7 +87,7 @@ resource "null_resource" "applyServerStack" {
     }
 
     source      = local.certificateFilename
-    destination = "/root/${var.settings.server.label}/etc/ssl/certs/fullchain.pem"
+    destination = "/root/${var.settings.server.label}/etc/tls/certs/fullchain.pem"
   }
 
   provisioner "file" {
@@ -98,7 +98,7 @@ resource "null_resource" "applyServerStack" {
     }
 
     source      = local.certificateKeyFilename
-    destination = "/root/${var.settings.server.label}/etc/ssl/private/privkey.pem"
+    destination = "/root/${var.settings.server.label}/etc/tls/private/privkey.pem"
   }
 
   # Start the stack.
