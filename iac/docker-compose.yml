@@ -1,6 +1,6 @@
 services:
   ingress:
-    image: nginx:latest
+    image: nginx:stable-alpine3.20
     container_name: ingress
     hostname: ingress
     ports:
@@ -14,7 +14,7 @@ services:
       - gitea
 
   gitea:
-    image: gitea/gitea:1.22.2
+    image: gitea/gitea:1.22.6
     container_name: gitea
     hostname: gitea
     ports:
