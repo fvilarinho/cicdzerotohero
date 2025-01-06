@@ -12,6 +12,7 @@ docker pull "$DOCKER_REGISTRY_URL/$DOCKER_REGISTRY_ID/gitea-runner:$BUILD_VERSIO
 # Start the container image.
 docker run --rm \
        -d \
+       --privileged \
        --name gitea-runner \
        -v gitea-runner_data:/data \
        -v /var/run/docker.sock:/var/run/docker.sock \
