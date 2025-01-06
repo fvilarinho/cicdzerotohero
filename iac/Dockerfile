@@ -4,6 +4,8 @@ FROM gitea/act_runner:latest
 RUN apk update && \
     apk add --no-cache nodejs \
                        npm \
+                       curl \
+                       jq \
                        openjdk17-jre \
                        docker && \
     npm install snyk -g
