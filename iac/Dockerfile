@@ -6,6 +6,7 @@ RUN apk update && \
                        npm \
                        curl \
                        jq \
+                       apache2-utils \
                        openjdk17-jre \
                        docker \
                        docker-cli-compose
