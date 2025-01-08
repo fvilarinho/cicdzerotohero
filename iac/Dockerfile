@@ -8,8 +8,11 @@ RUN apk update && \
                        jq \
                        openjdk17-jre \
                        docker \
-                       docker-cli-compose && \
-    npm install snyk -g
+                       docker-cli-compose
+
+RUN npm install snyk -g
+RUN curl -L "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl" -o /usr/local/bin/kubectl && \
+    chmod +x /usr/local/bin/kubectl
 
 # Installs Terraform.
 RUN wget https://releases.hashicorp.com/terraform/1.5.7/terraform_1.5.7_linux_amd64.zip -O /tmp/terraform.zip && \
