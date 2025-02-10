@@ -9,6 +9,10 @@ docker volume create gitea-runner_data
 # Download the container image from the registry.
 docker pull "$DOCKER_REGISTRY_URL/$DOCKER_REGISTRY_ID/gitea-runner:$BUILD_VERSION"
 
+docker stop gitea-runner
+
+docker rm gitea-runner
+
 # Start the container image.
 docker run --rm \
        -d \

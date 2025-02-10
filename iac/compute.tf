@@ -11,6 +11,7 @@ resource "linode_instance" "server" {
   region          = var.settings.server.region
   type            = var.settings.server.type
   image           = var.settings.server.image
+  private_ip      = true
   authorized_keys = [ linode_sshkey.default.ssh_key ]
 
   # Installs the required software.
@@ -122,6 +123,7 @@ resource "linode_instance" "runner" {
   region          = var.settings.runner.region
   type            = var.settings.runner.type
   image           = var.settings.runner.image
+  private_ip      = true
   authorized_keys = [ linode_sshkey.default.ssh_key ]
 
   # Installs the required software.
@@ -150,13 +152,13 @@ resource "local_file" "runnerEnvironment" {
   count    = (length(var.settings.runner.registrationToken) == 0 ? 0 : 1)
   filename = local.runnerEnvironmentFilename
   content  = <<EOT
-DOCKER_REGISTRY_URL=ghcr.io
-DOCKER_REGISTRY_ID=fvilarinho
-BUILD_VERSION=latest
-GITEA_INSTANCE_URL=https://gitea.${var.settings.general.domain}
-GITEA_RUNNER_REGISTRATION_TOKEN=${var.settings.runner.registrationToken}
-GITEA_RUNNER_NAME=${var.settings.runner.label}
-GITEA_RUNNER_LABELS=${var.settings.runner.label}
+export DOCKER_REGISTRY_URL=ghcr.io
+export DOCKER_REGISTRY_ID=fvilarinho
+export BUILD_VERSION=latest
+export GITEA_INSTANCE_URL=https://gitea.${var.settings.general.domain}
+export GITEA_RUNNER_REGISTRATION_TOKEN=${var.settings.runner.registrationToken}
+export GITEA_RUNNER_NAME=${var.settings.runner.label}
+export GITEA_RUNNER_LABELS=${var.settings.runner.label}
 EOT
 }
 

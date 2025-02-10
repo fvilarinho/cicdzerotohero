@@ -1,4 +1,4 @@
 # Akamai Cloud Computing provider definition.
 provider "linode" {
-  config_path = local.credentialsFilename
+  token = var.linodeToken
 }

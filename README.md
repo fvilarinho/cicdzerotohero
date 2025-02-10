@@ -13,11 +13,11 @@ Git server (Gitea with Actions Runner) in Akamai Cloud Computing with pre-instal
 
 It automates (using **Terraform**) the provisioning of the following resources in Akamai Cloud Computing (former Linode) 
 environment:
-- **Domains**: Authoritative DNS server. (Please check the file `iac/linode-dns.tf` for more details).
-- **Firewall**: Cloud Firewall. (Please check the file `iac/linode-firewall.tf` for more details).
-- **Linodes**: Compute instances to run Gitea and Action Runner. (Please check the file `iac/linode-compute.tf` for more 
-- **Credentials**: SSH Private/Public Keys used to access the compute instances (Please check the file `iac/linode-credentials.tf`
-for more details).
+- **Domains**: Authoritative DNS server. (Please check the file `iac/dns.tf` for more details).
+- **Firewall**: Cloud Firewall. (Please check the file `iac/firewall.tf` for more details).
+- **Linodes**: Compute instances to run Gitea and Action Runner. (Please check the file `iac/compute.tf` for more 
+- **Credentials**: SSH Private/Public Keys used to access the compute instances (Please check the file 
+`iac/credentials.tf` for more details).
 - **TLS Certificate**: LetsEncrypt signed certificate to enable HTTPs traffic in the compute instances. (Please check 
 the file `iac/certificate.tf` for more details).
 

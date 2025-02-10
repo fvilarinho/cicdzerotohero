@@ -1,3 +1,5 @@
+variable "linodeToken" {}
+
 variable "settings" {
   default = {
     general = {
