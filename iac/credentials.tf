@@ -1,8 +1,7 @@
 # Required variables.
 locals {
-  credentialsFilename = abspath(pathexpand("~/.aws/credentials"))
-  privateKeyFilename  = abspath(pathexpand("~/.ssh/id_rsa"))
-  publicKeyFilename   = abspath(pathexpand("~/.ssh/id_rsa.pub"))
+  privateKeyFilename = abspath(pathexpand("~/.ssh/id_rsa"))
+  publicKeyFilename  = abspath(pathexpand("~/.ssh/id_rsa.pub"))
 }
 
 # Creates the SSH public key.
