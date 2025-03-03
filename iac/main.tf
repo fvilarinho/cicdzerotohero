@@ -16,9 +16,15 @@ terraform {
     linode = {
       source = "linode/linode"
     }
+
+    akamai = {
+      source = "akamai/akamai"
+    }
+
     null = {
       source = "hashicorp/null"
     }
+
     random = {
       source = "hashicorp/random"
     }

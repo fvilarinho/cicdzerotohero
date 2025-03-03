@@ -15,7 +15,15 @@ function showLabel() {
 
 # Prepares the environment to execute this script.
 function prepareToExecute() {
-  # Required binaries
+  # Required environment variables.
+  export WORK_DIR=$(pwd)
+  export BUILD_ENVIRONMENT_FILENAME=$WORK_DIR/.env
+
+  if [ -e "$BUILD_ENVIRONMENT_FILENAME" ]; then
+    source "$BUILD_ENVIRONMENT_FILENAME"
+  fi
+
+  # Required binaries.
   export TERRAFORM_CMD=$(which terraform)
   export DOCKER_CMD=$(which docker)
   export CERTBOT_CMD=$(which certbot)

@@ -15,9 +15,7 @@ function prepareToExecute() {
 
   showBanner
 
-  cd iac || exit 1
-
-  source .env
+  cd etc/gitea-runner || exit 1
 }
 
 # Builds the container images.

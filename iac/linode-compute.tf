@@ -1,12 +1,15 @@
 # Required variables.
 locals {
-  runnerEnvironmentFilename = abspath(pathexpand("../etc/runner/.env"))
-  startRunnerScript         = abspath(pathexpand("../bin/runner/start.sh"))
+  serverDeploymentFilename    = abspath(pathexpand("../etc/gitea-server/docker-compose.yml"))
+  serverConfigurationFilename = abspath(pathexpand("../etc/gitea-server/conf.d/default.conf"))
+  startServerScript           = abspath(pathexpand("../bin/gitea-server/start.sh"))
+  runnerEnvironmentFilename   = abspath(pathexpand("../etc/gitea-runner/.env"))
+  startRunnerScript           = abspath(pathexpand("../bin/gitea-runner/start.sh"))
 }
 
 # Definition of the Gitea server instance.
 resource "linode_instance" "server" {
-  label           = var.settings.server.label
+  label           = var.settings.server.name
   tags            = var.settings.server.tags
   region          = var.settings.server.region
   type            = var.settings.server.type
@@ -25,7 +28,7 @@ resource "linode_instance" "server" {
     inline = [
       "apt update",
       "apt -y upgrade",
-      "hostnamectl set-hostname ${var.settings.server.label}",
+      "hostnamectl set-hostname ${var.settings.server.name}",
       "apt -y install curl wget unzip zip dnsutils net-tools htop",
       "curl https://get.docker.com | sh -",
     ]
@@ -34,8 +37,7 @@ resource "linode_instance" "server" {
   depends_on = [
     local_sensitive_file.certificate,
     local_sensitive_file.certificateKey,
-    linode_sshkey.default,
-    random_password.default
+    linode_sshkey.default
   ]
 }
 
@@ -50,9 +52,9 @@ resource "null_resource" "applyServerStack" {
     }
 
     inline = [
-      "mkdir -p /root/${var.settings.server.label}/etc/nginx/conf.d",
-      "mkdir -p /root/${var.settings.server.label}/etc/tls/certs",
-      "mkdir -p /root/${var.settings.server.label}/etc/tls/private"
+      "mkdir -p /root/${var.settings.server.name}/etc/nginx/conf.d",
+      "mkdir -p /root/${var.settings.server.name}/etc/tls/certs",
+      "mkdir -p /root/${var.settings.server.name}/etc/tls/private"
     ]
   }
 
@@ -64,8 +66,8 @@ resource "null_resource" "applyServerStack" {
       private_key = chomp(file(local.privateKeyFilename))
     }
 
-    source      = "docker-compose.yml"
-    destination = "/root/${var.settings.server.label}/docker-compose.yml"
+    source      = local.serverDeploymentFilename
+    destination = "/root/${var.settings.server.name}/docker-compose.yml"
   }
 
   # Ingress files.
@@ -76,8 +78,8 @@ resource "null_resource" "applyServerStack" {
       private_key = chomp(file(local.privateKeyFilename))
     }
 
-    source      = "../etc/nginx/conf.d/default.conf"
-    destination = "/root/${var.settings.server.label}/etc/nginx/conf.d/default.conf"
+    source      = local.serverConfigurationFilename
+    destination = "/root/${var.settings.server.name}/etc/nginx/conf.d/default.conf"
   }
 
   provisioner "file" {
@@ -88,7 +90,7 @@ resource "null_resource" "applyServerStack" {
     }
 
     source      = local.certificateFilename
-    destination = "/root/${var.settings.server.label}/etc/tls/certs/fullchain.pem"
+    destination = "/root/${var.settings.server.name}/etc/tls/certs/fullchain.pem"
   }
 
   provisioner "file" {
@@ -99,7 +101,18 @@ resource "null_resource" "applyServerStack" {
     }
 
     source      = local.certificateKeyFilename
-    destination = "/root/${var.settings.server.label}/etc/tls/private/privkey.pem"
+    destination = "/root/${var.settings.server.name}/etc/tls/private/privkey.pem"
+  }
+
+  provisioner "file" {
+    connection {
+      host        = linode_instance.server.ip_address
+      user        = "root"
+      private_key = chomp(file(local.privateKeyFilename))
+    }
+
+    source      = local.startServerScript
+    destination = "/root/${var.settings.server.name}/start.sh"
   }
 
   # Start the stack.
@@ -110,7 +123,11 @@ resource "null_resource" "applyServerStack" {
       private_key = chomp(file(local.privateKeyFilename))
     }
 
-    inline = [ "cd /root/${var.settings.server.label} ; docker compose up -d"]
+    inline = [
+      "cd /root/${var.settings.server.name}",
+      "chmod +x *.sh",
+      "./start.sh"
+    ]
   }
 
   depends_on = [ linode_instance.server ]
@@ -118,7 +135,7 @@ resource "null_resource" "applyServerStack" {
 
 # Definition of the Gitea action runner instance.
 resource "linode_instance" "runner" {
-  label           = var.settings.runner.label
+  label           = var.settings.runner.name
   tags            = var.settings.runner.tags
   region          = var.settings.runner.region
   type            = var.settings.runner.type
@@ -137,10 +154,10 @@ resource "linode_instance" "runner" {
     inline = [
       "apt update",
       "apt -y upgrade",
-      "hostnamectl set-hostname ${var.settings.runner.label}",
+      "hostnamectl set-hostname ${var.settings.runner.name}",
       "apt -y install curl wget unzip zip dnsutils net-tools htop",
       "curl https://get.docker.com | sh -",
-      "mkdir -p /root/${var.settings.runner.label}"
+      "mkdir -p /root/${var.settings.runner.name}"
     ]
   }
 
@@ -157,8 +174,8 @@ export DOCKER_REGISTRY_ID=fvilarinho
 export BUILD_VERSION=latest
 export GITEA_INSTANCE_URL=https://gitea.${var.settings.general.domain}
 export GITEA_RUNNER_REGISTRATION_TOKEN=${var.settings.runner.registrationToken}
-export GITEA_RUNNER_NAME=${var.settings.runner.label}
-export GITEA_RUNNER_LABELS=${var.settings.runner.label}
+export GITEA_RUNNER_NAME=${var.settings.runner.name}
+export GITEA_RUNNER_LABELS=${var.settings.runner.name}
 EOT
 }
 
@@ -174,7 +191,7 @@ resource "null_resource" "applyRunnerStack" {
     }
 
     source      = local.runnerEnvironmentFilename
-    destination = "/root/${var.settings.runner.label}/.env"
+    destination = "/root/${var.settings.runner.name}/.env"
   }
 
   # Startup script.
@@ -186,7 +203,7 @@ resource "null_resource" "applyRunnerStack" {
     }
 
     source      = local.startRunnerScript
-    destination = "/root/${var.settings.runner.label}/start.sh"
+    destination = "/root/${var.settings.runner.name}/start.sh"
   }
 
   # Start the stack.
@@ -198,7 +215,7 @@ resource "null_resource" "applyRunnerStack" {
     }
 
     inline = [
-      "cd /root/${var.settings.runner.label}",
+      "cd /root/${var.settings.runner.name}",
       "chmod +x *.sh",
       "./start.sh"
     ]

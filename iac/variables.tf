@@ -1,4 +1,19 @@
-variable "linodeToken" {}
+variable "credentials" {
+  default = {
+    akamai = {
+      linode = {
+        token = "<token>"
+      }
+
+      edgegrid = {
+        host         = "<host>"
+        accessToken  = "<accessToken>"
+        clientToken  = "<clientToken>"
+        clientSecret = "<clientSecret>"
+      }
+    }
+  }
+}
 
 variable "settings" {
   default = {
@@ -8,8 +23,18 @@ variable "settings" {
       domain = "<your-domain>"
     }
 
+    akamai = {
+      property = {
+        account  = "<account>"
+        contract = "<contract>"
+        group    = "<group>"
+        product  = "<product>"
+        name     = "gitea"
+      }
+    }
+
     server = {
-      label      = "gitea-server"
+      name       = "gitea-server"
       tags       = ["devops", "demo"]
       region     = "br-gru"
       type       = "g6-standard-4"
@@ -21,7 +46,7 @@ variable "settings" {
     }
 
     runner = {
-      label             = "gitea-runner"
+      name              = "gitea-runner"
       tags              = ["devops", "demo"]
       region            = "br-gru"
       type              = "g6-standard-4"

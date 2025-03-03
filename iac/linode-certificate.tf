@@ -1,9 +1,9 @@
 # Required variables.
 locals {
-  certificateIssuanceScript              = abspath(pathexpand("../bin/tls/certificateIssuance.sh"))
-  certificateIssuanceCredentialsFilename = abspath(pathexpand("../etc/tls/certificateIssuance.properties"))
-  certificateFilename                    = abspath(pathexpand("../etc/tls/certs/fullchain.pem"))
-  certificateKeyFilename                 = abspath(pathexpand("../etc/tls/private/privkey.pem"))
+  certificateIssuanceScript              = abspath(pathexpand("../bin/gitea-server/tls/certificateIssuance.sh"))
+  certificateIssuanceCredentialsFilename = abspath(pathexpand("../etc/gitea-server/tls/certificateIssuance.properties"))
+  certificateFilename                    = abspath(pathexpand("../etc/gitea-server/tls/certs/fullchain.pem"))
+  certificateKeyFilename                 = abspath(pathexpand("../etc/gitea-server/tls/private/privkey.pem"))
 }
 
 # Creates the certificate issuance credentials used to add the DNS validation entries in the DNS server.

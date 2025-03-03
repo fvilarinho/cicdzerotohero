@@ -14,10 +14,6 @@ function prepareToExecute() {
   source functions.sh
 
   showBanner
-
-  cd iac || exit 1
-
-  source .env
 }
 
 # Publishes the container images in the container registry.
