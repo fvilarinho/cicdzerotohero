@@ -1,10 +1,15 @@
 # Required variables.
 locals {
+  serverConfigurationFilename = abspath(pathexpand("../etc/gitea-server/nginx/conf.d/default.conf"))
   serverDeploymentFilename    = abspath(pathexpand("../etc/gitea-server/docker-compose.yml"))
-  serverConfigurationFilename = abspath(pathexpand("../etc/gitea-server/conf.d/default.conf"))
   startServerScript           = abspath(pathexpand("../bin/gitea-server/start.sh"))
-  runnerEnvironmentFilename   = abspath(pathexpand("../etc/gitea-runner/.env"))
-  startRunnerScript           = abspath(pathexpand("../bin/gitea-runner/start.sh"))
+
+  runnerEnvironmentFilename = abspath(pathexpand("../etc/gitea-runner/.env"))
+  startRunnerScript         = abspath(pathexpand("../bin/gitea-runner/start.sh"))
+
+  codeQualityConfigurationFilename = abspath(pathexpand("../etc/sonarqube-server/nginx/conf.d/default.conf"))
+  codeQualityDeploymentFilename    = abspath(pathexpand("../etc/sonarqube-server/docker-compose.yml"))
+  startCodeQualityScript           = abspath(pathexpand("../bin/sonarqube-server/start.sh"))
 }
 
 # Definition of the Gitea server instance.
@@ -26,6 +31,7 @@ resource "linode_instance" "server" {
     }
 
     inline = [
+      "export DEBIAN_FRONTEND=noninteractive",
       "apt update",
       "apt -y upgrade",
       "hostnamectl set-hostname ${var.settings.server.name}",
@@ -152,6 +158,7 @@ resource "linode_instance" "runner" {
     }
 
     inline = [
+      "export DEBIAN_FRONTEND=noninteractive",
       "apt update",
       "apt -y upgrade",
       "hostnamectl set-hostname ${var.settings.runner.name}",
@@ -225,4 +232,131 @@ resource "null_resource" "applyRunnerStack" {
     linode_instance.runner,
     local_file.runnerEnvironment
   ]
+}
+
+# Definition of the Sonarqube server instance.
+resource "linode_instance" "codeQuality" {
+  label           = var.settings.codeQuality.name
+  tags            = var.settings.codeQuality.tags
+  region          = var.settings.codeQuality.region
+  type            = var.settings.codeQuality.type
+  image           = var.settings.codeQuality.image
+  private_ip      = true
+  authorized_keys = [ linode_sshkey.default.ssh_key ]
+
+  # Installs the required software.
+  provisioner "remote-exec" {
+    connection {
+      host        = self.ip_address
+      user        = "root"
+      private_key = chomp(file(local.privateKeyFilename))
+    }
+
+    inline = [
+      "export DEBIAN_FRONTEND=noninteractive",
+      "apt update",
+      "apt -y upgrade",
+      "hostnamectl set-hostname ${var.settings.codeQuality.name}",
+      "apt -y install curl wget unzip zip dnsutils net-tools htop",
+      "curl https://get.docker.com | sh -",
+    ]
+  }
+
+  depends_on = [
+    local_sensitive_file.certificate,
+    local_sensitive_file.certificateKey,
+    linode_sshkey.default
+  ]
+}
+
+# Applies the Sonarqube server stack.
+resource "null_resource" "applyCodeQualityStack" {
+  # Default directories.
+  provisioner "remote-exec" {
+    connection {
+      host        = linode_instance.codeQuality.ip_address
+      user        = "root"
+      private_key = chomp(file(local.privateKeyFilename))
+    }
+
+    inline = [
+      "mkdir -p /root/${var.settings.codeQuality.name}/etc/nginx/conf.d",
+      "mkdir -p /root/${var.settings.codeQuality.name}/etc/tls/certs",
+      "mkdir -p /root/${var.settings.codeQuality.name}/etc/tls/private"
+    ]
+  }
+
+  # Docker containers definition.
+  provisioner "file" {
+    connection {
+      host        = linode_instance.codeQuality.ip_address
+      user        = "root"
+      private_key = chomp(file(local.privateKeyFilename))
+    }
+
+    source      = local.codeQualityDeploymentFilename
+    destination = "/root/${var.settings.codeQuality.name}/docker-compose.yml"
+  }
+
+  # Ingress files.
+  provisioner "file" {
+    connection {
+      host        = linode_instance.codeQuality.ip_address
+      user        = "root"
+      private_key = chomp(file(local.privateKeyFilename))
+    }
+
+    source      = local.codeQualityConfigurationFilename
+    destination = "/root/${var.settings.codeQuality.name}/etc/nginx/conf.d/default.conf"
+  }
+
+  provisioner "file" {
+    connection {
+      host        = linode_instance.codeQuality.ip_address
+      user        = "root"
+      private_key = chomp(file(local.privateKeyFilename))
+    }
+
+    source      = local.certificateFilename
+    destination = "/root/${var.settings.codeQuality.name}/etc/tls/certs/fullchain.pem"
+  }
+
+  provisioner "file" {
+    connection {
+      host        = linode_instance.codeQuality.ip_address
+      user        = "root"
+      private_key = chomp(file(local.privateKeyFilename))
+    }
+
+    source      = local.certificateKeyFilename
+    destination = "/root/${var.settings.codeQuality.name}/etc/tls/private/privkey.pem"
+  }
+
+  provisioner "file" {
+    connection {
+      host        = linode_instance.codeQuality.ip_address
+      user        = "root"
+      private_key = chomp(file(local.privateKeyFilename))
+    }
+
+    source      = local.startCodeQualityScript
+    destination = "/root/${var.settings.codeQuality.name}/start.sh"
+  }
+
+  # Start the stack.
+  provisioner "remote-exec" {
+    connection {
+      host        = linode_instance.codeQuality.ip_address
+      user        = "root"
+      private_key = chomp(file(local.privateKeyFilename))
+    }
+
+    inline = [
+      "cd /root/${var.settings.codeQuality.name}",
+      "chmod +x *.sh",
+      "./start.sh"
+    ]
+  }
+
+  depends_on = [ linode_instance.server ]
 }

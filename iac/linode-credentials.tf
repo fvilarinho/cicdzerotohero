@@ -6,6 +6,6 @@ locals {
 
 # Creates the SSH public key.
 resource "linode_sshkey" "default" {
-  label   = var.settings.general.label
+  label   = var.settings.general.name
   ssh_key = chomp(file(local.publicKeyFilename))
 }
