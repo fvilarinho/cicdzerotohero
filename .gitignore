@@ -1,7 +1,7 @@
 /.idea/
 /etc/gitea-runner/.env
-/etc/gitea-server/tls/*/*.pem
-/etc/gitea-server/tls/*.properties
+/etc/tls/*/*.pem
+/etc/tls/*.properties
 /iac/.terraform*
 /iac/terraform.tfstate*
 /iac/terraform.tfvars
