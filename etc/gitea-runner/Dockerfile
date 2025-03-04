@@ -3,16 +3,18 @@ FROM gitea/act_runner:0.2.11
 # Updates the stock image.
 RUN apk update
 
-# Installs NodeJS + NPM, JQ, Apache Utils, AWS CLI, Docker + Docker Compose and OpenJDK.
+# Installs curl, JQ, Apache Utils, NodeJS + NPM, Python, OpenJDK, Docker + Docker Compose and AWS CLI.
 RUN apk add --no-cache curl \
                        jq \
                        apache2-utils \
                        nodejs \
                        npm \
+                       python3 \
+                       py3-pip \
                        openjdk17-jre \
-                       aws-cli \
                        docker \
-                       docker-cli-compose
+                       docker-cli-compose \
+                       aws-cli
 
 # Installs Snyk CLI.
 RUN npm install snyk -g
