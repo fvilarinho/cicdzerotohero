@@ -5,16 +5,16 @@ on:
     tags: [ "*" ]
     branches: [ "*" ]
     paths-ignore:
-      - "src/**/*"
-      - "iac/*.tf"
-      - "bin/**/*"
-      - "etc/**/*"
-      - "deploy.sh"
-      - "undeploy.sh"
-      - "functions.sh"
       - "*.md"
-      - "LICENSE"
       - "banner.txt"
+      - "bin/**/*"
+      - "deploy.sh"
+      - "etc/**/.env"
+      - "etc/**/*.json"
+      - "etc/**/*.conf"
+      - "iac/*.tf"
+      - "LICENSE"
+      - "undeploy.sh"
 
 permissions:
   contents: read
