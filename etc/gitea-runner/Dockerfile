@@ -5,11 +5,12 @@ RUN apk update
 
 # Installs NodeJS + NPM, JQ, Apache Utils, Docker + Docker Compose and OpenJDK.
 RUN apk add --no-cache curl \
-                       nodejs \
-                       npm \
                        jq \
                        apache2-utils \
+                       nodejs \
+                       npm \
                        openjdk17-jre \
+                       aws-cli \
                        docker \
                        docker-cli-compose
 
