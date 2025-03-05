@@ -11,7 +11,7 @@ RUN apk add --no-cache curl \
                        npm \
                        python3 \
                        py3-pip \
-                       openjdk23-jre \
+                       openjdk21-jre \
                        docker \
                        docker-cli-compose \
                        aws-cli
