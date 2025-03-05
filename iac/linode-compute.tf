@@ -5,6 +5,7 @@ locals {
   startServerScript           = abspath(pathexpand("../bin/gitea-server/start.sh"))
 
   runnerEnvironmentFilename = abspath(pathexpand("../etc/gitea-runner/.env"))
+  runnerImageFilename       = abspath(pathexpand("../etc/gitea-runner/Dockerfile"))
   startRunnerScript         = abspath(pathexpand("../bin/gitea-runner/start.sh"))
 
   codeQualityConfigurationFilename = abspath(pathexpand("../etc/sonarqube-server/nginx/conf.d/default.conf"))
@@ -49,6 +50,11 @@ resource "linode_instance" "server" {
 
 # Applies the Gitea server stack.
 resource "null_resource" "applyServerStack" {
+  # Triggers only when changed.
+  triggers = {
+    hash = "${filemd5(local.serverConfigurationFilename)}|${filemd5(local.serverDeploymentFilename)}|${filemd5(local.startServerScript)}|${filemd5(local.certificateFilename)}|${filemd5(local.certificateFilename)}"
+  }
+
   # Default directories.
   provisioner "remote-exec" {
     connection {
@@ -136,7 +142,11 @@ resource "null_resource" "applyServerStack" {
     ]
   }
 
-  depends_on = [ linode_instance.server ]
+  depends_on = [
+    local_sensitive_file.certificate,
+    local_sensitive_file.certificateKey,
+    linode_instance.server
+  ]
 }
 
 # Definition of the Gitea action runner instance.
@@ -179,7 +189,7 @@ resource "local_file" "runnerEnvironment" {
 export DOCKER_REGISTRY_URL=ghcr.io
 export DOCKER_REGISTRY_ID=fvilarinho
 export BUILD_VERSION=latest
-export GITEA_INSTANCE_URL=https://gitea.${var.settings.general.domain}
+export GITEA_INSTANCE_URL=https://${var.settings.server.hostname}.${var.settings.general.domain}
 export GITEA_RUNNER_REGISTRATION_TOKEN=${var.settings.runner.registrationToken}
 export GITEA_RUNNER_NAME=${var.settings.runner.name}
 export GITEA_RUNNER_LABELS=${var.settings.runner.name}
@@ -188,6 +198,11 @@ EOT
 
 # Applies the Gitea action runner stack.
 resource "null_resource" "applyRunnerStack" {
+  # Triggers only when changed.
+  triggers = {
+    hash = "${filemd5(local.runnerImageFilename)}|${filemd5(local.startRunnerScript)}|${md5(var.settings.runner.registrationToken)}"
+  }
+
   count = (length(var.settings.runner.registrationToken) == 0 ? 0 : 1)
 
   provisioner "file" {
@@ -229,8 +244,8 @@ resource "null_resource" "applyRunnerStack" {
   }
 
   depends_on = [
-    linode_instance.runner,
-    local_file.runnerEnvironment
+    local_file.runnerEnvironment,
+    linode_instance.runner
   ]
 }
 
