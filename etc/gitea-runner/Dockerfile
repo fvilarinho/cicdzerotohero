@@ -3,15 +3,18 @@ FROM gitea/act_runner:0.2.11
 # Updates the stock image.
 RUN apk update
 
-# Installs curl, JQ, Apache Utils, NodeJS + NPM, Python, OpenJDK, Docker + Docker Compose and AWS CLI.
+# Installs curl, vim, jq, Apache Utils, NodeJS + NPM, Python, OpenJDK, gradle, maven, Docker + Docker Compose and AWS CLI.
 RUN apk add --no-cache curl \
                        jq \
+                       vim \
                        apache2-utils \
                        nodejs \
                        npm \
                        python3 \
                        py3-pip \
-                       openjdk21-jre \
+                       openjdk21 \
+                       gradle \
+                       maven \
                        docker \
                        docker-cli-compose \
                        aws-cli
