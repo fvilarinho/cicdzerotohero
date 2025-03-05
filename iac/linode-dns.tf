@@ -4,7 +4,7 @@ data "linode_domain" "default" {
 }
 
 # DNS record for the Gitea server.
-resource "linode_domain_record" "server" {
+resource "linode_domain_record" "serverHttp" {
   domain_id   = data.linode_domain.default.id
   name        = "${var.settings.server.hostname}.${var.settings.general.domain}"
   record_type = "CNAME"
@@ -13,6 +13,19 @@ resource "linode_domain_record" "server" {
   depends_on  = [
     data.linode_domain.default,
     akamai_edge_hostname.server,
+    linode_instance.server,
+    null_resource.applyServerStack
+  ]
+}
+
+resource "linode_domain_record" "serverSsh" {
+  domain_id   = data.linode_domain.default.id
+  name        = "${var.settings.server.hostname}-ssh.${var.settings.general.domain}"
+  record_type = "A"
+  target      = linode_instance.server.ip_address
+  ttl_sec     = 30
+  depends_on  = [
+    data.linode_domain.default,
     linode_instance.server,
     null_resource.applyServerStack
   ]
@@ -33,7 +46,7 @@ resource "linode_domain_record" "runner" {
 }
 
 # DNS record for the Sonarqube server.
-resource "linode_domain_record" "codeQuality" {
+resource "linode_domain_record" "codeQualityHttp" {
   domain_id   = data.linode_domain.default.id
   name        = "${var.settings.codeQuality.hostname}.${var.settings.general.domain}"
   record_type = "CNAME"

@@ -286,6 +286,11 @@ resource "linode_instance" "codeQuality" {
 
 # Applies the Sonarqube server stack.
 resource "null_resource" "applyCodeQualityStack" {
+  # Triggers only when changed.
+  triggers = {
+    hash = "${filemd5(local.codeQualityConfigurationFilename)}|${filemd5(local.codeQualityDeploymentFilename)}|${filemd5(local.startCodeQualityScript)}|${filemd5(local.certificateFilename)}|${filemd5(local.certificateFilename)}"
+  }
+
   # Default directories.
   provisioner "remote-exec" {
     connection {
