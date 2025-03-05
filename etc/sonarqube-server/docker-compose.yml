@@ -15,13 +15,32 @@ services:
 
   sonarqube:
     image: sonarqube:community
+    container_name: sonarqube
+    hostname: sonarqube
+    environment:
+      SONAR_JDBC_URL: jdbc:postgresql://postgres:5432/sonarqube
+      SONAR_JDBC_USERNAME: ${SONARQUBE_USER}
+      SONAR_JDBC_PASSWORD: ${SONARQUBE_PASSWORD}
     volumes:
       - sonarqube_data:/opt/sonarqube/data
       - sonarqube_logs:/opt/sonarqube/logs
       - sonarqube_extensions:/opt/sonarqube/extensions
     restart: always
 
+  postgres:
+    image: postgres:16
+    container_name: postgres
+    hostname: postgres
+    environment:
+      POSTGRES_USER: ${SONARQUBE_USER}
+      POSTGRES_PASSWORD: ${SONARQUBE_PASSWORD}
+      POSTGRES_DB: sonarqube
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+
 volumes:
   sonarqube_data:
   sonarqube_logs:
   sonarqube_extensions:
+  postgres_data:

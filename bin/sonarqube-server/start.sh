@@ -1,6 +1,8 @@
 #!/bin/bash
 
 # Reads the environment variables.
+source .env
+
 DOCKER_CMD=$(which docker)
 
 # Downloads the container images from the registry.

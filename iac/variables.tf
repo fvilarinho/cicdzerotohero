@@ -13,6 +13,11 @@ variable "credentials" {
         clientSecret = "<clientSecret>"
       }
     }
+
+    codeQuality = {
+      user     = "<user>"
+      password = "<password>"
+    }
   }
 }
 

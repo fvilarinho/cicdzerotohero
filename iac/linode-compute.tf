@@ -10,6 +10,7 @@ locals {
 
   codeQualityConfigurationFilename = abspath(pathexpand("../etc/sonarqube-server/nginx/conf.d/default.conf"))
   codeQualityDeploymentFilename    = abspath(pathexpand("../etc/sonarqube-server/docker-compose.yml"))
+  codeQualityEnvironmentFilename   = abspath(pathexpand("../etc/sonarqube-server/.env"))
   startCodeQualityScript           = abspath(pathexpand("../bin/sonarqube-server/start.sh"))
 }
 
@@ -284,11 +285,20 @@ resource "linode_instance" "codeQuality" {
   ]
 }
 
+resource "local_file" "codeQualityEnvironment" {
+  count    = (length(var.settings.runner.registrationToken) == 0 ? 0 : 1)
+  filename = local.codeQualityEnvironmentFilename
+  content  = <<EOT
+export SONARQUBE_USER=${var.credentials.codeQuality.user}
+export SONARQUBE_PASSWORD=${var.credentials.codeQuality.password}
+EOT
+}
+
 # Applies the Sonarqube server stack.
 resource "null_resource" "applyCodeQualityStack" {
   # Triggers only when changed.
   triggers = {
-    hash = "${filemd5(local.codeQualityConfigurationFilename)}|${filemd5(local.codeQualityDeploymentFilename)}|${filemd5(local.startCodeQualityScript)}|${filemd5(local.certificateFilename)}|${filemd5(local.certificateFilename)}"
+    hash = "${filemd5(local.codeQualityConfigurationFilename)}|${filemd5(local.codeQualityDeploymentFilename)}|${filemd5(local.startCodeQualityScript)}|${filemd5(local.certificateFilename)}|${filemd5(local.certificateFilename)}|${filemd5(local.codeQualityEnvironmentFilename)}"
   }
 
   # Default directories.
@@ -316,6 +326,17 @@ resource "null_resource" "applyCodeQualityStack" {
 
     source      = local.codeQualityDeploymentFilename
     destination = "/root/${var.settings.codeQuality.name}/docker-compose.yml"
+  }
+
+  provisioner "file" {
+    connection {
+      host        = linode_instance.codeQuality.ip_address
+      user        = "root"
+      private_key = chomp(file(local.privateKeyFilename))
+    }
+
+    source      = local.codeQualityEnvironmentFilename
+    destination = "/root/${var.settings.codeQuality.name}/.env"
   }
 
   # Ingress files.

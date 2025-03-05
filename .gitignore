@@ -1,5 +1,6 @@
 /.idea/
 /etc/gitea-runner/.env
+/etc/sonarqube-server/.env
 /etc/tls/*/*.pem
 /etc/tls/*.properties
 /iac/.terraform*
