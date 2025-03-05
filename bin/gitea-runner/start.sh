@@ -6,7 +6,7 @@ source .env
 DOCKER_CMD=$(which docker)
 
 # Create the persistent volume.
-$DOCKER_CMD volume create gitea-runner_data 2>&1 /dev/null
+$DOCKER_CMD volume create gitea-runner_data
 
 # Downloads the container image from the registry.
 $DOCKER_CMD pull "$DOCKER_REGISTRY_URL/$DOCKER_REGISTRY_ID/gitea-runner:$BUILD_VERSION"
