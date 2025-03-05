@@ -12,8 +12,8 @@ $DOCKER_CMD volume create gitea-runner_data
 $DOCKER_CMD pull "$DOCKER_REGISTRY_URL/$DOCKER_REGISTRY_ID/gitea-runner:$BUILD_VERSION"
 
 # Stops & deletes the current running container.
-$DOCKER_CMD stop gitea-runner 2>&1 /dev/null
-$DOCKER_CMD rm -f gitea-runner 2>&1 /dev/null
+$DOCKER_CMD stop gitea-runner
+$DOCKER_CMD rm -f gitea-runner
 
 # Starts the container with the updated image.
 $DOCKER_CMD run \
