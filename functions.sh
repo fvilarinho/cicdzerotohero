@@ -20,9 +20,14 @@ function prepareToExecute() {
   # Required environment variables.
   export WORK_DIR=$(pwd)
   export ENVIRONMENT_FILENAME=$WORK_DIR/.env
+  export SECRETS_FILENAME=$WORK_DIR/.secrets
 
   if [ -e "$ENVIRONMENT_FILENAME" ]; then
     source "$ENVIRONMENT_FILENAME"
+  fi
+
+  if [ -e "$SECRETS_FILENAME" ]; then
+    source "$SECRETS_FILENAME"
   fi
 
   # Required binaries.
