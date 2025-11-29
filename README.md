@@ -1,44 +1,49 @@
 ## CI/CD Zero to Hero
 
 ### Introduction
-This project has the intention to demonstrate the basics of a CI/CD pipeline by provisioning a compute instance with 
-Git server (Gitea with Actions Runner) with pre-installed tools:
+This project has the intention to demonstrate the basics of a CI/CD pipeline by provisioning a git server and action 
+runner with the following pre-installed tools:
 
-- [`Terraform`](https://terraform.io)
-- [`Docker`](https://www.docker.com)
-- [`NodeJS`](https://nodejs.org)
-- [`NPM`](https://www.npmjs.com)
-- [`Gitea`](https://gitea.com)
-- [`Gitea Action Runner`](https://docs.gitea.com/usage/actions/act-runner)
+- [JQ](https://jqlang.org/)
+- [NodeJS](https://nodejs.org)
+- [NPM](https://www.npmjs.com/)
+- [Python](https://www.python.org/)
+- [OpenJDK](https://openjdk.org/)
+- [Gradle](https://gradle.org/)
+- [Maven](https://maven.apache.org/)
+- [Snyk](https://snyk.io/platform/snyk-cli/)
+- [Kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/)
+- [Docker](https://www.docker.com/)
+- [Terraform](https://terraform.io/)
 
-### Requirements for you local machine
-- [`Docker`](https://www.docker.com)
+You can also customize by adding new software and/or patching. Just edit the following files:
+
+- `gitea-server/Dockerfile`
+- `gitea-runner/Dockerfile`
+
+### Requirements to run, build or publish
+- [Docker](https://www.docker.com)
 - `Any Linux Distribution` or
 - `Windows 10 or later` or
 - `MacOS Catalina or later`
 
-### To customize the Gitea Server and Action Runner
+Execute the following to:
 
-You can customize adding new software and/or patching. To do it, just edit the following files:
-
-- `gitea-server/Dockerfile` 
-- `gitea-runner/Dockerfile`
-
-After that, execute the following commands:
-
-- `build.sh`: To build the container images.
-- `publish.sh`: To publish the container images in the container registry.
+- `build.sh`: Build the stack.
+- `publish.sh`: Publish the stack in the container registry.
+- `start.sh`: Starts the stack.
+- `stop.sh`: Stops the stack.
 
 ### Important notes
-- **DON'T EXPOSE OR COMMIT ANY SENSITIVE DATA, SUCH AS CREDENTIALS, IN THE PROJECT.**
+- **DON'T EXPOSE OR COMMIT ANY SENSITIVE DATA (SUCH AS CREDENTIALS, SECRETS, KEYS, etc) IN THE PROJECT.**
 
 ### Contact
-**LinkedIn:**
-- https://www.linkedin.com/in/fvilarinho
+**Website**
+- [https://vilanet.sh](https://vilanet.sh)
 
 **e-Mail:**
+- me@vila.net.br
 - fvilarinho@gmail.com
 - fvilarinho@outlook.com
-- me@vila.net.br
 
 and that's all! Have fun!

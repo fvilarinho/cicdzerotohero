@@ -16,7 +16,7 @@ function prepareToExecute() {
   showBanner
 }
 
-# Builds the container images.
+# Builds the stack.
 function build() {
   export COMPOSE_BAKE=true
 

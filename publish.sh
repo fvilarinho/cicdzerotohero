@@ -16,12 +16,12 @@ function prepareToExecute() {
   showBanner
 }
 
-# Publishes the container images in the container registry.
+# Publishes the stack in the container registry.
 function publish() {
   # Authentication in the container registry.
   echo "$DOCKER_REGISTRY_PASSWORD" | $DOCKER_CMD login -u "$DOCKER_REGISTRY_ID" "$DOCKER_REGISTRY_URL" --password-stdin || exit 1
 
-  $DOCKER_CMD push "$DOCKER_REGISTRY_URL/$DOCKER_REGISTRY_ID/gitea-runner:$BUILD_VERSION"
+  $DOCKER_CMD compose push
 }
 
 # Main function.

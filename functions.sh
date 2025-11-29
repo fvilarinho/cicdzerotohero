@@ -27,7 +27,6 @@ function prepareToExecute() {
 
   # Required binaries.
   export DOCKER_CMD=$(which docker)
-  export CERTBOT_CMD=$(which certbot)
 }
 
 # Shows the banner.

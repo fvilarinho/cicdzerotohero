@@ -16,7 +16,7 @@ function prepareToExecute() {
   showBanner
 }
 
-# Stops the container images.
+# Stops the stack.
 function stop() {
   $DOCKER_CMD compose down
 

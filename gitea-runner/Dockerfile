@@ -1,4 +1,4 @@
-FROM gitea/act_runner:0.2.11
+FROM gitea/act_runner:0.2.13
 
 # Updates the stock image.
 RUN apk update
@@ -16,8 +16,7 @@ RUN apk add --no-cache curl \
                        gradle \
                        maven \
                        docker \
-                       docker-cli-compose \
-                       aws-cli
+                       docker-cli-compose
 
 # Installs Snyk CLI.
 RUN npm install snyk -g

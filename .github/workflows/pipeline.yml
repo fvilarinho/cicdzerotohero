@@ -2,19 +2,13 @@ name: CI/CD Zero to Hero pipeline
 
 on:
   push:
-    tags: [ "*" ]
     branches: [ "*" ]
     paths-ignore:
       - "*.md"
-      - "banner.txt"
-      - "bin/**/*"
-      - "deploy.sh"
-      - "../../etc/gitea-runner/.env"
-      - "etc/**/*.conf"
-      - "etc/**/*.json"
-      - "iac/*.tf"
       - "LICENSE"
-      - "undeploy.sh"
+      - "banner.txt"
+      - "start.sh"
+      - "stop.sh"
 
 permissions:
   contents: read

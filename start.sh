@@ -16,7 +16,7 @@ function prepareToExecute() {
   showBanner
 }
 
-# Starts the container images.
+# Starts the stack.
 function start() {
   $DOCKER_CMD compose up -d
 }
