@@ -4,10 +4,12 @@
 function showLabel() {
   if [[ "$0" == *"build.sh"* ]]; then
     echo "** Build **"
-  elif [[ "$0" == *"undeploy.sh"* ]]; then
-    echo "** Undeploy **"
-  elif [[ "$0" == *"deploy.sh"* ]]; then
-    echo "** Deploy **"
+  elif [[ "$0" == *"publish.sh"* ]]; then
+    echo "** Publish **"
+  elif [[ "$0" == *"start.sh"* ]]; then
+    echo "** Start **"
+  elif [[ "$0" == *"stop.sh"* ]]; then
+    echo "** Stop **"
   fi
 
   echo
@@ -17,14 +19,13 @@ function showLabel() {
 function prepareToExecute() {
   # Required environment variables.
   export WORK_DIR=$(pwd)
-  export BUILD_ENVIRONMENT_FILENAME=$WORK_DIR/.env
+  export ENVIRONMENT_FILENAME=$WORK_DIR/.env
 
-  if [ -e "$BUILD_ENVIRONMENT_FILENAME" ]; then
-    source "$BUILD_ENVIRONMENT_FILENAME"
+  if [ -e "$ENVIRONMENT_FILENAME" ]; then
+    source "$ENVIRONMENT_FILENAME"
   fi
 
   # Required binaries.
-  export TERRAFORM_CMD=$(which terraform)
   export DOCKER_CMD=$(which docker)
   export CERTBOT_CMD=$(which certbot)
 }

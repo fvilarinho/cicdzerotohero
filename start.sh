@@ -16,18 +16,16 @@ function prepareToExecute() {
   showBanner
 }
 
-# Builds the container images.
-function build() {
-  export COMPOSE_BAKE=true
-
-  $DOCKER_CMD compose build
+# Starts the container images.
+function start() {
+  $DOCKER_CMD compose up -d
 }
 
 # Main function.
 function main() {
   prepareToExecute
   checkDependencies
-  build
+  start
 }
 
 main

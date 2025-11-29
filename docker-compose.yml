@@ -1,0 +1,31 @@
+services:
+  gitea-server:
+    build: ./gitea-server
+    image: ${DOCKER_REGISTRY_URL}/${DOCKER_REGISTRY_ID}/gitea-server:${BUILD_VERSION}
+    container_name: gitea-server
+    hostname: gitea-server
+    ports:
+      - "3000:3000"
+      - "2222:22"
+    volumes:
+      - gitea-server_data:/data
+    restart: always
+
+  gitea-runner:
+    build: ./gitea-runner
+    image: ${DOCKER_REGISTRY_URL}/${DOCKER_REGISTRY_ID}/gitea-runner:${BUILD_VERSION}
+    container_name: gitea-runner
+    hostname: gitea-runner
+    environment:
+      - GITEA_INSTANCE_URL=${GITEA_SERVER_URL}
+      - GITEA_RUNNER_REGISTRATION_TOKEN=${GITEA_SERVER_TOKEN}
+      - GITEA_RUNNER_NAME=${GITEA_RUNNER_NAME}
+      - GITEA_RUNNER_LABELS=${GITEA_RUNNER_LABELS}
+    volumes:
+      - gitea-runner_data:/data \
+      - /var/run/docker.sock:/var/run/docker.sock \
+    restart: always
+
+volumes:
+  gitea-server_data:
+  gitea-runner_data:

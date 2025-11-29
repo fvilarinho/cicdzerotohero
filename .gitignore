@@ -1,3 +1,4 @@
+/.env
 /.idea/
 /etc/gitea-runner/.env
 /etc/sonarqube-server/.env
