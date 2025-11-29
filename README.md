@@ -41,7 +41,7 @@ Create the file `.secrets` to contains the following credentials, secrets and ke
 - `GITEA_SERVER_TOKEN`: Token of the Gitea server used to registry the action runners.
 
 In the file `.env`, you can customize the following:
-- `DOCKER_REGISTRY_URL`: URl of the container registry.
+- `DOCKER_REGISTRY_URL`: URL of the container registry.
 - `DOCKER_REGISTRY_ID`: Identity of the container registry.
 - `BUILD_VERSION`: Version of the stack.
 - `GITEA_RUNNER_NAME`: Name of the action runner.
