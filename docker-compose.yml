@@ -1,6 +1,10 @@
 services:
   gitea-server:
-    build: ./gitea-server
+    build:
+      context: ./gitea-server
+      platforms:
+        - linux/amd64
+        - linux/arm64
     image: ${DOCKER_REGISTRY_URL}/${DOCKER_REGISTRY_ID}/gitea-server:${BUILD_VERSION}
     container_name: gitea-server
     hostname: gitea-server
@@ -12,7 +16,11 @@ services:
     restart: always
 
   gitea-runner:
-    build: ./gitea-runner
+    build:
+      context: ./gitea-runner
+      platforms:
+        - linux/amd64
+        - linux/arm64
     image: ${DOCKER_REGISTRY_URL}/${DOCKER_REGISTRY_ID}/gitea-runner:${BUILD_VERSION}
     container_name: gitea-runner
     hostname: gitea-runner

@@ -21,7 +21,11 @@ function publish() {
   # Authentication in the container registry.
   echo "$DOCKER_REGISTRY_PASSWORD" | $DOCKER_CMD login -u "$DOCKER_REGISTRY_ID" "$DOCKER_REGISTRY_URL" --password-stdin || exit 1
 
-  $DOCKER_CMD compose push
+  $DOCKER_CMD buildx bake --push
+
+  export BUILD_VERSION=latest
+
+  $DOCKER_CMD buildx bake --push
 }
 
 # Main function.

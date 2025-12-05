@@ -20,7 +20,11 @@ function prepareToExecute() {
 function build() {
   export COMPOSE_BAKE=true
 
-  $DOCKER_CMD compose build
+  $DOCKER_CMD buildx bake
+
+  export BUILD_VERSION=latest
+
+  $DOCKER_CMD buildx bake
 }
 
 # Main function.

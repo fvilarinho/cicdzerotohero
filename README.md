@@ -36,16 +36,16 @@ Execute the following to:
 
 ### Environment variables:
 Create the file `.secrets` to contains the following credentials, secrets and keys for the stack:
+- `DOCKER_REGISTRY_URL`: URL of the container registry.
+- `DOCKER_REGISTRY_ID`: Identity of the container registry.
 - `DOCKER_REGISTRY_PASSWORD`: Password of the container registry.
 - `GITEA_SERVER_URL`: URL of the Gitea server used to registry the action runners.
 - `GITEA_SERVER_TOKEN`: Token of the Gitea server used to registry the action runners.
 
 In the file `.env`, you can customize the following:
-- `DOCKER_REGISTRY_URL`: URL of the container registry.
-- `DOCKER_REGISTRY_ID`: Identity of the container registry.
-- `BUILD_VERSION`: Version of the stack.
 - `GITEA_RUNNER_NAME`: Name of the action runner.
 - `GITEA_RUNNER_LABELS`: Labels of the action runner.
+- `BUILD_VERSION`: Version of the stack.
 
 ### Important notes
 - **DON'T EXPOSE OR COMMIT ANY SENSITIVE DATA (SUCH AS CREDENTIALS, SECRETS, KEYS, etc.) IN THE PROJECT.**
