@@ -48,6 +48,7 @@ In the file `.env`, you can customize the following:
 - `BUILD_VERSION`: Version of the stack.
 
 ### Build atatus
+[![CI/CD Pipeline](https://github.com/fvilarinho/cicdzerotohero/actions/workflows/pipeline.yml/badge.svg)](https://github.com/fvilarinho/cicdzerotohero/actions/workflows/pipeline.yml)
 
 ### Important notes
 - **DON'T EXPOSE OR COMMIT ANY SENSITIVE DATA (SUCH AS CREDENTIALS, SECRETS, KEYS, etc.) IN THE PROJECT.**
