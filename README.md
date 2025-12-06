@@ -47,6 +47,8 @@ In the file `.env`, you can customize the following:
 - `GITEA_RUNNER_LABELS`: Labels of the action runner.
 - `BUILD_VERSION`: Version of the stack.
 
+### Build atatus
+
 ### Important notes
 - **DON'T EXPOSE OR COMMIT ANY SENSITIVE DATA (SUCH AS CREDENTIALS, SECRETS, KEYS, etc.) IN THE PROJECT.**
 
