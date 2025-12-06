@@ -30,6 +30,10 @@ function prepareToExecute() {
     source "$SECRETS_FILENAME"
   fi
 
+  if [ ! -z "$DOCKER_REGISTRY_URL" ]; then
+    echo $DOCKER_REGISTRY_PASSWORD | docker login -u $DOCKER_REGISTRY_ID $DOCKER_REGISTRY_URL --password-stdin
+  fi
+
   # Required binaries.
   export DOCKER_CMD=$(which docker)
 }
